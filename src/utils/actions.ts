@@ -37,8 +37,33 @@ export const verifyElementExists = async (page: Page, locator: string) => {
   });
 };
 
+export const verifyElementDoesNotExists = async (
+  page: Page,
+  locator: string
+) => {
+  await test.step("Verify element does not exist " + locator, async () => {
+    await expect(page.locator(locator)).toHaveCount(0);
+  });
+};
+
+export const verifyElementIsVisible = async (page: Page, locator: string) => {
+  await test.step("Verify element is visible " + locator, async () => {
+    return expect(await page.locator(locator).isVisible()).toBe(true);
+  });
+};
+
+export const verifyElementIsEnabled = async (page: Page, locator: string) => {
+  await test.step("Verify element is enabled " + locator, async () => {
+    return expect(await page.locator(locator).isEnabled()).toBe(true);
+  });
+};
+
 export const clickElement = async (page: Page, locator: string) => {
   await test.step("Click element " + locator, async () => {
     await page.locator(locator).click();
   });
+};
+
+export const getElementCoordinates = async (page: Page, locator: string) => {
+  return await page.locator(locator).boundingBox();
 };

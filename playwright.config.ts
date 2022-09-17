@@ -1,4 +1,29 @@
-import { PlaywrightTestConfig, devices } from "@playwright/test";
+import { PlaywrightTestConfig, devices, expect } from "@playwright/test";
+
+declare global {
+  namespace PlaywrightTest {
+    interface Matchers<R, T> {
+      toBeWithinRange(a: number, b: number): R;
+    }
+  }
+}
+
+expect.extend({
+  toBeWithinRange(received: number, floor: number, ceiling: number) {
+    const pass = received >= floor && received <= ceiling;
+    if (pass) {
+      return {
+        message: () => "passed",
+        pass: true,
+      };
+    } else {
+      return {
+        message: () => "failed",
+        pass: false,
+      };
+    }
+  },
+});
 
 const config: PlaywrightTestConfig = {
   testDir: "src/apps/ui-testing-playground",
@@ -38,6 +63,8 @@ const config: PlaywrightTestConfig = {
     ignoreHTTPSErrors: true,
     video: "on-first-retry",
     screenshot: "only-on-failure",
+    acceptDownloads: true,
+    colorScheme: "dark",
     launchOptions: {
       slowMo: 1500,
     },
