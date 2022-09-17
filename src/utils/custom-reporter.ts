@@ -20,21 +20,29 @@ function stripAnsi(str: string): string {
   return str.replace(ansiRegex, "");
 }
 
+let totalTests = 0;
+let i = 1;
+const date = new Date();
 export default class CustomReporter implements Reporter {
   onBegin(config: FullConfig, suite: Suite): void {
+    totalTests = suite.allTests().length;
     console.log(
-      `Suite Title: ${suite.suites[0].suites[0].suites[0].title}`.underline.blue
-        .bold
+      `${date.toLocaleString()}:`.bgCyan.white,
+      ``,
+      `Starting the run with ${totalTests} tests`.underline.blue.bold,
+      "\n"
     );
-    console.log(`Starting the run with ${suite.allTests().length} tests`.blue);
   }
 
   onEnd(result: FullResult): void | Promise<void> {
     console.log(
+      `${date.toLocaleString()}:`.bgCyan.white,
+      ``,
       `Finished the run:`.underline.blue.bold,
       result.status === "passed"
         ? `${result.status}`.green.bold
-        : `${result.status}`.red.bold
+        : `${result.status}`.red.bold,
+      "\n"
     );
   }
 
@@ -64,28 +72,53 @@ export default class CustomReporter implements Reporter {
 
   onStepBegin(test: TestCase, result: TestResult, step: TestStep): void {
     if (step.category === "test.step")
-      console.log(`Started step: ${step.title}`.magenta);
+      console.log(
+        `${date.toLocaleString()}:`.bgCyan.white,
+        ` Started step: ${step.title}`.magenta
+      );
   }
 
   onStepEnd(test: TestCase, result: TestResult, step: TestStep): void {
     if (step.category === "test.step") {
-      console.log(`Finished step: ${step.title}`.cyan);
+      console.log(
+        `${date.toLocaleString()}:`.bgCyan.white,
+        ` Finished step: ${step.title}`.cyan
+      );
     }
   }
 
   onTestBegin(test: TestCase, result: TestResult): void {
-    console.log(`Started test: ${test.title}`.yellow);
-    if (test.retries > 0 && result.status === "failed") {
-      console.log(`Retrying ${test.title}...`.magenta);
+    console.log(
+      `Test ${i} of ${totalTests} - ${test.parent.title}`.yellow.bold
+    );
+    if (result.retry === 0) {
+      console.log(
+        `${date.toLocaleString()}:`.bgCyan.white,
+        ` Started test: ${test.title}`.yellow
+      );
+    } else {
+      console.log(
+        `${date.toLocaleString()}:`.bgCyan.white,
+        ` Retrying... (attempt ${result.retry} of ${test.retries}): ${test.title}`
+          .yellow
+      );
     }
   }
 
   onTestEnd(test: TestCase, result: TestResult): void {
-    console.log(`Finished test ${test.title}: ${result.status}`.green);
+    console.log(
+      `${date.toLocaleString()}:`.bgCyan.white,
+      ` Finished test ${test.title}: `,
+      result.status === "passed"
+        ? `${result.status}`.green.bold
+        : `${result.status}`.red.bold,
+      "\n"
+    );
     if (result.status === "failed") {
       console.log(stripAnsi(result.error?.message.red ?? ""));
       console.log(stripAnsi(result.error?.stack.red ?? ""));
     }
+    if (result.status === "passed" || result.retry === 3) i++;
   }
 
   printsToStdio(): boolean {

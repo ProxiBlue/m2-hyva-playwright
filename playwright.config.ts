@@ -31,7 +31,7 @@ const config: PlaywrightTestConfig = {
   timeout: 20 * 1000,
   retries: 3,
   workers: 1,
-  preserveOutput: "failures-only",
+  // preserveOutput: "failures-only",
   // globalTeardown: require.resolve("./global-teardown"),
   expect: {
     timeout: 5000,
