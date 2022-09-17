@@ -1,7 +1,7 @@
 import test, { expect, Page } from "@playwright/test";
 
 export const matchScreenshot = async (page: Page, path: string) => {
-  await test.step("Check if screenshot matches with " + path, async () => {
+  await test.step("Check if screenshot matches with snapshot", async () => {
     return expect(await page.screenshot()).toMatchSnapshot(path, {
       threshold: 0.3,
     });

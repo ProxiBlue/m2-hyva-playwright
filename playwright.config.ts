@@ -31,17 +31,14 @@ const config: PlaywrightTestConfig = {
   timeout: 20 * 1000,
   retries: 3,
   workers: 2,
+  preserveOutput: "failures-only",
+  // globalTeardown: require.resolve("./global-teardown"),
   expect: {
     timeout: 5000,
   },
   reporter: [
-    ["dot"],
-    [
-      "monocart-reporter",
-      {
-        outputFile: "monocart-report/grid/index.html",
-      },
-    ],
+    // ["line"],
+    // ["list"],
     [
       "json",
       {
@@ -55,6 +52,7 @@ const config: PlaywrightTestConfig = {
       },
     ],
     ["./src/utils/custom-reporter.ts"],
+    ["experimental-allure-playwright"],
   ],
   use: {
     headless: true,

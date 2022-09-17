@@ -42,6 +42,8 @@ playwright-report
 screenshots
 test-results
 *-snapshots
+allure-report
+allure-results
 
 # Typescript v1 declaration files
 typings

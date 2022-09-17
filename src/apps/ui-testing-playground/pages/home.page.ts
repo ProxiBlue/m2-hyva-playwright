@@ -20,9 +20,7 @@ export default class HomePage {
   }
 
   async verifyHomePageSnapshot() {
-    fs.existsSync(data.homePagePath)
-      ? await matchScreenshot(this.page, data.homePagePath)
-      : await takeScreenshot(this.page, data.homePagePath, true);
+    await matchScreenshot(this.page, data.homePagePath);
   }
 
   async verifyLinks() {
