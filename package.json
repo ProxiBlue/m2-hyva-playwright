@@ -13,6 +13,7 @@
   "devDependencies": {
     "@playwright/test": "^1.25.2",
     "allure-commandline": "^2.18.1",
+    "colors": "^1.4.0",
     "experimental-allure-playwright": "^0.0.3",
     "playwright": "^1.25.2",
     "ts-node": "^10.9.1",

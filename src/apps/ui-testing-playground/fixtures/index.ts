@@ -12,17 +12,17 @@ type pages = {
 };
 
 const testPages = baseTest.extend<pages>({
-  homePage: async ({ page }, use) => {
-    await use(new HomePage(page));
+  homePage: async ({ page }, use, workerInfo) => {
+    await use(new HomePage(page, workerInfo));
   },
-  dynamicIdPage: async ({ page }, use) => {
-    await use(new DynamicIdPage(page));
+  dynamicIdPage: async ({ page }, use, workerInfo) => {
+    await use(new DynamicIdPage(page, workerInfo));
   },
-  classAttributePage: async ({ page }, use) => {
-    await use(new ClassAttributePage(page));
+  classAttributePage: async ({ page }, use, workerInfo) => {
+    await use(new ClassAttributePage(page, workerInfo));
   },
-  hiddenLayersPage: async ({ page }, use) => {
-    await use(new HiddenLayersPage(page));
+  hiddenLayersPage: async ({ page }, use, workerInfo) => {
+    await use(new HiddenLayersPage(page, workerInfo));
   },
 });
 

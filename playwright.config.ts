@@ -30,7 +30,7 @@ const config: PlaywrightTestConfig = {
   testMatch: "src/apps/ui-testing-playground/tests/*.spec.ts",
   timeout: 20 * 1000,
   retries: 3,
-  workers: 2,
+  workers: 1,
   preserveOutput: "failures-only",
   // globalTeardown: require.resolve("./global-teardown"),
   expect: {

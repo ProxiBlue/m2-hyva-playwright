@@ -8,6 +8,7 @@ import {
   TestResult,
   TestStep,
 } from "@playwright/test/reporter";
+import colors from "colors";
 
 process.env.FORCE_COLOR = "true";
 
@@ -21,16 +22,24 @@ function stripAnsi(str: string): string {
 
 export default class CustomReporter implements Reporter {
   onBegin(config: FullConfig, suite: Suite): void {
-    console.log("Suite Title: " + suite.suites[0].suites[0].suites[0].title);
-    console.log(`Starting the run with ${suite.allTests().length} tests`);
+    console.log(
+      `Suite Title: ${suite.suites[0].suites[0].suites[0].title}`.underline.blue
+        .bold
+    );
+    console.log(`Starting the run with ${suite.allTests().length} tests`.blue);
   }
 
   onEnd(result: FullResult): void | Promise<void> {
-    console.log(`Finished the run: ${result.status}`);
+    console.log(
+      `Finished the run:`.underline.blue.bold,
+      result.status === "passed"
+        ? `${result.status}`.green.bold
+        : `${result.status}`.red.bold
+    );
   }
 
   onError(error: TestError): void {
-    console.error(error.message);
+    console.error(error.message.red);
   }
 
   onStdErr(
@@ -38,7 +47,9 @@ export default class CustomReporter implements Reporter {
     test: void | TestCase,
     result: void | TestResult
   ): void {
-    console.error(chunk);
+    typeof chunk === "string"
+      ? console.log(chunk.red)
+      : console.log(chunk.toString().red);
   }
 
   onStdOut(
@@ -46,32 +57,34 @@ export default class CustomReporter implements Reporter {
     test: void | TestCase,
     result: void | TestResult
   ): void {
-    console.log(chunk);
+    typeof chunk === "string"
+      ? console.log(chunk.gray)
+      : console.log(chunk.toString().gray);
   }
 
   onStepBegin(test: TestCase, result: TestResult, step: TestStep): void {
     if (step.category === "test.step")
-      console.log("Started step: " + step.title);
+      console.log(`Started step: ${step.title}`.magenta);
   }
 
   onStepEnd(test: TestCase, result: TestResult, step: TestStep): void {
     if (step.category === "test.step") {
-      console.log("Completed step: " + step.title);
+      console.log(`Finished step: ${step.title}`.cyan);
     }
   }
 
   onTestBegin(test: TestCase, result: TestResult): void {
-    console.log("Started test: " + test.title);
+    console.log(`Started test: ${test.title}`.yellow);
     if (test.retries > 0 && result.status === "failed") {
-      console.log(`${test.title} - Retrying!`);
+      console.log(`Retrying ${test.title}...`.magenta);
     }
   }
 
   onTestEnd(test: TestCase, result: TestResult): void {
-    console.log(`Finished test ${test.title}: ${result.status}`);
+    console.log(`Finished test ${test.title}: ${result.status}`.green);
     if (result.status === "failed") {
-      console.log(stripAnsi(result.error?.message ?? ""));
-      console.log(stripAnsi(result.error?.stack ?? ""));
+      console.log(stripAnsi(result.error?.message.red ?? ""));
+      console.log(stripAnsi(result.error?.stack.red ?? ""));
     }
   }
 
