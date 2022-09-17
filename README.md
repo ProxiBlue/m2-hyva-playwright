@@ -4,6 +4,10 @@ This project was bootstrapped with [playwright](https://playwright.dev/).
 
 In the project directory, you can run:
 
-### `yarn` to install dependencies
+### `yarn`
 
-### `yarn test` to run tests
+to install dependencies
+
+### `yarn test`
+
+to run tests
