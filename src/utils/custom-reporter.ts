@@ -22,12 +22,50 @@ function stripAnsi(str: string): string {
 
 let totalTests = 0;
 let i = 1;
-const date = new Date();
+
+const getFormattedTime = () => {
+  const date = new Date();
+  return `${date.toISOString()}`;
+};
+
+const roundSeconds = (seconds: number) => {
+  return Math.round((Math.abs(seconds) + Number.EPSILON) * 1000) / 1000;
+};
+
+const getDuration = (startTime: string, endTime: string) => {
+  const firstDateInSeconds = new Date(startTime).getTime() / 1000;
+  const secondDateInSeconds = new Date(endTime).getTime() / 1000;
+  const difference = roundSeconds(firstDateInSeconds - secondDateInSeconds);
+  if (difference < 60) {
+    return `${difference} ${difference > 1 ? "seconds" : "second"}`;
+  } else if (difference < 3600) {
+    const minutes = Math.floor(difference / 60);
+    let seconds = difference - minutes * 60;
+    seconds = roundSeconds(seconds);
+    return `${minutes} ${minutes > 1 ? "minutes" : "minute"}: ${seconds} ${
+      difference > 1 ? "seconds" : "second"
+    }`;
+  } else {
+    const hours = Math.floor(difference / 3600);
+    let seconds = difference - hours * 3600;
+    const minutes = Math.floor(seconds / 60);
+    seconds = seconds - minutes * 60;
+    seconds = roundSeconds(seconds);
+    return `${hours} ${hours > 1 ? "hours" : "hour"}: ${minutes} ${
+      minutes > 1 ? "minutes" : "minute"
+    }: ${seconds} ${difference > 1 ? "seconds" : "second"}`;
+  }
+};
+
+let suiteStartTime: string, suiteEndTime;
+let testStartTime: string, testEndTime: string;
+
 export default class CustomReporter implements Reporter {
   onBegin(config: FullConfig, suite: Suite): void {
+    suiteStartTime = getFormattedTime();
     totalTests = suite.allTests().length;
     console.log(
-      `${date.toLocaleString()}:`.bgCyan.white,
+      `${suiteStartTime}:`.bgCyan.white,
       ``,
       `Starting the run with ${totalTests} tests`.underline.blue.bold,
       "\n"
@@ -35,14 +73,16 @@ export default class CustomReporter implements Reporter {
   }
 
   onEnd(result: FullResult): void | Promise<void> {
+    suiteEndTime = getFormattedTime();
     console.log(
-      `${date.toLocaleString()}:`.bgCyan.white,
+      `${suiteEndTime}:`.bgCyan.white,
       ``,
-      `Finished the run:`.underline.blue.bold,
+      `Finished the run with status`.underline.blue.bold,
       result.status === "passed"
         ? `${result.status}`.green.bold
         : `${result.status}`.red.bold,
-      "\n"
+      `\n\nOverall run duration: ${getDuration(suiteStartTime, suiteEndTime)}`
+        .yellow.bold
     );
   }
 
@@ -73,7 +113,7 @@ export default class CustomReporter implements Reporter {
   onStepBegin(test: TestCase, result: TestResult, step: TestStep): void {
     if (step.category === "test.step")
       console.log(
-        `${date.toLocaleString()}:`.bgCyan.white,
+        `${getFormattedTime()}:`.bgCyan.white,
         ` Started step: ${step.title}`.magenta
       );
   }
@@ -81,24 +121,26 @@ export default class CustomReporter implements Reporter {
   onStepEnd(test: TestCase, result: TestResult, step: TestStep): void {
     if (step.category === "test.step") {
       console.log(
-        `${date.toLocaleString()}:`.bgCyan.white,
+        `${getFormattedTime()}:`.bgCyan.white,
         ` Finished step: ${step.title}`.cyan
       );
     }
   }
 
   onTestBegin(test: TestCase, result: TestResult): void {
+    testStartTime = getFormattedTime();
     console.log(
       `Test ${i} of ${totalTests} - ${test.parent.title}`.yellow.bold
     );
     if (result.retry === 0) {
       console.log(
-        `${date.toLocaleString()}:`.bgCyan.white,
-        ` Started test: ${test.title}`.yellow
+        `${getFormattedTime()}:`.bgCyan.white,
+        ` Started test`,
+        `${test.title}`.yellow
       );
     } else {
       console.log(
-        `${date.toLocaleString()}:`.bgCyan.white,
+        `${getFormattedTime()}:`.bgCyan.white,
         ` Retrying... (attempt ${result.retry} of ${test.retries}): ${test.title}`
           .yellow
       );
@@ -106,13 +148,16 @@ export default class CustomReporter implements Reporter {
   }
 
   onTestEnd(test: TestCase, result: TestResult): void {
+    testEndTime = getFormattedTime();
     console.log(
-      `${date.toLocaleString()}:`.bgCyan.white,
-      ` Finished test ${test.title}: `,
+      `${getFormattedTime()}:`.bgCyan.white,
+      ` Finished test`,
+      `${test.title}`.yellow,
+      `with status`,
       result.status === "passed"
         ? `${result.status}`.green.bold
         : `${result.status}`.red.bold,
-      "\n"
+      `\n\nTest duration: ${getDuration(testStartTime, testEndTime)}\n`
     );
     if (result.status === "failed") {
       console.log(stripAnsi(result.error?.message.red ?? ""));
