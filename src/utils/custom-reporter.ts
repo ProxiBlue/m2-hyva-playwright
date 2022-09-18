@@ -42,7 +42,7 @@ const getDuration = (startTime: string, endTime: string) => {
     const minutes = Math.floor(difference / 60);
     let seconds = difference - minutes * 60;
     seconds = roundSeconds(seconds);
-    return `${minutes} ${minutes > 1 ? "minutes" : "minute"}: ${seconds} ${
+    return `${minutes} ${minutes > 1 ? "minutes" : "minute"} ${seconds} ${
       difference > 1 ? "seconds" : "second"
     }`;
   } else {
@@ -51,9 +51,9 @@ const getDuration = (startTime: string, endTime: string) => {
     const minutes = Math.floor(seconds / 60);
     seconds = seconds - minutes * 60;
     seconds = roundSeconds(seconds);
-    return `${hours} ${hours > 1 ? "hours" : "hour"}: ${minutes} ${
+    return `${hours} ${hours > 1 ? "hours" : "hour"} ${minutes} ${
       minutes > 1 ? "minutes" : "minute"
-    }: ${seconds} ${difference > 1 ? "seconds" : "second"}`;
+    } ${seconds} ${difference > 1 ? "seconds" : "second"}`;
   }
 };
 
