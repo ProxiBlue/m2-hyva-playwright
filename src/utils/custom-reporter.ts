@@ -141,8 +141,8 @@ export default class CustomReporter implements Reporter {
     } else {
       console.log(
         `${getFormattedTime()}:`.bgCyan.white,
-        ` Retrying... (attempt ${result.retry} of ${test.retries}): ${test.title}`
-          .yellow
+        ` Retrying test... (attempt ${result.retry} of ${test.retries})`,
+        `${test.title}`.yellow
       );
     }
   }
