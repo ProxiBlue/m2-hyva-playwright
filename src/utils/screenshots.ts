@@ -1,14 +1,14 @@
 import test, { expect, Page, TestInfo } from "@playwright/test";
 
-export const matchScreenshot = async (
-  page: Page,
-  path: string,
-  workerInfo: TestInfo
-) => {
+export const matchScreenshot = async (page: Page, workerInfo: TestInfo) => {
   await test.step(
     workerInfo.project.name + ": Check if screenshot matches with snapshot",
     async () => {
-      return expect(await page.screenshot()).toMatchSnapshot(path, {
+      return expect(
+        await page.screenshot({
+          fullPage: true,
+        })
+      ).toMatchSnapshot({
         threshold: 0.3,
       });
     }

@@ -5,6 +5,7 @@
   "main": "index.js",
   "scripts": {
     "test": "playwright test",
+    "test:debug": "PWDEBUG=1 playwright test",
     "report": "npx playwright show-report",
     "allure": "npx allure generate ./allure-results --clean && npx allure open ./allure-report"
   },

@@ -1,1 +1,1 @@
-export const dynamicIdButton = '//button[contains(.,"Button with Dynamic ID")]';
+export const dynamicIdButton = "text=Button with Dynamic ID";

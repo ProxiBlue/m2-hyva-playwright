@@ -64,7 +64,7 @@ const config: PlaywrightTestConfig = {
     acceptDownloads: true,
     colorScheme: "dark",
     launchOptions: {
-      slowMo: 1500,
+      slowMo: 500,
     },
   },
   projects: [

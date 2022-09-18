@@ -3,7 +3,6 @@ import { test, expect } from "../fixtures";
 
 import * as data from "../../../../data/apps/ui-testing-playground/home/data.json";
 import * as actions from "../../../utils/actions";
-import { matchScreenshot } from "../../../utils/screenshots";
 import * as locators from "../locators/home.locator";
 
 export default class HomePage {
@@ -19,10 +18,7 @@ export default class HomePage {
         data.urlContains,
       async () => expect(url).toContain(data.urlContains)
     );
-  }
-
-  async verifyHomePageSnapshot() {
-    await matchScreenshot(this.page, data.homePagePath, this.workerInfo);
+    await actions.waitForAnimationEnd(this.page, locators.dynamicIdLink);
   }
 
   async verifyLinks() {

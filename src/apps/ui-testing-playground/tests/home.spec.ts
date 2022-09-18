@@ -1,9 +1,9 @@
 import { test, describe } from "../fixtures";
 
 describe("Home", () => {
-  test("Verify links in home page", async ({ homePage }) => {
+  test("Verify links in home page", async ({ homePage, commonPage }) => {
     await homePage.navigateToUITestingPlayground();
-    await homePage.verifyHomePageSnapshot();
+    await commonPage.verifySnapshot();
     await homePage.verifyLinks();
   });
 });

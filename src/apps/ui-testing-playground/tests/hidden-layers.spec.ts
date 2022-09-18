@@ -8,10 +8,12 @@ test.beforeEach(async ({ homePage }) => {
 describe("Hidden Layers", () => {
   test("Verify title and button in hidden layers page", async ({
     homePage,
+    commonPage,
     hiddenLayersPage,
   }) => {
     await homePage.clickLink(locators.hiddenLayersLink);
     await hiddenLayersPage.verifyPageTitle();
+    await commonPage.verifySnapshot();
     await hiddenLayersPage.verifyGreenButton();
     await hiddenLayersPage.validateGreenButton();
   });

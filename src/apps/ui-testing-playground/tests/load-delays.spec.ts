@@ -5,15 +5,15 @@ test.beforeEach(async ({ homePage }) => {
   await homePage.navigateToUITestingPlayground();
 });
 
-describe("Dynamic ID", () => {
-  test("Verify title and button in Dynamic Id page", async ({
+describe("Load Delays", () => {
+  test("Verify title and button in Load delays page", async ({
     homePage,
     commonPage,
-    dynamicIdPage,
+    loadDelaysPage,
   }) => {
-    await homePage.clickLink(locators.dynamicIdLink);
-    await dynamicIdPage.verifyPageTitle();
+    await homePage.clickLink(locators.loadDelayLink);
+    await loadDelaysPage.verifyPageTitle();
     await commonPage.verifySnapshot();
-    await dynamicIdPage.verifyDynamicIdButton();
+    await loadDelaysPage.verifyloadDelayButton();
   });
 });

@@ -1,5 +1,4 @@
 {
   "url": "http://uitestingplayground.com",
-  "urlContains": "uitestingplayground",
-  "homePagePath": "screenshots/apps/ui-testing-playground/home/home.png"
+  "urlContains": "uitestingplayground"
 }

@@ -125,3 +125,15 @@ export const clickElement = async (
 export const getElementCoordinates = async (page: Page, locator: string) => {
   return await page.locator(locator).boundingBox();
 };
+
+export const delay = (ms: number) => new Promise((res) => setTimeout(res, ms));
+
+export const waitForAnimationEnd = (page: Page, selector: string) => {
+  return page
+    .locator(selector)
+    .evaluate((element) =>
+      Promise.all(
+        element.getAnimations().map((animation) => animation.finished)
+      )
+    );
+};
