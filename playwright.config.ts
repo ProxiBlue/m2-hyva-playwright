@@ -28,13 +28,13 @@ expect.extend({
 const config: PlaywrightTestConfig = {
   testDir: "src/apps/ui-testing-playground",
   testMatch: "src/apps/ui-testing-playground/tests/*.spec.ts",
-  timeout: 20 * 1000,
+  timeout: 30 * 1000,
   retries: 3,
   workers: 1,
   // preserveOutput: "failures-only",
   // globalTeardown: require.resolve("./global-teardown"),
   expect: {
-    timeout: 5000,
+    timeout: 20000,
   },
   reporter: [
     // ["line"],

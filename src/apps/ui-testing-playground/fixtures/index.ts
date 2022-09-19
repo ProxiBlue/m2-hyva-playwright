@@ -1,10 +1,11 @@
 import { test as baseTest } from "@playwright/test";
+import CommonPage from "../pages/common.page";
 import HomePage from "../pages/home.page";
 import DynamicIdPage from "../pages/dynamic-id.page";
 import ClassAttributePage from "../pages/class-attribute.page";
 import HiddenLayersPage from "../pages/hidden-layers.page";
 import LoadDelaysPage from "../pages/load-delays.page";
-import CommonPage from "../pages/common.page";
+import AjaxDataPage from "../pages/ajax-data.page";
 
 type pages = {
   commonPage: CommonPage;
@@ -13,6 +14,7 @@ type pages = {
   classAttributePage: ClassAttributePage;
   hiddenLayersPage: HiddenLayersPage;
   loadDelaysPage: LoadDelaysPage;
+  ajaxDataPage: AjaxDataPage;
 };
 
 const testPages = baseTest.extend<pages>({
@@ -33,6 +35,9 @@ const testPages = baseTest.extend<pages>({
   },
   loadDelaysPage: async ({ page }, use, workerInfo) => {
     await use(new LoadDelaysPage(page, workerInfo));
+  },
+  ajaxDataPage: async ({ page }, use, workerInfo) => {
+    await use(new AjaxDataPage(page, workerInfo));
   },
 });
 

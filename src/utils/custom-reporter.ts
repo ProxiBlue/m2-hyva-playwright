@@ -65,7 +65,7 @@ export default class CustomReporter implements Reporter {
     suiteStartTime = getFormattedTime();
     totalTests = suite.allTests().length;
     console.log(
-      `${suiteStartTime}:`.bgCyan.white,
+      `${suiteStartTime}:`.bgCyan.black,
       ``,
       `Starting the run with ${totalTests} tests`.underline.blue.bold,
       "\n"
@@ -75,7 +75,7 @@ export default class CustomReporter implements Reporter {
   onEnd(result: FullResult): void | Promise<void> {
     suiteEndTime = getFormattedTime();
     console.log(
-      `${suiteEndTime}:`.bgCyan.white,
+      `${suiteEndTime}:`.bgCyan.black,
       ``,
       `Finished the run with status`.underline.blue.bold,
       result.status === "passed"
@@ -113,7 +113,7 @@ export default class CustomReporter implements Reporter {
   onStepBegin(test: TestCase, result: TestResult, step: TestStep): void {
     if (step.category === "test.step")
       console.log(
-        `${getFormattedTime()}:`.bgCyan.white,
+        `${getFormattedTime()}:`.bgCyan.black,
         ` Started step: ${step.title}`.magenta
       );
   }
@@ -121,7 +121,7 @@ export default class CustomReporter implements Reporter {
   onStepEnd(test: TestCase, result: TestResult, step: TestStep): void {
     if (step.category === "test.step") {
       console.log(
-        `${getFormattedTime()}:`.bgCyan.white,
+        `${getFormattedTime()}:`.bgCyan.black,
         ` Finished step: ${step.title}`.cyan
       );
     }
@@ -134,13 +134,13 @@ export default class CustomReporter implements Reporter {
     );
     if (result.retry === 0) {
       console.log(
-        `${getFormattedTime()}:`.bgCyan.white,
+        `${getFormattedTime()}:`.bgCyan.black,
         ` Started test`,
         `${test.title}`.yellow
       );
     } else {
       console.log(
-        `${getFormattedTime()}:`.bgCyan.white,
+        `${getFormattedTime()}:`.bgCyan.black,
         ` Retrying test... (attempt ${result.retry} of ${test.retries})`,
         `${test.title}`.yellow
       );
@@ -150,7 +150,7 @@ export default class CustomReporter implements Reporter {
   onTestEnd(test: TestCase, result: TestResult): void {
     testEndTime = getFormattedTime();
     console.log(
-      `${getFormattedTime()}:`.bgCyan.white,
+      `${getFormattedTime()}:`.bgCyan.black,
       ` Finished test`,
       `${test.title}`.yellow,
       `with status`,
