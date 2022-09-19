@@ -7,6 +7,16 @@ export const pressEnter = async (page: Page, workerInfo: TestInfo) =>
     async () => await page.keyboard.press("Enter")
   );
 
+export const pressEnterOnElement = async (
+  page: Page,
+  locator: string,
+  workerInfo: TestInfo
+) =>
+  await test.step(
+    workerInfo.project.name + ": Press enter on " + locator,
+    async () => await page.locator(locator).press("Enter")
+  );
+
 export const type = async (
   page: Page,
   locator: string,
@@ -95,7 +105,13 @@ export const clickElement = async (
 ) =>
   await test.step(
     workerInfo.project.name + ": Click element " + locator,
-    async () => await page.locator(locator).click()
+    async () => {
+      await page.locator(locator).click();
+      // const button = await page.$(locator);
+      // await button.evaluate((node: HTMLElement) => {
+      //   node.click();
+      // });
+    }
   );
 
 export const getElementCoordinates = async (page: Page, locator: string) =>
@@ -111,3 +127,19 @@ export const waitForAnimationEnd = (page: Page, selector: string) =>
         element.getAnimations().map((animation) => animation.finished)
       )
     );
+
+export const elementHasClass = async (
+  page: Page,
+  locator: string,
+  className: string,
+  workerInfo: TestInfo
+) =>
+  await test.step(
+    workerInfo.project.name + ": Check if element has class " + className,
+    async () =>
+      Object.values(await page.$eval(locator, (el) => el.classList)).indexOf(
+        className
+      ) > -1
+        ? true
+        : false
+  );

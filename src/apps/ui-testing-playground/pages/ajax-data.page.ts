@@ -8,10 +8,6 @@ export default class AjaxDataPage {
   constructor(public page: Page, public workerInfo: TestInfo) {}
 
   async verifyPageTitle() {
-    await actions.waitForAnimationEnd(
-      this.page,
-      locators.buttonTriggeringAjaxRequestButton
-    );
     await actions.verifyPageTitle(this.page, data.title, this.workerInfo);
   }
 

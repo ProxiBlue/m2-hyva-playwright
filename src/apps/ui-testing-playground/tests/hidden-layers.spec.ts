@@ -1,5 +1,6 @@
 import { test, describe } from "../fixtures";
-import * as locators from "../locators/home.locator";
+import * as homePageLocators from "../locators/home.locator";
+import * as hiddenLayersPageLocators from "../locators/hidden-layers.locator";
 
 test.beforeEach(async ({ homePage }) => {
   await homePage.navigateToUITestingPlayground();
@@ -11,7 +12,8 @@ describe("Hidden Layers", () => {
     commonPage,
     hiddenLayersPage,
   }) => {
-    await homePage.clickLink(locators.hiddenLayersLink);
+    await homePage.clickLink(homePageLocators.hiddenLayersLink);
+    await commonPage.waitForAnimationEnd(hiddenLayersPageLocators.greenButton);
     await hiddenLayersPage.verifyPageTitle();
     await commonPage.verifySnapshot();
     await hiddenLayersPage.verifyGreenButton();

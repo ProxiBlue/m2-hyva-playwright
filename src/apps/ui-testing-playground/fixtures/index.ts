@@ -6,6 +6,7 @@ import ClassAttributePage from "../pages/class-attribute.page";
 import HiddenLayersPage from "../pages/hidden-layers.page";
 import LoadDelaysPage from "../pages/load-delays.page";
 import AjaxDataPage from "../pages/ajax-data.page";
+import ClickPage from "../pages/click.page";
 
 type pages = {
   commonPage: CommonPage;
@@ -15,6 +16,7 @@ type pages = {
   hiddenLayersPage: HiddenLayersPage;
   loadDelaysPage: LoadDelaysPage;
   ajaxDataPage: AjaxDataPage;
+  clickPage: ClickPage;
 };
 
 const testPages = baseTest.extend<pages>({
@@ -38,6 +40,9 @@ const testPages = baseTest.extend<pages>({
   },
   ajaxDataPage: async ({ page }, use, workerInfo) => {
     await use(new AjaxDataPage(page, workerInfo));
+  },
+  clickPage: async ({ page }, use, workerInfo) => {
+    await use(new ClickPage(page, workerInfo));
   },
 });
 

@@ -1,5 +1,6 @@
 import { test, describe } from "../fixtures";
-import * as locators from "../locators/home.locator";
+import * as homePageLocators from "../locators/home.locator";
+import * as ajaxDataPageLocators from "../locators/ajax-data.locator";
 
 test.beforeEach(async ({ homePage }) => {
   await homePage.navigateToUITestingPlayground();
@@ -11,7 +12,10 @@ describe("Ajax Data", () => {
     commonPage,
     ajaxDataPage,
   }) => {
-    await homePage.clickLink(locators.ajaxDataLink);
+    await homePage.clickLink(homePageLocators.ajaxDataLink);
+    await commonPage.waitForAnimationEnd(
+      ajaxDataPageLocators.buttonTriggeringAjaxRequestButton
+    );
     await ajaxDataPage.verifyPageTitle();
     await commonPage.verifySnapshot();
   });
@@ -21,7 +25,10 @@ describe("Ajax Data", () => {
     commonPage,
     ajaxDataPage,
   }) => {
-    await homePage.clickLink(locators.ajaxDataLink);
+    await homePage.clickLink(homePageLocators.ajaxDataLink);
+    await commonPage.waitForAnimationEnd(
+      ajaxDataPageLocators.buttonTriggeringAjaxRequestButton
+    );
     await ajaxDataPage.verifyAjaxMessage();
     await commonPage.verifySnapshot();
   });

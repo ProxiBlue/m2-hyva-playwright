@@ -18,7 +18,6 @@ export default class HomePage {
         data.urlContains,
       async () => expect(url).toContain(data.urlContains)
     );
-    await actions.waitForAnimationEnd(this.page, locators.dynamicIdLink);
   }
 
   async verifyLinks() {

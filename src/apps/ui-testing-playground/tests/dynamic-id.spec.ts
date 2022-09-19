@@ -1,5 +1,6 @@
 import { test, describe } from "../fixtures";
-import * as locators from "../locators/home.locator";
+import * as homePageLocators from "../locators/home.locator";
+import * as dynamicIdPageLocators from "../locators/dynamic-id.locator";
 
 test.beforeEach(async ({ homePage }) => {
   await homePage.navigateToUITestingPlayground();
@@ -11,7 +12,8 @@ describe("Dynamic ID", () => {
     commonPage,
     dynamicIdPage,
   }) => {
-    await homePage.clickLink(locators.dynamicIdLink);
+    await homePage.clickLink(homePageLocators.dynamicIdLink);
+    await commonPage.waitForAnimationEnd(dynamicIdPageLocators.dynamicIdButton);
     await dynamicIdPage.verifyPageTitle();
     await commonPage.verifySnapshot();
     await dynamicIdPage.verifyDynamicIdButton();

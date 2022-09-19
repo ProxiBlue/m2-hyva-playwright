@@ -1,5 +1,6 @@
 import { test, describe } from "../fixtures";
-import * as locators from "../locators/home.locator";
+import * as homePageLocators from "../locators/home.locator";
+import * as loadDelaysPageLocators from "../locators/load-delays.locator";
 
 test.beforeEach(async ({ homePage }) => {
   await homePage.navigateToUITestingPlayground();
@@ -11,7 +12,10 @@ describe("Load Delays", () => {
     commonPage,
     loadDelaysPage,
   }) => {
-    await homePage.clickLink(locators.loadDelayLink);
+    await homePage.clickLink(homePageLocators.loadDelayLink);
+    await commonPage.waitForAnimationEnd(
+      loadDelaysPageLocators.loadDelayButton
+    );
     await loadDelaysPage.verifyPageTitle();
     await commonPage.verifySnapshot();
     await loadDelaysPage.verifyloadDelayButton();
