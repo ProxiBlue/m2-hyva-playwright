@@ -55,7 +55,7 @@ const config: PlaywrightTestConfig = {
     ["experimental-allure-playwright"],
   ],
   use: {
-    headless: false,
+    headless: true,
     actionTimeout: 0,
     trace: "retain-on-failure",
     ignoreHTTPSErrors: true,
