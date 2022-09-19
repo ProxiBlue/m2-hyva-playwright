@@ -1,0 +1,5 @@
+{
+  "title": "Text Input",
+  "buttonBeforeChangeText": "Button That Should Change it's Name Based on Input Value",
+  "textInputValue": "This is a test"
+}

@@ -7,6 +7,7 @@ import HiddenLayersPage from "../pages/hidden-layers.page";
 import LoadDelaysPage from "../pages/load-delays.page";
 import AjaxDataPage from "../pages/ajax-data.page";
 import ClickPage from "../pages/click.page";
+import TextInputPage from "../pages/text-input.page";
 
 type pages = {
   commonPage: CommonPage;
@@ -17,6 +18,7 @@ type pages = {
   loadDelaysPage: LoadDelaysPage;
   ajaxDataPage: AjaxDataPage;
   clickPage: ClickPage;
+  textInputPage: TextInputPage;
 };
 
 const testPages = baseTest.extend<pages>({
@@ -43,6 +45,9 @@ const testPages = baseTest.extend<pages>({
   },
   clickPage: async ({ page }, use, workerInfo) => {
     await use(new ClickPage(page, workerInfo));
+  },
+  textInputPage: async ({ page }, use, workerInfo) => {
+    await use(new TextInputPage(page, workerInfo));
   },
 });
 

@@ -35,7 +35,7 @@ export const getInnerText = async (
 ) =>
   await test.step(
     workerInfo.project.name + ": Get innertext from " + locator,
-    async () => page.innerText(locator)
+    async () => await page.innerText(locator)
   );
 
 export const navigateTo = async (
@@ -55,7 +55,7 @@ export const verifyPageTitle = async (
 ) =>
   await test.step(
     workerInfo.project.name + ": Verify page title is '" + title + "'",
-    async () => expect(page).toHaveTitle(title)
+    async () => await expect(page).toHaveTitle(title)
   );
 
 export const verifyElementExists = async (
@@ -105,13 +105,7 @@ export const clickElement = async (
 ) =>
   await test.step(
     workerInfo.project.name + ": Click element " + locator,
-    async () => {
-      await page.locator(locator).click();
-      // const button = await page.$(locator);
-      // await button.evaluate((node: HTMLElement) => {
-      //   node.click();
-      // });
-    }
+    async () => await page.locator(locator).click()
   );
 
 export const getElementCoordinates = async (page: Page, locator: string) =>
