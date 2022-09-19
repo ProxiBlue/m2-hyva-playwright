@@ -24,8 +24,8 @@ describe("Click", () => {
   }) => {
     await homePage.clickLink(homePageLocators.clickLink);
     await commonPage.waitForAnimationEnd(clickPageLocators.badButton);
-    await commonPage.verifySnapshot();
+    await commonPage.verifySnapshotIfNotHeadless();
     await clickPage.verifyButtons();
-    await commonPage.verifySnapshot();
+    await commonPage.verifySnapshotIfNotHeadless();
   });
 });

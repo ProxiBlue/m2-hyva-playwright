@@ -8,6 +8,7 @@ import LoadDelaysPage from "../pages/load-delays.page";
 import AjaxDataPage from "../pages/ajax-data.page";
 import ClickPage from "../pages/click.page";
 import TextInputPage from "../pages/text-input.page";
+import ScrollBarsPage from "../pages/scrollbars.page";
 
 type pages = {
   commonPage: CommonPage;
@@ -19,6 +20,7 @@ type pages = {
   ajaxDataPage: AjaxDataPage;
   clickPage: ClickPage;
   textInputPage: TextInputPage;
+  scrollBarsPage: ScrollBarsPage;
 };
 
 const testPages = baseTest.extend<pages>({
@@ -48,6 +50,9 @@ const testPages = baseTest.extend<pages>({
   },
   textInputPage: async ({ page }, use, workerInfo) => {
     await use(new TextInputPage(page, workerInfo));
+  },
+  scrollBarsPage: async ({ page }, use, workerInfo) => {
+    await use(new ScrollBarsPage(page, workerInfo));
   },
 });
 

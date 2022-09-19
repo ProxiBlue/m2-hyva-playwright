@@ -24,8 +24,19 @@ export const type = async (
   workerInfo: TestInfo
 ) =>
   await test.step(
-    workerInfo.project.name + ": Enter text: " + text,
+    workerInfo.project.name + ": Type text: " + text,
     async () => await page.type(locator, text)
+  );
+
+export const fill = async (
+  page: Page,
+  locator: string,
+  text: string,
+  workerInfo: TestInfo
+) =>
+  await test.step(
+    workerInfo.project.name + ": Enter text: " + text,
+    async () => await page.fill(locator, text)
   );
 
 export const getInnerText = async (
@@ -106,6 +117,16 @@ export const clickElement = async (
   await test.step(
     workerInfo.project.name + ": Click element " + locator,
     async () => await page.locator(locator).click()
+  );
+
+export const scrollToElement = async (
+  page: Page,
+  locator: string,
+  workerInfo: TestInfo
+) =>
+  await test.step(
+    workerInfo.project.name + ": Scroll to element " + locator,
+    async () => await page.locator(locator).scrollIntoViewIfNeeded()
   );
 
 export const getElementCoordinates = async (page: Page, locator: string) =>

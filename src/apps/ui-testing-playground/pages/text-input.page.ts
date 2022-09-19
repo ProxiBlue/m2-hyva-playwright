@@ -26,7 +26,7 @@ export default class TextInputPage {
         ).toEqual(data.buttonBeforeChangeText)
     );
 
-    await actions.type(
+    await actions.fill(
       this.page,
       locators.textInput,
       data.textInputValue,

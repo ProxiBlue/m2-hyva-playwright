@@ -5,7 +5,7 @@ describe("Home", () => {
   test("Verify links in home page", async ({ homePage, commonPage }) => {
     await homePage.navigateToUITestingPlayground();
     await commonPage.waitForAnimationEnd(locators.dynamicIdLink);
-    await commonPage.verifySnapshot();
+    await commonPage.verifySnapshotIfNotHeadless();
     await homePage.verifyLinks();
   });
 });

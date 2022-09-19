@@ -15,7 +15,7 @@ describe("Dynamic ID", () => {
     await homePage.clickLink(homePageLocators.dynamicIdLink);
     await commonPage.waitForAnimationEnd(dynamicIdPageLocators.dynamicIdButton);
     await dynamicIdPage.verifyPageTitle();
-    await commonPage.verifySnapshot();
+    await commonPage.verifySnapshotIfNotHeadless();
     await dynamicIdPage.verifyDynamicIdButton();
   });
 });
