@@ -25,9 +25,13 @@ expect.extend({
   },
 });
 
+const appName = "ui-testing-playground";
+const appDir = "apps/" + appName;
+export const screenshotPath = "/screenshots/" + appDir + "/";
+
 const config: PlaywrightTestConfig = {
-  testDir: "src/apps/ui-testing-playground",
-  testMatch: "src/apps/ui-testing-playground/tests/*.spec.ts",
+  testDir: "src/" + appDir,
+  testMatch: "src/" + appDir + "/tests/*.spec.ts",
   timeout: 30 * 1000,
   retries: 3,
   workers: 1,
@@ -81,14 +85,14 @@ const config: PlaywrightTestConfig = {
       use: { ...devices["Desktop Safari"] },
     },
     {
-      name: "Pixel 5",
+      name: "Pixel-5",
       use: {
         browserName: "chromium",
         ...devices["Pixel 5"],
       },
     },
     {
-      name: "iPhone 12",
+      name: "iPhone-12",
       use: {
         browserName: "webkit",
         ...devices["iPhone 12"],

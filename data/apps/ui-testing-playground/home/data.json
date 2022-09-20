@@ -1,4 +1,5 @@
 {
   "url": "http://uitestingplayground.com",
-  "urlContains": "uitestingplayground"
+  "urlContains": "uitestingplayground",
+  "verifyLinksScreenshotName": "verify-links"
 }

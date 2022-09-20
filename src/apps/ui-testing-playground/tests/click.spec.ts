@@ -1,6 +1,7 @@
 import { test, describe } from "../fixtures";
 import * as homePageLocators from "../locators/home.locator";
 import * as clickPageLocators from "../locators/click.locator";
+import * as data from "../../../../data/apps/ui-testing-playground/click/data.json";
 
 test.beforeEach(async ({ homePage }) => {
   await homePage.navigateToUITestingPlayground();
@@ -24,8 +25,10 @@ describe("Click", () => {
   }) => {
     await homePage.clickLink(homePageLocators.clickLink);
     await commonPage.waitForAnimationEnd(clickPageLocators.badButton);
-    await commonPage.verifySnapshotIfNotHeadless();
+    await commonPage.verifySnapshotIfNotHeadless(
+      data.beforeClickScreenshotName
+    );
     await clickPage.verifyButtons();
-    await commonPage.verifySnapshotIfNotHeadless();
+    await commonPage.verifySnapshotIfNotHeadless(data.afterClickScreenshotName);
   });
 });

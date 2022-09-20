@@ -6,8 +6,9 @@ import config from "../../../../playwright.config";
 export default class CommonPage {
   constructor(public page: Page, public workerInfo: TestInfo) {}
 
-  async verifySnapshotIfNotHeadless() {
-    !config.use.headless && (await matchScreenshot(this.page, this.workerInfo));
+  async verifySnapshotIfNotHeadless(name: string) {
+    !config.use.headless &&
+      (await matchScreenshot(this.page, name, this.workerInfo));
   }
 
   async waitForAnimationEnd(locator: string) {

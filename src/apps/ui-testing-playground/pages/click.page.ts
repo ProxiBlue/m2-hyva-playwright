@@ -29,7 +29,7 @@ export default class ClickPage {
     );
 
     this.workerInfo.project.name === "webkit" ||
-    this.workerInfo.project.name === "iPhone 12"
+    this.workerInfo.project.name.indexOf("iPhone") >= 0
       ? await actions.pressEnterOnElement(
           this.page,
           locators.badButton,

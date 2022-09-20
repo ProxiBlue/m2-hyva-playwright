@@ -1,3 +1,5 @@
 {
-  "title": "Scrollbars"
+  "title": "Scrollbars",
+  "verifyTitleScreenshotName": "verify-title",
+  "verifyHidingButtonScreenshotName": "verify-hiding-button"
 }

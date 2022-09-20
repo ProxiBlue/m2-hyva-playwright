@@ -1,5 +1,8 @@
 {
   "title": "Text Input",
   "buttonBeforeChangeText": "Button That Should Change it's Name Based on Input Value",
-  "textInputValue": "This is a test"
+  "textInputValue": "This is a test",
+  "verifyTitleScreenshotName": "verify-title",
+  "verifyUpdatingButtonBeforeClickScreenshotName": "verify-updating-button-before-click",
+  "verifyUpdatingButtonAfterClickScreenshotName": "verify-updating-button-after-click"
 }
