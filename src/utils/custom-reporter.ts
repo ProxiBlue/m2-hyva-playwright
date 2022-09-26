@@ -12,25 +12,19 @@ import colors from "colors";
 
 process.env.FORCE_COLOR = "true";
 
+let totalTests = 0;
+let i = 1;
+
 const ansiRegex = new RegExp(
   "[\\u001B\\u009B][[\\]()#;?]*(?:(?:(?:[a-zA-Z\\d]*(?:;[-a-zA-Z\\d\\/#&.:=?%@~_]*)*)?\\u0007)|(?:(?:\\d{1,4}(?:;\\d{0,4})*)?[\\dA-PR-TZcf-ntqry=><~]))",
   "g"
 );
-function stripAnsi(str: string): string {
-  return str.replace(ansiRegex, "");
-}
+const stripAnsi = (str: string): string => str.replace(ansiRegex, "");
 
-let totalTests = 0;
-let i = 1;
+const getFormattedTime = () => `${new Date().toISOString()}`;
 
-const getFormattedTime = () => {
-  const date = new Date();
-  return `${date.toISOString()}`;
-};
-
-const roundSeconds = (seconds: number) => {
-  return Math.round((Math.abs(seconds) + Number.EPSILON) * 1000) / 1000;
-};
+const roundSeconds = (seconds: number) =>
+  Math.round((Math.abs(seconds) + Number.EPSILON) * 1000) / 1000;
 
 const getDuration = (startTime: string, endTime: string) => {
   const firstDateInSeconds = new Date(startTime).getTime() / 1000;
@@ -57,25 +51,25 @@ const getDuration = (startTime: string, endTime: string) => {
   }
 };
 
-let suiteStartTime: string, suiteEndTime;
+let suiteStartTime: string, suiteEndTime: string;
 let testStartTime: string, testEndTime: string;
 
 export default class CustomReporter implements Reporter {
-  onBegin(config: FullConfig, suite: Suite): void {
-    suiteStartTime = getFormattedTime();
+  onBegin = (config: FullConfig, suite: Suite): void => {
     totalTests = suite.allTests().length;
     console.log(
-      `${suiteStartTime}:`.bgCyan.black,
+      `${getFormattedTime()}:`.bgCyan.black,
       ``,
-      `Starting the run with ${totalTests} tests`.underline.blue.bold,
+      `Starting the run with ${suite.allTests().length} tests`.underline.blue
+        .bold,
       "\n"
     );
-  }
+  };
 
-  onEnd(result: FullResult): void | Promise<void> {
+  onEnd = (result: FullResult): void | Promise<void> => {
     suiteEndTime = getFormattedTime();
     console.log(
-      `${suiteEndTime}:`.bgCyan.black,
+      `${getFormattedTime()}:`.bgCyan.black,
       ``,
       `Finished the run with status`.underline.blue.bold,
       result.status === "passed"
@@ -84,70 +78,61 @@ export default class CustomReporter implements Reporter {
       `\n\nOverall run duration: ${getDuration(suiteStartTime, suiteEndTime)}`
         .yellow.bold
     );
-  }
+  };
 
-  onError(error: TestError): void {
-    console.error(error.message.red);
-  }
+  onError = (error: TestError): void => console.error(error.message.red);
 
-  onStdErr(
+  onStdErr = (
     chunk: string | Buffer,
     test: void | TestCase,
     result: void | TestResult
-  ): void {
+  ): void =>
     typeof chunk === "string"
       ? console.log(chunk.red)
       : console.log(chunk.toString().red);
-  }
 
-  onStdOut(
+  onStdOut = (
     chunk: string | Buffer,
     test: void | TestCase,
     result: void | TestResult
-  ): void {
+  ): void =>
     typeof chunk === "string"
       ? console.log(chunk.gray)
       : console.log(chunk.toString().gray);
-  }
 
-  onStepBegin(test: TestCase, result: TestResult, step: TestStep): void {
-    if (step.category === "test.step")
-      console.log(
-        `${getFormattedTime()}:`.bgCyan.black,
-        ` Started step: ${step.title}`.magenta
-      );
-  }
+  onStepBegin = (test: TestCase, result: TestResult, step: TestStep): void =>
+    step.category === "test.step" &&
+    console.log(
+      `${getFormattedTime()}:`.bgCyan.black,
+      ` Started step: ${step.title}`.magenta
+    );
 
-  onStepEnd(test: TestCase, result: TestResult, step: TestStep): void {
-    if (step.category === "test.step") {
-      console.log(
-        `${getFormattedTime()}:`.bgCyan.black,
-        ` Finished step: ${step.title}`.cyan
-      );
-    }
-  }
+  onStepEnd = (test: TestCase, result: TestResult, step: TestStep): void =>
+    step.category === "test.step" &&
+    console.log(
+      `${getFormattedTime()}:`.bgCyan.black,
+      ` Finished step: ${step.title}`.cyan
+    );
 
-  onTestBegin(test: TestCase, result: TestResult): void {
+  onTestBegin = (test: TestCase, result: TestResult): void => {
     testStartTime = getFormattedTime();
     console.log(
       `Test ${i} of ${totalTests} - ${test.parent.title}`.yellow.bold
     );
-    if (result.retry === 0) {
-      console.log(
-        `${getFormattedTime()}:`.bgCyan.black,
-        ` Started test`,
-        `${test.title}`.yellow
-      );
-    } else {
-      console.log(
-        `${getFormattedTime()}:`.bgCyan.black,
-        ` Retrying test... (attempt ${result.retry} of ${test.retries})`,
-        `${test.title}`.yellow
-      );
-    }
-  }
+    result.retry === 0
+      ? console.log(
+          `${getFormattedTime()}:`.bgCyan.black,
+          ` Started test`,
+          `${test.title}`.yellow
+        )
+      : console.log(
+          `${getFormattedTime()}:`.bgCyan.black,
+          ` Retrying test... (attempt ${result.retry} of ${test.retries})`,
+          `${test.title}`.yellow
+        );
+  };
 
-  onTestEnd(test: TestCase, result: TestResult): void {
+  onTestEnd = (test: TestCase, result: TestResult): void => {
     testEndTime = getFormattedTime();
     console.log(
       `${getFormattedTime()}:`.bgCyan.black,
@@ -164,9 +149,7 @@ export default class CustomReporter implements Reporter {
       console.log(stripAnsi(result.error?.stack.red ?? ""));
     }
     if (result.status === "passed" || result.retry === 3) i++;
-  }
+  };
 
-  printsToStdio(): boolean {
-    return true;
-  }
+  printsToStdio = (): boolean => true;
 }
