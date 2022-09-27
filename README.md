@@ -13,20 +13,8 @@ For fast run fork the [repo](https://github.com/inflectra/ui-test-automation-pla
 
 In the project directory, you can run:
 
-<code>_yarn_</code> to install dependencies
-
-### `yarn test`
-
-to run tests
-
-### `yarn test:debug`
-
-to run tests in `debug` mode
-
-### `yarn report`
-
-to serve default report
-
-### `yarn allure`
-
-to serve allure report
+<code>**yarn**</code> - to install dependencies
+<code>**yarn test**</code> - to run tests
+<code>**yarn test:debug**</code> - to run tests in `debug` mode
+<code>**yarn report**</code> - to serve default report
+<code>**yarn allure**</code> - to serve allure report
