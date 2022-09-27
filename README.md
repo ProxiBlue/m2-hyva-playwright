@@ -22,3 +22,8 @@ In the project directory, you can run:
 <code>**yarn report**</code> - to serve default report
 
 <code>**yarn allure**</code> - to serve allure report
+
+**Note:**
+By default the tests are run in headless mode. Screenshots will not be captured in this mode as it causes problems during validation between headless and headed mode. For validating screenshots, change <code>headless</code> to <code>true</code> and <code>retries</code> to <code>0</code> in <code>playwright.config.js</code>
+
+During the first run, the screenshots will fail, since there will not be any screenshots to match and the baseline screenshots will be taken during the first run. Once the run is complete, change the <code>retries</code> back to the number of retries you need.
