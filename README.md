@@ -20,3 +20,15 @@ to install dependencies
 ### `yarn test`
 
 to run tests
+
+### `yarn test:debug`
+
+to run tests in `debug` mode
+
+### `yarn report`
+
+to serve default report
+
+### `yarn allure`
+
+to serve allure report
