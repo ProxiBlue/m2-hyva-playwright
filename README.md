@@ -13,9 +13,7 @@ For fast run fork the [repo](https://github.com/inflectra/ui-test-automation-pla
 
 In the project directory, you can run:
 
-### `yarn`
-
-to install dependencies
+<code>_yarn_</code> to install dependencies
 
 ### `yarn test`
 
