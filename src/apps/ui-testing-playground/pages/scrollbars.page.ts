@@ -1,5 +1,5 @@
 import type { Page, TestInfo } from "@playwright/test";
-import * as actions from "../../../utils/actions";
+import * as actions from "../../../utils/base/actions";
 import * as data from "../../../../data/apps/ui-testing-playground/scrollbars/data.json";
 import * as locators from "../locators/scrollbars.locator";
 

@@ -55,7 +55,7 @@ const config: PlaywrightTestConfig = {
         open: "never",
       },
     ],
-    ["./src/utils/custom-reporter.ts"],
+    ["./src/utils/reports/custom-reporter.ts"],
     ["experimental-allure-playwright"],
   ],
   use: {

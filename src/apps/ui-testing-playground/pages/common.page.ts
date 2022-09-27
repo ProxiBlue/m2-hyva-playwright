@@ -1,6 +1,6 @@
 import type { Page, TestInfo } from "@playwright/test";
-import { matchScreenshot } from "../../../utils/screenshots";
-import * as actions from "../../../utils/actions";
+import { matchScreenshot } from "../../../utils/base/screenshots";
+import * as actions from "../../../utils/base/actions";
 import config from "../../../../playwright.config";
 
 export default class CommonPage {

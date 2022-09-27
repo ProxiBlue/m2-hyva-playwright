@@ -1,5 +1,5 @@
 {
-  "url": "http://uitestingplayground.com/",
-  "urlContains": "uitestingplayground",
+  "url": "http://localhost:3000/",
+  "urlContains": "localhost",
   "verifyLinksScreenshotName": "verify-links"
 }
