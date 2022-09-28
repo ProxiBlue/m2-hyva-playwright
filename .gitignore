@@ -44,6 +44,8 @@ test-results
 *-snapshots
 allure-report
 allure-results
+html-report
+html-report.zip
 
 # Typescript v1 declaration files
 typings

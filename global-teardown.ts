@@ -1,5 +1,12 @@
-const exec = require("child_process").execSync;
-async function globalSetup() {
-  await exec("npx xunit-viewer -r  results.xml -o results.html ");
+import path from "path";
+import AdmZip from "adm-zip";
+
+async function globalTeardown() {
+  const reportPath = path.join(__dirname, `html-report`);
+  console.log(reportPath);
+  const zip = new AdmZip();
+  zip.addLocalFolder(reportPath, `./html-report`);
+  zip.writeZip(`./html-report.zip`);
 }
-export default globalSetup;
+
+export default globalTeardown;

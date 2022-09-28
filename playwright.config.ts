@@ -1,4 +1,5 @@
 import { PlaywrightTestConfig, devices, expect } from "@playwright/test";
+import globalSetup from "./global-setup";
 
 declare global {
   namespace PlaywrightTest {
@@ -25,7 +26,9 @@ expect.extend({
   },
 });
 
-const appName = "ui-testing-playground";
+globalSetup(this);
+const appName = process.env.APP_NAME;
+
 const appDir = "apps/" + appName;
 export const screenshotPath = "/screenshots/" + appDir + "/";
 
@@ -34,15 +37,16 @@ const config: PlaywrightTestConfig = {
   testMatch: "src/" + appDir + "/tests/*.spec.ts",
   timeout: 30 * 1000,
   retries: 3,
-  workers: 1,
+  workers: 3,
   // preserveOutput: "failures-only",
-  // globalTeardown: require.resolve("./global-teardown"),
+  globalSetup: require.resolve("./global-setup"),
+  globalTeardown: require.resolve("./global-teardown"),
   expect: {
     timeout: 20000,
   },
   reporter: [
     // ["line"],
-    // ["list"],
+    ["list"],
     [
       "json",
       {
@@ -52,10 +56,11 @@ const config: PlaywrightTestConfig = {
     [
       "html",
       {
+        outputFolder: "html-report",
         open: "never",
       },
     ],
-    ["./src/utils/reports/custom-reporter.ts"],
+    // ["./src/utils/reports/custom-reporter.ts"],
     ["experimental-allure-playwright"],
   ],
   use: {
