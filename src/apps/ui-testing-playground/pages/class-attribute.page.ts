@@ -39,7 +39,6 @@ export default class ClassAttributePage {
           setTimeout(async function () {
             await dialog.accept();
             alertHandler = true;
-            console.log("Alert accepted");
             expect(dialog.message()).toEqual(data.alertText);
           }, 500);
         })

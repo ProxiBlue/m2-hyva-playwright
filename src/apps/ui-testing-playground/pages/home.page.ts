@@ -9,7 +9,7 @@ export default class HomePage {
   constructor(public page: Page, public workerInfo: TestInfo) {}
 
   async navigateToUITestingPlayground() {
-    await actions.navigateTo(this.page, data.url, this.workerInfo);
+    await actions.navigateTo(this.page, process.env.URL, this.workerInfo);
     const url = this.page.url();
 
     await test.step(

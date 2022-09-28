@@ -1,6 +1,11 @@
 import { PlaywrightTestConfig, devices, expect } from "@playwright/test";
-import globalSetup from "./global-setup";
+import { initConfig } from "./config.init";
 
+const appName = process.env.APP_NAME;
+initConfig(appName);
+
+const appDir = "apps/" + appName;
+export const screenshotPath = "/screenshots/" + appDir + "/";
 declare global {
   namespace PlaywrightTest {
     interface Matchers<R, T> {
@@ -25,12 +30,6 @@ expect.extend({
     }
   },
 });
-
-process.env.APP_NAME = "ui-testing-playground";
-const appName = process.env.APP_NAME;
-
-const appDir = "apps/" + appName;
-export const screenshotPath = "/screenshots/" + appDir + "/";
 
 const config: PlaywrightTestConfig = {
   testDir: "src/" + appDir,

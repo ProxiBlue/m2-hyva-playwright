@@ -4,9 +4,9 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "playwright test",
+    "test": "APP_NAME=ui-testing-playground NODE_ENV=dev playwright test",
     "test:debug": "PWDEBUG=1 playwright test",
-    "report": "npx playwright show-report",
+    "report": "npx playwright show-report html-report",
     "allure": "npx allure generate ./allure-results --clean && npx allure open ./allure-report"
   },
   "author": "Eric Stanley",
