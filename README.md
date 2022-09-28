@@ -9,7 +9,7 @@ For fast run, fork the [repo](https://github.com/inflectra/ui-test-automation-pl
 | `url`         | http://uitestingplayground.com/ |
 | `urlContains` | uitestingplayground             |
 
-## Available Scripts
+:sparkles: Available Scripts
 
 In the project directory, you can run:
 
