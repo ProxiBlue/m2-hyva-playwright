@@ -26,7 +26,7 @@ expect.extend({
   },
 });
 
-globalSetup(this);
+process.env.APP_NAME = "ui-testing-playground";
 const appName = process.env.APP_NAME;
 
 const appDir = "apps/" + appName;

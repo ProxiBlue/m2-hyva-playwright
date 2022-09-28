@@ -10,7 +10,6 @@ export const projects = async (config: any) => {
 const globalSetup = async (config: FullConfig) => {
   const fileName = path.join(__dirname, `html-report.zip`);
   fs.existsSync(fileName) && fs.unlinkSync(fileName);
-  process.env.APP_NAME = "ui-testing-playground";
 };
 
 export default globalSetup;
