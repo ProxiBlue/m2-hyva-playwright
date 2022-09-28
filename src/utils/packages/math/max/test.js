@@ -1,7 +1,9 @@
-const max = require('./max');
+import { test, expect } from "@playwright/test";
 
-describe('Math/max', () => {
-  it('finds the largest of zero or more numbers', () => {
+const max = require("./max");
+
+test.describe("Math/max", () => {
+  test("finds the largest of zero or more numbers", () => {
     expect(max(5)).toBe(5);
 
     expect(max([1, -10, 1024, 1024.5, 29])).toBe(1024.5);
@@ -10,7 +12,7 @@ describe('Math/max', () => {
 
     expect(max(NaN, 10)).toBe(NaN);
 
-    expect(max('', '1')).toBe(1);
+    expect(max("", "1")).toBe(1);
 
     expect(max(0, true)).toBe(1);
 

@@ -31,7 +31,7 @@ export const screenshotPath = "/screenshots/" + appDir + "/";
 
 const config: PlaywrightTestConfig = {
   testDir: "src/" + appDir,
-  testMatch: "src/" + appDir + "/tests/*.spec.ts",
+  testMatch: "src/" + appDir + "/tests/click.spec.ts",
   timeout: 30 * 1000,
   retries: 3,
   workers: 1,

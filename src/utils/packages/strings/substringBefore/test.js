@@ -1,29 +1,35 @@
-const substringBefore = require('./substringBefore');
+import { test, expect } from "@playwright/test";
 
-describe('String/substringBefore', () => {
-  it('should return a substring before a specific sequence of character(s)', () => {
-    const str = 'LOREM_IPSUM DOLOR_SIT AMET';
+const substringBefore = require("./substringBefore");
 
-    expect(substringBefore(str, 'SIT')).toEqual('LOREM_IPSUM DOLOR_');
+test.describe("String/substringBefore", () => {
+  test("should return a substring before a specific sequence of character(s)", () => {
+    const str = "LOREM_IPSUM DOLOR_SIT AMET";
 
-    expect(substringBefore(str, 'sit ')).toBe(''); // test case sensitive
+    expect(substringBefore(str, "SIT")).toEqual("LOREM_IPSUM DOLOR_");
 
-    expect(substringBefore(str, '_')).toBe('LOREM');
+    expect(substringBefore(str, "sit ")).toBe(""); // test case sensitive
 
-    expect(substringBefore(str, '_', true)).toEqual('LOREM_IPSUM DOLOR');
+    expect(substringBefore(str, "_")).toBe("LOREM");
 
-    expect(substringBefore(str, '???')).toBe(''); // test non-existent sub-string
+    expect(substringBefore(str, "_", true)).toEqual("LOREM_IPSUM DOLOR");
 
-    expect(substringBefore('🍎🍐🍊🍌🍉🍇🍓', '🍊')).toBe('🍎🍐');
+    expect(substringBefore(str, "???")).toBe(""); // test non-existent sub-string
 
-    expect(substringBefore('🍎🍐🍊🍌🍉🍇🍓', '🍎')).toBe('');
+    expect(substringBefore("🍎🍐🍊🍌🍉🍇🍓", "🍊")).toBe("🍎🍐");
+
+    expect(substringBefore("🍎🍐🍊🍌🍉🍇🍓", "🍎")).toBe("");
 
     expect(() => {
-      return substringBefore(null, 'hello');
-    }).toThrow(new TypeError('Expected a string for first and second argument'));
+      return substringBefore(null, "hello");
+    }).toThrow(
+      new TypeError("Expected a string for first and second argument")
+    );
 
     expect(() => {
       return substringBefore(str, null);
-    }).toThrow(new TypeError('Expected a string for first and second argument'));
+    }).toThrow(
+      new TypeError("Expected a string for first and second argument")
+    );
   });
 });

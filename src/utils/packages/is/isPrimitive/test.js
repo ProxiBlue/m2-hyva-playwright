@@ -1,7 +1,9 @@
-const isPrimitive = require('./isPrimitive');
+import { test, expect } from "@playwright/test";
 
-describe('is/isPrimitive', () => {
-  it('checks if value is a primitive data type', () => {
+const isPrimitive = require("./isPrimitive");
+
+test.describe("is/isPrimitive", () => {
+  test("checks if value is a primitive data type", () => {
     expect(isPrimitive(null)).toBe(true);
 
     expect(isPrimitive(undefined)).toBe(true);
@@ -16,13 +18,13 @@ describe('is/isPrimitive', () => {
 
     expect(isPrimitive(NaN)).toBe(true);
 
-    expect(isPrimitive('foo')).toBe(true);
+    expect(isPrimitive("foo")).toBe(true);
 
     expect(isPrimitive(true)).toBe(true);
 
     expect(isPrimitive(false)).toBe(true);
 
-    expect(isPrimitive(Symbol('foo'))).toBe(true);
+    expect(isPrimitive(Symbol("foo"))).toBe(true);
 
     expect(isPrimitive({})).toBe(false);
 

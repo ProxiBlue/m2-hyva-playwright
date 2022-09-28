@@ -1,14 +1,18 @@
-const stripHTML = require('./stripHTML');
+import { test, expect } from "@playwright/test";
 
-describe('String/stripHTML', () => {
-  it('should remove all HTML tags from a string', () => {
-    const str = '<p>Lorem ipsum dolor sit amet, <a href="#">consectetur</a> adipisicing elit.<br/> <span class="mollitia">Mollitia</span> quos dicta, doloremque veritatis.</p>';
+const stripHTML = require("./stripHTML");
 
-    expect(stripHTML(str))
-      .toEqual('Lorem ipsum dolor sit amet, consectetur adipisicing elit. Mollitia quos dicta, doloremque veritatis.');
+test.describe("String/stripHTML", () => {
+  test("should remove all HTML tags from a string", () => {
+    const str =
+      '<p>Lorem ipsum dolor sit amet, <a href="#">consectetur</a> adipisicing elit.<br/> <span class="mollitia">Mollitia</span> quos dicta, doloremque veritatis.</p>';
+
+    expect(stripHTML(str)).toEqual(
+      "Lorem ipsum dolor sit amet, consectetur adipisicing elit. Mollitia quos dicta, doloremque veritatis."
+    );
 
     expect(() => {
       return stripHTML({});
-    }).toThrow(new TypeError('Expected a string for first argument'));
+    }).toThrow(new TypeError("Expected a string for first argument"));
   });
 });

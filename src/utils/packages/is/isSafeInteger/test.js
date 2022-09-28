@@ -1,6 +1,8 @@
-const isSafeInteger = require('./isSafeInteger');
+import { test, expect } from "@playwright/test";
 
-describe('is/isSafeInteger', () => {
+const isSafeInteger = require("./isSafeInteger");
+
+test.describe("is/isSafeInteger", () => {
   const runTests = () => {
     expect(isSafeInteger(3)).toBe(true);
 
@@ -14,18 +16,18 @@ describe('is/isSafeInteger', () => {
 
     expect(isSafeInteger(Infinity)).toBe(false);
 
-    expect(isSafeInteger('3')).toBe(false);
+    expect(isSafeInteger("3")).toBe(false);
 
     expect(isSafeInteger(3.1)).toBe(false);
 
     expect(isSafeInteger(3.0)).toBe(true);
   };
 
-  it('check if integer number is in the safe range (Number.isSafeInteger is supported)', () => {
+  test("check if integer number is in the safe range (Number.isSafeInteger is supported)", () => {
     runTests();
   });
 
-  it('check if integer number is in the safe range (Number.isSafeInteger is not supported)', () => {
+  test("check if integer number is in the safe range (Number.isSafeInteger is not supported)", () => {
     const nativeCode = Number.isSafeInteger;
     Number.isSafeInteger = null;
     runTests();

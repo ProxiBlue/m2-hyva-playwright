@@ -1,7 +1,9 @@
-const clamp = require('./clamp');
+import { test, expect } from "@playwright/test";
 
-describe('Math/clamp', () => {
-  it('clamps number within the inclusive lower and upper bounds', () => {
+const clamp = require("./clamp");
+
+test.describe("Math/clamp", () => {
+  test("clamps number within the inclusive lower and upper bounds", () => {
     expect(clamp(5, 0, 10)).toBe(5);
 
     expect(clamp(10, -5, 5)).toBe(5);
@@ -21,7 +23,7 @@ describe('Math/clamp', () => {
     expect(clamp(120, 100, 0)).toBe(100);
 
     expect(() => {
-      return clamp(10, '-5', '5');
-    }).toThrow(new TypeError('Expected all arguments to be numbers'));
+      return clamp(10, "-5", "5");
+    }).toThrow(new TypeError("Expected all arguments to be numbers"));
   });
 });

@@ -1,7 +1,9 @@
-const isSet = require('./isSet');
+import { test, expect } from "@playwright/test";
 
-describe('is/isSet', () => {
-  it('checks if a value is WeakMap', () => {
+const isSet = require("./isSet");
+
+test.describe("is/isSet", () => {
+  test("checks if a value is WeakMap", () => {
     expect(isSet(new Set())).toBe(true);
 
     expect(isSet([])).toBe(false);
@@ -12,6 +14,6 @@ describe('is/isSet', () => {
 
     expect(isSet(null)).toBe(false);
 
-    expect(isSet('foo')).toBe(false);
+    expect(isSet("foo")).toBe(false);
   });
 });

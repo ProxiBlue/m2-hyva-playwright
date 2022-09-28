@@ -1,11 +1,13 @@
-const isPromise = require('./isPromise');
+import { test, expect } from "@playwright/test";
 
-describe('is/isPromise', () => {
-  it('checks if a value is a Promise', () => {
+const isPromise = require("./isPromise");
+
+test.describe("is/isPromise", () => {
+  test("checks if a value is a Promise", () => {
     const noop = () => void 0;
     const p1 = new Promise(noop, noop);
-    const p2 = Promise.resolve('Success');
-    const p3 = Promise.reject('Error').catch(noop);
+    const p2 = Promise.resolve("Success");
+    const p3 = Promise.reject("Error").catch(noop);
 
     expect(isPromise(p1)).toBe(true);
     expect(isPromise(p2)).toBe(true);
@@ -22,23 +24,25 @@ describe('is/isPromise', () => {
     expect(isPromise(true)).toBe(false);
     expect(isPromise(new Map())).toBe(false);
     expect(isPromise(new Set())).toBe(false);
-    expect(isPromise(Symbol('Promise'))).toBe(false);
-    expect(isPromise(() => {
-      return Promise.resolve('Success');
-    })).toBe(false);
+    expect(isPromise(Symbol("Promise"))).toBe(false);
+    expect(
+      isPromise(() => {
+        return Promise.resolve("Success");
+      })
+    ).toBe(false);
 
     const fp1 = {
       get [Symbol.toStringTag]() {
-        return 'Promise';
-      }
+        return "Promise";
+      },
     };
 
     const fp2 = {
       get [Symbol.toStringTag]() {
-        return 'Promise';
+        return "Promise";
       },
       then() {},
-      catch() {}
+      catch() {},
     };
 
     expect(isPromise(fp1)).toBe(false);

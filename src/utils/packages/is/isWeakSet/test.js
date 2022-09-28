@@ -1,7 +1,9 @@
-const isWeakSet = require('./isWeakSet');
+import { test, expect } from "@playwright/test";
 
-describe('is/isWeakSet', () => {
-  it('checks if a value is WeakMap', () => {
+const isWeakSet = require("./isWeakSet");
+
+test.describe("is/isWeakSet", () => {
+  test("checks if a value is WeakMap", () => {
     expect(isWeakSet(new WeakSet())).toBe(true);
 
     expect(isWeakSet([])).toBe(false);
@@ -12,6 +14,6 @@ describe('is/isWeakSet', () => {
 
     expect(isWeakSet(null)).toBe(false);
 
-    expect(isWeakSet('foo')).toBe(false);
+    expect(isWeakSet("foo")).toBe(false);
   });
 });

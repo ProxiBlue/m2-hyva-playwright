@@ -1,7 +1,9 @@
-const isFalse = require('./isFalse');
+import { test, expect } from "@playwright/test";
 
-describe('is/isFalse', () => {
-  it('checks if a value is false', () => {
+const isFalse = require("./isFalse");
+
+test.describe("is/isFalse", () => {
+  test("checks if a value is false", () => {
     expect(isFalse(false)).toBe(true);
 
     expect(isFalse(true)).toBe(false);

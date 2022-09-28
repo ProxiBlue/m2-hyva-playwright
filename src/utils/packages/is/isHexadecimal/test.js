@@ -1,12 +1,14 @@
-const isHexadecimal = require('./isHexadecimal');
+import { test, expect } from "@playwright/test";
 
-describe('is/isHexadecimal', () => {
-  it('checks if a value is hexadecimal', () => {
-    expect(isHexadecimal('f5f5f5')).toBe(true);
+const isHexadecimal = require("./isHexadecimal");
 
-    expect(isHexadecimal('9c0')).toBe(true);
+test.describe("is/isHexadecimal", () => {
+  test("checks if a value is hexadecimal", () => {
+    expect(isHexadecimal("f5f5f5")).toBe(true);
 
-    expect(isHexadecimal('something')).toBe(false);
+    expect(isHexadecimal("9c0")).toBe(true);
+
+    expect(isHexadecimal("something")).toBe(false);
 
     expect(isHexadecimal(333)).toBe(true);
 

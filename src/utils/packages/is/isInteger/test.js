@@ -1,6 +1,8 @@
-const isInteger = require('./isInteger');
+import { test, expect } from "@playwright/test";
 
-describe('is/isInteger', () => {
+const isInteger = require("./isInteger");
+
+test.describe("is/isInteger", () => {
   const runTests = () => {
     expect(isInteger(0.1)).toBe(false);
 
@@ -14,7 +16,7 @@ describe('is/isInteger', () => {
 
     expect(isInteger(0)).toBe(true);
 
-    expect(isInteger('10')).toBe(false);
+    expect(isInteger("10")).toBe(false);
 
     expect(isInteger(Infinity)).toBe(false);
 
@@ -23,11 +25,11 @@ describe('is/isInteger', () => {
     expect(isInteger(-9007199254740992)).toBe(true);
   };
 
-  it('checks if a value is integer (Number.isInteger is supported)', () => {
+  test("checks if a value is integer (Number.isInteger is supported)", () => {
     runTests();
   });
 
-  it('checks if a value is integer (Number.isInteger is not supported)', () => {
+  test("checks if a value is integer (Number.isInteger is not supported)", () => {
     const nativeCode = Number.isInteger;
     Number.isInteger = null;
     runTests();

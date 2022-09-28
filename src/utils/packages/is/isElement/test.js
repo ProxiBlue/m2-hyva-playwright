@@ -1,9 +1,11 @@
-const isElement = require('./isElement');
+import { test, expect } from "@playwright/test";
 
-describe('is/isElement', () => {
-  it('checks if a value is DOM element', () => {
-    expect(isElement(document.getElementsByTagName('head')[0])).toBe(true);
+const isElement = require("./isElement");
 
-    expect(isElement('Lorem')).toBe(false);
+test.describe("is/isElement", () => {
+  test("checks if a value is DOM element", () => {
+    expect(isElement(document.getElementsByTagName("head")[0])).toBe(true);
+
+    expect(isElement("Lorem")).toBe(false);
   });
 });

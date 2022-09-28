@@ -1,7 +1,9 @@
-const zip = require('./zip');
+import { test, expect } from "@playwright/test";
 
-describe('Array/zip', () => {
-  it('creates an array of grouped elements, the first of which contains the first elements of the given arrays, the second of which contains the second elements of the given arrays, and so on', () => {
+const zip = require("./zip");
+
+test.describe("Array/zip", () => {
+  test("creates an array of grouped elements, the first of which contains the first elements of the given arrays, the second of which contains the second elements of the given arrays, and so on", () => {
     const arr1 = [1, 2, 3];
     const arr2 = [11, 22];
     const arr3 = [111];
@@ -29,6 +31,6 @@ describe('Array/zip', () => {
 
     expect(() => {
       return zip({}, {});
-    }).toThrow(new TypeError('Expected all arguments passed to be arrays'));
+    }).toThrow(new TypeError("Expected all arguments passed to be arrays"));
   });
 });

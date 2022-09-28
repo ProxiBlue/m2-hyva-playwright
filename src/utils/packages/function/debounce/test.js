@@ -1,6 +1,8 @@
-const debounce = require('./debounce');
+import { test, expect } from "@playwright/test";
 
-describe('Function/debounce', () => {
+const debounce = require("./debounce");
+
+test.describe("Function/debounce", () => {
   beforeEach(() => {
     jest.useFakeTimers();
   });
@@ -9,7 +11,7 @@ describe('Function/debounce', () => {
     jest.clearAllTimers();
   });
 
-  it('debounces a function; triggers the function on the trailing edge', () => {
+  test("debounces a function; triggers the function on the trailing edge", () => {
     const func = jest.fn();
     const delay = 1000; // ms
     const debouncedFunc = debounce(func, delay);
@@ -32,7 +34,7 @@ describe('Function/debounce', () => {
     expect(func).toHaveBeenCalledTimes(1);
   });
 
-  it('debounces a function; triggers the function on the leading edge', () => {
+  test("debounces a function; triggers the function on the leading edge", () => {
     const func = jest.fn();
     const delay = 1000; // ms
     const debouncedFunc = debounce(func, delay, true);
@@ -55,9 +57,9 @@ describe('Function/debounce', () => {
     expect(func).toHaveBeenCalledTimes(1);
   });
 
-  it('throws if first argument is not a function', () => {
+  test("throws if first argument is not a function", () => {
     expect(() => {
       return debounce();
-    }).toThrow(new TypeError('Expected a function for first argument'));
+    }).toThrow(new TypeError("Expected a function for first argument"));
   });
 });

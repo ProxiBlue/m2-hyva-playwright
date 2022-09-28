@@ -1,23 +1,25 @@
-const isArray = require('./isArray');
+import { test, expect } from "@playwright/test";
 
-describe('is/isArray', () => {
+const isArray = require("./isArray");
+
+test.describe("is/isArray", () => {
   const runTests = () => {
-    expect(isArray(['a', 'b', 'c', 'd'])).toBe(true);
+    expect(isArray(["a", "b", "c", "d"])).toBe(true);
 
-    expect(isArray({a: 'a', b: 'b'})).toBe(false);
+    expect(isArray({ a: "a", b: "b" })).toBe(false);
 
-    expect(isArray('abcdefg')).toBe(false);
+    expect(isArray("abcdefg")).toBe(false);
 
     expect(isArray(null)).toBe(false);
 
     expect(isArray(undefined)).toBe(false);
   };
 
-  it('checks if value is array (Array.isArray is supported)', () => {
+  test("checks if value is array (Array.isArray is supported)", () => {
     runTests();
   });
 
-  it('checks if value is array (Array.isArray is not supported)', () => {
+  test("checks if value is array (Array.isArray is not supported)", () => {
     const nativeCode = Array.isArray;
     Array.isArray = null;
     runTests();

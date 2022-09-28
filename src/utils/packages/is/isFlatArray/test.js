@@ -1,7 +1,9 @@
-const isFlatArray = require('./isFlatArray');
+import { test, expect } from "@playwright/test";
 
-describe('is/isFlatArray', () => {
-  it('checks if a value is a flat array', () => {
+const isFlatArray = require("./isFlatArray");
+
+test.describe("is/isFlatArray", () => {
+  test("checks if a value is a flat array", () => {
     expect(isFlatArray([1, 2, 3, 4, 5, 6, 7, 8, 9])).toBe(true);
 
     expect(isFlatArray([1, 2, [3], [4, 5], 6, 7, [8], 9])).toBe(false);

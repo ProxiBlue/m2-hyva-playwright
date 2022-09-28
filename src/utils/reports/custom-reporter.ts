@@ -56,6 +56,7 @@ let testStartTime: string, testEndTime: string;
 
 export default class CustomReporter implements Reporter {
   onBegin = (config: FullConfig, suite: Suite): void => {
+    suiteStartTime = getFormattedTime();
     totalTests = suite.allTests().length;
     console.log(
       `${getFormattedTime()}:`.bgCyan.black,

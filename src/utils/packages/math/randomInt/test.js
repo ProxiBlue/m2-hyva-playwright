@@ -1,7 +1,9 @@
-const randomInt = require('./randomInt');
+import { test, expect } from "@playwright/test";
 
-describe('Math/randomInt', () => {
-  it('returns a pseudo-random integer number between a min (inclusive) and a max (inclusive) value.', () => {
+const randomInt = require("./randomInt");
+
+test.describe("Math/randomInt", () => {
+  test("returns a pseudo-random integer number between a min (inclusive) and a max (inclusive) value.", () => {
     const r0 = randomInt(0, 2);
     const r1 = randomInt(2, 0);
 
@@ -11,6 +13,6 @@ describe('Math/randomInt', () => {
 
     expect(() => {
       return randomInt();
-    }).toThrow(new TypeError('Expected all arguments to be numbers'));
+    }).toThrow(new TypeError("Expected all arguments to be numbers"));
   });
 });

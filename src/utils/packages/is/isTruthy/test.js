@@ -1,12 +1,14 @@
-const isTruthy = require('./isTruthy');
+import { test, expect } from "@playwright/test";
 
-describe('is/isTruthy', () => {
-  it('checks if a value is truthy', () => {
+const isTruthy = require("./isTruthy");
+
+test.describe("is/isTruthy", () => {
+  test("checks if a value is truthy", () => {
     expect(isTruthy(true)).toBe(true);
 
-    expect(isTruthy(' ')).toBe(true);
+    expect(isTruthy(" ")).toBe(true);
 
-    expect(isTruthy({foo: 'bar'})).toBe(true);
+    expect(isTruthy({ foo: "bar" })).toBe(true);
 
     expect(isTruthy(false)).toBe(false);
 
@@ -20,6 +22,6 @@ describe('is/isTruthy', () => {
 
     expect(isTruthy(BigInt(0))).toBe(false);
 
-    expect(isTruthy('')).toBe(false);
+    expect(isTruthy("")).toBe(false);
   });
 });

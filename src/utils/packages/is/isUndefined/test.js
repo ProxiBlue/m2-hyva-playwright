@@ -1,9 +1,11 @@
-const isUndefined = require('./isUndefined');
+import { test, expect } from "@playwright/test";
 
-describe('is/isUndefined', () => {
+const isUndefined = require("./isUndefined");
+
+test.describe("is/isUndefined", () => {
   let foo;
 
-  it('checks if a value is undefined', () => {
+  test("checks if a value is undefined", () => {
     expect(isUndefined()).toBe(true);
 
     expect(isUndefined(foo)).toBe(true);

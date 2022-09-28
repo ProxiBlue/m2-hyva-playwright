@@ -1,18 +1,20 @@
-const isPlainObject = require('./isPlainObject');
+import { test, expect } from "@playwright/test";
 
-describe('is/isPlainObject', () => {
+const isPlainObject = require("./isPlainObject");
+
+test.describe("is/isPlainObject", () => {
   function Foo() {
-    this.foo = 'bar';
+    this.foo = "bar";
   }
 
-  it('checks if a valud is plain object', () => {
-    expect(isPlainObject({foo: 'bar'})).toBe(true);
+  test("checks if a valud is plain object", () => {
+    expect(isPlainObject({ foo: "bar" })).toBe(true);
 
     expect(isPlainObject(Object.create({}))).toBe(false);
 
     expect(isPlainObject(Object.create(null))).toBe(true);
 
-    expect(isPlainObject(Object.create({foo: 'bar'}))).toBe(false);
+    expect(isPlainObject(Object.create({ foo: "bar" }))).toBe(false);
 
     expect(isPlainObject(new Foo())).toBe(false);
 
@@ -22,11 +24,11 @@ describe('is/isPlainObject', () => {
 
     expect(isPlainObject()).toBe(false);
 
-    expect(isPlainObject(new Object({foo: 'bar'}))).toBe(true);
+    expect(isPlainObject(new Object({ foo: "bar" }))).toBe(true);
 
     expect(isPlainObject(100)).toBe(false);
 
-    expect(isPlainObject('lorem ipsum')).toBe(false);
+    expect(isPlainObject("lorem ipsum")).toBe(false);
 
     expect(isPlainObject(new Map())).toBe(false);
 
@@ -36,11 +38,11 @@ describe('is/isPlainObject', () => {
 
     expect(isPlainObject(new WeakSet())).toBe(false);
 
-    expect(isPlainObject(Symbol('foo'))).toBe(false);
+    expect(isPlainObject(Symbol("foo"))).toBe(false);
 
     expect(isPlainObject(Symbol({}))).toBe(false);
 
-    expect(isPlainObject(Symbol(new Object({foo: 'bar'})))).toBe(false);
+    expect(isPlainObject(Symbol(new Object({ foo: "bar" })))).toBe(false);
 
     expect(isPlainObject(Symbol(new Foo()))).toBe(false);
   });

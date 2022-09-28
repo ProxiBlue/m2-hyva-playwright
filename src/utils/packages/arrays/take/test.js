@@ -1,7 +1,9 @@
-const take = require('./take');
+import { test, expect } from "@playwright/test";
 
-describe('Array/take', () => {
-  it('creates a slice of array with n items taken from the beginning', () => {
+const take = require("./take");
+
+test.describe("Array/take", () => {
+  test("creates a slice of array with n items taken from the beginning", () => {
     expect(take([1, 2, 3, 4, 5])).toEqual([1]);
 
     expect(take([1, 2, 3, 4, 5], NaN)).toEqual([1]);
@@ -18,10 +20,10 @@ describe('Array/take', () => {
 
     expect(() => {
       return take({}, 2);
-    }).toThrow(new TypeError('Expected an array for first argument'));
+    }).toThrow(new TypeError("Expected an array for first argument"));
 
     expect(() => {
-      return take([1, 2, 3, 4, 5], '2');
-    }).toThrow(new TypeError('Expected a number for second argument'));
+      return take([1, 2, 3, 4, 5], "2");
+    }).toThrow(new TypeError("Expected a number for second argument"));
   });
 });

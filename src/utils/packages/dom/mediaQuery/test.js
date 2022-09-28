@@ -1,27 +1,29 @@
-const mediaQuery = require('./mediaQuery');
+import { test, expect } from "@playwright/test";
 
-describe('dom/mediaQuery', () => {
+const mediaQuery = require("./mediaQuery");
+
+test.describe("dom/mediaQuery", () => {
   function mockMediaQueryList(testQuery) {
-    window.matchMedia = jest.fn().mockImplementation(query => {
+    window.matchMedia = jest.fn().mockImplementation((query) => {
       return {
         matches: query === testQuery,
-        media: '(min-width: 480px) and (max-width: 768px)',
+        media: "(min-width: 480px) and (max-width: 768px)",
         onchange: jest.fn(),
         addListener: jest.fn(),
         removeListener: jest.fn(),
         __proto__: {
           addEventListener: jest.fn(),
-          removeEventListener: jest.fn()
-        }
+          removeEventListener: jest.fn(),
+        },
       };
     });
   }
 
-  const mediaQueryString = '(min-width: 480px) and (max-width: 768px)';
+  const mediaQueryString = "(min-width: 480px) and (max-width: 768px)";
   let matchMediaListener, unsubscribeMediaQuery;
 
   beforeEach(() => {
-    matchMediaListener = jest.fn().mockImplementation(matches => {
+    matchMediaListener = jest.fn().mockImplementation((matches) => {
       return matches;
     });
   });
@@ -30,7 +32,7 @@ describe('dom/mediaQuery', () => {
     unsubscribeMediaQuery();
   });
 
-  it('test with immediate set to true', () => {
+  test("test with immediate set to true", () => {
     mockMediaQueryList(mediaQueryString);
 
     unsubscribeMediaQuery = mediaQuery(mediaQueryString, matchMediaListener);
@@ -38,19 +40,23 @@ describe('dom/mediaQuery', () => {
     expect(matchMediaListener).toHaveBeenCalledWith(true);
   });
 
-  it('test with immediate set to false', () => {
-    unsubscribeMediaQuery = mediaQuery(mediaQueryString, matchMediaListener, false);
+  test("test with immediate set to false", () => {
+    unsubscribeMediaQuery = mediaQuery(
+      mediaQueryString,
+      matchMediaListener,
+      false
+    );
 
     expect(matchMediaListener).not.toHaveBeenCalled();
   });
 
-  it('test that it throws when wrong types of arguments passed', () => {
+  test("test that it throws when wrong types of arguments passed", () => {
     expect(() => {
       return mediaQuery(null);
-    }).toThrow(new TypeError('Expected a string for first argument'));
+    }).toThrow(new TypeError("Expected a string for first argument"));
 
     expect(() => {
-      return mediaQuery('(min-width: 480px) and (max-width: 768px)');
-    }).toThrow(new TypeError('Expected a function for second argument'));
+      return mediaQuery("(min-width: 480px) and (max-width: 768px)");
+    }).toThrow(new TypeError("Expected a function for second argument"));
   });
 });
