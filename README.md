@@ -28,6 +28,6 @@ In the project directory, you can run:
 | `headless` | `false` |
 | `retries`  | `0`     |
 
-During the first run, the screenshots will fail, since there will not be any screenshots to match and the baseline screenshots will be taken during the first run. Once the run is complete, change the <code>retries</code> back to the number of retries you need.
+During the first run, the screenshots will be baselined and no validations will be done during this run. Once the run is complete, change the <code>retries</code> back to the number of retries you need.
 
 Starting second run, the screenshots will be compared with the baseline screenshot.
