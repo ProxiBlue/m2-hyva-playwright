@@ -2,12 +2,12 @@ This project was bootstrapped with [playwright](https://playwright.dev/).
 
 Testing site used - [UI Testing Playground](http://uitestingplayground.com/)
 
-For fast run, fork the [repo](https://github.com/inflectra/ui-test-automation-playground) and run it from local. Otherwise, change the '<code>url</code>' and '<code>urlContains</code>' as below in <code>data/apps/ui-testing-playground/home/data.json</code>
+For fast run, fork the [repo](https://github.com/inflectra/ui-test-automation-playground) and run it from local. Otherwise, change the below
 
-| Key           | Value                           |
-| ------------- | ------------------------------- |
-| `url`         | http://uitestingplayground.com/ |
-| `urlContains` | uitestingplayground             |
+| Key           | Value                           | File                                             |
+| ------------- | ------------------------------- | ------------------------------------------------ |
+| `env.*.url`   | http://uitestingplayground.com/ | `config/apps/ui-testing-playground/config.json`  |
+| `urlContains` | uitestingplayground             | `data/apps/ui-testing-playground/home/data.json` |
 
 ## :sparkles: Available Scripts
 
