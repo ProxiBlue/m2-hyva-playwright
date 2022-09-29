@@ -1,5 +1,4 @@
 {
-  "url": "http://localhost:3000/",
   "urlContains": "localhost",
   "verifyLinksScreenshotName": "verify-links"
 }
