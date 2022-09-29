@@ -16,9 +16,7 @@ describe("Hidden Layers", () => {
     await homePage.clickLink(homePageLocators.hiddenLayersLink);
     await commonPage.waitForAnimationEnd(hiddenLayersPageLocators.greenButton);
     await hiddenLayersPage.verifyPageTitle();
-    await commonPage.verifySnapshotIfNotHeadless(
-      data.verifyTitleScreenshotName
-    );
+    await commonPage.verifySnapshot(data.verifyTitleScreenshotName);
     await hiddenLayersPage.verifyGreenButton();
     await hiddenLayersPage.validateGreenButton();
   });

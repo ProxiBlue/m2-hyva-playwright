@@ -25,10 +25,8 @@ describe("Click", () => {
   }) => {
     await homePage.clickLink(homePageLocators.clickLink);
     await commonPage.waitForAnimationEnd(clickPageLocators.badButton);
-    await commonPage.verifySnapshotIfNotHeadless(
-      data.beforeClickScreenshotName
-    );
+    await commonPage.verifySnapshot(data.beforeClickScreenshotName);
     await clickPage.verifyButtons();
-    await commonPage.verifySnapshotIfNotHeadless(data.afterClickScreenshotName);
+    await commonPage.verifySnapshot(data.afterClickScreenshotName);
   });
 });

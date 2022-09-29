@@ -18,9 +18,7 @@ describe("Ajax Data", () => {
       ajaxDataPageLocators.buttonTriggeringAjaxRequestButton
     );
     await ajaxDataPage.verifyPageTitle();
-    await commonPage.verifySnapshotIfNotHeadless(
-      data.verifyTitleScreenshotName
-    );
+    await commonPage.verifySnapshot(data.verifyTitleScreenshotName);
   });
 
   test("Verify ajax message in Ajax data page", async ({
@@ -33,8 +31,6 @@ describe("Ajax Data", () => {
       ajaxDataPageLocators.buttonTriggeringAjaxRequestButton
     );
     await ajaxDataPage.verifyAjaxMessage();
-    await commonPage.verifySnapshotIfNotHeadless(
-      data.verifyAJAXMessageScreenshotName
-    );
+    await commonPage.verifySnapshot(data.verifyAJAXMessageScreenshotName);
   });
 });

@@ -18,9 +18,7 @@ describe("Load Delays", () => {
       loadDelaysPageLocators.loadDelayButton
     );
     await loadDelaysPage.verifyPageTitle();
-    await commonPage.verifySnapshotIfNotHeadless(
-      data.verifyTitleScreenshotName
-    );
+    await commonPage.verifySnapshot(data.verifyTitleScreenshotName);
     await loadDelaysPage.verifyloadDelayButton();
   });
 });

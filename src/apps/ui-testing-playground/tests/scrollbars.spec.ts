@@ -15,9 +15,7 @@ describe("Scrollbars", () => {
   }) => {
     await homePage.clickLink(homePageLocators.scrollBarsLink);
     await commonPage.waitForAnimationEnd(scrollBarsPageLocators.hidingButton);
-    await commonPage.verifySnapshotIfNotHeadless(
-      data.verifyTitleScreenshotName
-    );
+    await commonPage.verifySnapshot(data.verifyTitleScreenshotName);
     await scrollBarsPage.verifyPageTitle();
   });
 
@@ -29,8 +27,6 @@ describe("Scrollbars", () => {
     await homePage.clickLink(homePageLocators.scrollBarsLink);
     await commonPage.waitForAnimationEnd(scrollBarsPageLocators.hidingButton);
     await scrollBarsPage.scrollToElement();
-    await commonPage.verifySnapshotIfNotHeadless(
-      data.verifyHidingButtonScreenshotName
-    );
+    await commonPage.verifySnapshot(data.verifyHidingButtonScreenshotName);
   });
 });

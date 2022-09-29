@@ -6,7 +6,7 @@ import config from "../../../../playwright.config";
 export default class CommonPage {
   constructor(public page: Page, public workerInfo: TestInfo) {}
 
-  async verifySnapshotIfNotHeadless(name: string) {
+  async verifySnapshot(name: string) {
     !config.use.headless &&
       (await matchScreenshot(this.page, name, this.workerInfo));
   }

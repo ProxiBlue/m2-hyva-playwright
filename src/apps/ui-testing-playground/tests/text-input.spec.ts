@@ -16,9 +16,7 @@ describe("Text Input", () => {
     await homePage.clickLink(homePageLocators.textInputLink);
     await commonPage.waitForAnimationEnd(textInputPageLocators.updatingButton);
     await textInputPage.verifyPageTitle();
-    await commonPage.verifySnapshotIfNotHeadless(
-      data.verifyTitleScreenshotName
-    );
+    await commonPage.verifySnapshot(data.verifyTitleScreenshotName);
   });
 
   test("Verify updating button in Text input page", async ({
@@ -28,11 +26,11 @@ describe("Text Input", () => {
   }) => {
     await homePage.clickLink(homePageLocators.textInputLink);
     await commonPage.waitForAnimationEnd(textInputPageLocators.updatingButton);
-    await commonPage.verifySnapshotIfNotHeadless(
+    await commonPage.verifySnapshot(
       data.verifyUpdatingButtonBeforeClickScreenshotName
     );
     await textInputPage.verifyUpdatingButton();
-    await commonPage.verifySnapshotIfNotHeadless(
+    await commonPage.verifySnapshot(
       data.verifyUpdatingButtonAfterClickScreenshotName
     );
   });
