@@ -119,6 +119,111 @@ export const clickElement = async (
     async () => await page.locator(locator).click()
   );
 
+export const javascriptClick = async (
+  page: Page,
+  locator: string,
+  workerInfo: TestInfo
+) =>
+  await test.step(
+    workerInfo.project.name + ": Click element " + locator,
+    async () =>
+      await page.$eval(locator, (element: HTMLElement) => element.click())
+  );
+
+export const boundingBoxClick = async (
+  page: Page,
+  locator: string,
+  workerInfo: TestInfo
+) => {
+  await test.step(
+    workerInfo.project.name + ": Click element " + locator,
+    async () => {
+      const elementHandle = await page.$(locator);
+      const box = await elementHandle.boundingBox();
+      await page.mouse.click(box.x + box.width / 2, box.y + box.height / 2);
+    }
+  );
+};
+
+export const dragAndDrop = async (
+  page: Page,
+  dragElementLocator: string,
+  dropElementLocator: string,
+  workerInfo: TestInfo
+) =>
+  await test.step(
+    workerInfo.project.name +
+      ": Drag element from " +
+      dragElementLocator +
+      " to " +
+      dropElementLocator,
+    async () => await page.dragAndDrop(dragElementLocator, dropElementLocator)
+  );
+
+export const select = async (
+  page: Page,
+  locator: string,
+  option: string,
+  workerInfo: TestInfo
+) =>
+  await test.step(
+    workerInfo.project.name + ": Select element " + option + " in " + locator,
+    async () => await page.locator(locator).type(option)
+  );
+
+export const getTextFromElements = async (
+  page: Page,
+  locator: string,
+  workerInfo: TestInfo
+) =>
+  await test.step(
+    workerInfo.project.name + ": Get text from element(s) " + locator,
+    async () =>
+      await page.$eval(locator, (elements) =>
+        Array.isArray(elements)
+          ? elements.map((item) => item.textContent.trim())
+          : elements.textContent.trim()
+      )
+  );
+
+export const keyPress = async (
+  page: Page,
+  locator: string,
+  key: string,
+  workerInfo: TestInfo
+) => {
+  await test.step(
+    workerInfo.project.name + ": Press " + key + " on " + locator,
+    async () => await page.press(locator, key)
+  );
+};
+
+export const getElementValue = async (
+  page: Page,
+  locator: string,
+  workerInfo: TestInfo
+) =>
+  await test.step(
+    workerInfo.project.name + ": Get value from " + locator,
+    async () =>
+      await page.$eval(locator, (element: HTMLInputElement) => element.value)
+  );
+
+export const getElementAttributes = async (
+  page: Page,
+  locator: string,
+  attribute: string,
+  workerInfo: TestInfo
+) =>
+  await test.step(
+    workerInfo.project.name +
+      ": Get " +
+      attribute +
+      " attribute from " +
+      locator,
+    async () => await page.getAttribute(locator, attribute)
+  );
+
 export const scrollToElement = async (
   page: Page,
   locator: string,

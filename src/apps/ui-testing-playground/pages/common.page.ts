@@ -1,6 +1,6 @@
 import type { Page, TestInfo } from "@playwright/test";
-import { matchScreenshot } from "@utils/base/screenshots";
-import * as actions from "@utils/base/actions";
+import { matchScreenshot } from "@utils/base/web/screenshots";
+import * as actions from "@utils/base/web/actions";
 import config from "@config";
 
 export default class CommonPage {

@@ -1,5 +1,5 @@
 import type { Page, TestInfo } from "@playwright/test";
-import * as actions from "@utils/base/actions";
+import * as actions from "@utils/base/web/actions";
 import * as data from "@data/apps/ui-testing-playground/hidden-layers/data.json";
 import * as locators from "../locators/hidden-layers.locator";
 import { test, expect } from "../fixtures";
