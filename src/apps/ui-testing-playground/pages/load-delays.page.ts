@@ -1,6 +1,6 @@
 import type { Page, TestInfo } from "@playwright/test";
-import * as actions from "../../../utils/base/actions";
-import * as data from "../../../../data/apps/ui-testing-playground/load-delays/data.json";
+import * as actions from "@utils/base/actions";
+import * as data from "@data/apps/ui-testing-playground/load-delays/data.json";
 import * as locators from "../locators/load-delays.locator";
 
 export default class LoadDelaysPage {

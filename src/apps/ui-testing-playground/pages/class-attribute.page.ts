@@ -1,7 +1,7 @@
 import type { Page, TestInfo } from "@playwright/test";
 import { test, expect } from "../fixtures";
-import * as actions from "../../../utils/base/actions";
-import * as data from "../../../../data/apps/ui-testing-playground/class-attribute/data.json";
+import * as actions from "@utils/base/actions";
+import * as data from "@data/apps/ui-testing-playground/class-attribute/data.json";
 import * as locators from "../locators/class-attribute.locator";
 
 export default class ClassAttributePage {

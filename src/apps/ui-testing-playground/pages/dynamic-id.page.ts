@@ -1,6 +1,6 @@
 import type { Page, TestInfo } from "@playwright/test";
-import * as actions from "../../../utils/base/actions";
-import * as data from "../../../../data/apps/ui-testing-playground/dynamic-id/data.json";
+import * as actions from "@utils/base/actions";
+import * as data from "@data/apps/ui-testing-playground/dynamic-id/data.json";
 import * as locators from "../locators/dynamic-id.locator";
 
 export default class DynamicIdPage {
