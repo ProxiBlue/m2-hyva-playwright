@@ -12,7 +12,8 @@
       /* Specify a set of entries that re-map imports to additional lookup locations. */
       "@data/*": ["data/*"],
       "@utils/*": ["src/utils/*"],
-      "@config": ["playwright.config.ts"]
+      "@config": ["playwright.config.ts"],
+      "@common/*": ["src/apps/common/*"]
     }
   },
   "exclude": ["node_modules"]

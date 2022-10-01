@@ -1,5 +1,5 @@
 import { test as baseTest } from "@playwright/test";
-import CommonPage from "../pages/common.page";
+import CommonPage from "@common/pages/common.page";
 import HomePage from "../pages/home.page";
 import DynamicIdPage from "../pages/dynamic-id.page";
 import ClassAttributePage from "../pages/class-attribute.page";
