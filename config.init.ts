@@ -6,7 +6,6 @@ export const initConfig = (appName: string) => {
     "src",
     "apps",
     appName,
-    "config",
     "config.json"
   );
   let jsonData = require(configFile);

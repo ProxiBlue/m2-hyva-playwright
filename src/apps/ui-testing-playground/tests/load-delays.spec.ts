@@ -1,7 +1,7 @@
 import { test, describe } from "../fixtures";
 import * as homePageLocators from "../locators/home.locator";
 import * as loadDelaysPageLocators from "../locators/load-delays.locator";
-import * as data from "../data/load-delays/data.json";
+import * as data from "../data/load-delays.data.json";
 
 test.beforeEach(async ({ homePage }) => {
   await homePage.navigateToUITestingPlayground();

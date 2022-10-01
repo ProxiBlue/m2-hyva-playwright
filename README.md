@@ -6,8 +6,8 @@ For fast run, fork the [repo](https://github.com/inflectra/ui-test-automation-pl
 
 | Key           | Value                           | File                                                 |
 | ------------- | ------------------------------- | ---------------------------------------------------- |
-| `env.*.url`   | http://uitestingplayground.com/ | `src/apps/ui-testing-playground/config/config.json`  |
-| `urlContains` | uitestingplayground             | `src/apps/ui-testing-playground/data/home/data.json` |
+| `env.*.url`   | http://uitestingplayground.com/ | `src/apps/ui-testing-playground/config.json`         |
+| `urlContains` | uitestingplayground             | `src/apps/ui-testing-playground/data/home.data.json` |
 
 ## :sparkles: Available Scripts
 
