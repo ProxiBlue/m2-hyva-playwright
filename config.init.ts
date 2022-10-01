@@ -3,9 +3,10 @@ import path from "path";
 export const initConfig = (appName: string) => {
   const configFile = path.join(
     __dirname,
-    "config",
+    "src",
     "apps",
     appName,
+    "config",
     "config.json"
   );
   let jsonData = require(configFile);

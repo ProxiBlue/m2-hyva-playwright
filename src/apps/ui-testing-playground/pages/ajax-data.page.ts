@@ -1,6 +1,6 @@
 import type { Page, TestInfo } from "@playwright/test";
 import * as actions from "@utils/base/web/actions";
-import * as data from "@data/apps/ui-testing-playground/ajax-data/data.json";
+import * as data from "../data/ajax-data/data.json";
 import * as locators from "../locators/ajax-data.locator";
 import { test, expect } from "../fixtures";
 

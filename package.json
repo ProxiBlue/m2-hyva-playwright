@@ -5,9 +5,9 @@
   "main": "index.js",
   "scripts": {
     "test": "APP_NAME=ui-testing-playground NODE_ENV=dev playwright test",
-    "test:debug": "PWDEBUG=1 playwright test",
-    "report": "npx playwright show-report html-report",
-    "allure": "npx allure generate ./allure-results --clean && npx allure open ./allure-report"
+    "test:debug": "APP_NAME=ui-testing-playground NODE_ENV=dev PWDEBUG=1 playwright test",
+    "report": "npx playwright show-report src/apps/ui-testing-playground/reports/playwright-report",
+    "allure": "npx allure generate src/apps/ui-testing-playground/reports/allure/allure-result -o src/apps/ui-testing-playground/reports/allure/allure-report --clean && npx allure open src/apps/ui-testing-playground/reports/allure/allure-report"
   },
   "author": "Eric Stanley",
   "license": "ISC",
@@ -16,8 +16,8 @@
     "@types/adm-zip": "^0.5.0",
     "adm-zip": "^0.5.9",
     "allure-commandline": "^2.18.1",
+    "allure-playwright": "^2.0.0-beta.19",
     "colors": "^1.4.0",
-    "experimental-allure-playwright": "^0.0.3",
     "playwright": "^1.25.2",
     "ts-node": "^10.9.1",
     "typescript": "^4.8.3"

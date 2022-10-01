@@ -49,18 +49,25 @@ const config: PlaywrightTestConfig = {
     [
       "json",
       {
-        outputFile: "json-reports/json-report.json",
+        outputFile:
+          "./src/" + appDir + "/reports/json-reports/json-report.json",
       },
     ],
     [
       "html",
       {
-        outputFolder: "html-report",
+        outputFolder: "./src/" + appDir + "/reports/playwright-report/",
         open: "never",
       },
     ],
     // ["./src/utils/reports/custom-reporter.ts"],
-    ["experimental-allure-playwright"],
+    [
+      "allure-playwright",
+      {
+        outputFolder: "./src/" + appDir + "/reports/allure/allure-result/",
+        open: "never",
+      },
+    ],
   ],
   use: {
     headless: true,

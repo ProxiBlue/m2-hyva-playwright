@@ -1,7 +1,7 @@
 import { test, describe } from "../fixtures";
 import * as homePageLocators from "../locators/home.locator";
 import * as scrollBarsPageLocators from "../locators/scrollbars.locator";
-import * as data from "../../../../data/apps/ui-testing-playground/scrollbars/data.json";
+import * as data from "../data/scrollbars/data.json";
 
 test.beforeEach(async ({ homePage }) => {
   await homePage.navigateToUITestingPlayground();

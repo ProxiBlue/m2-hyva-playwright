@@ -1,7 +1,7 @@
 import { test, describe } from "../fixtures";
 import * as homePageLocators from "../locators/home.locator";
 import * as textInputPageLocators from "../locators/text-input.locator";
-import * as data from "../../../../data/apps/ui-testing-playground/text-input/data.json";
+import * as data from "../data/text-input/data.json";
 
 test.beforeEach(async ({ homePage }) => {
   await homePage.navigateToUITestingPlayground();

@@ -1,7 +1,6 @@
 import type { Page, TestInfo } from "@playwright/test";
 import { test, expect } from "../fixtures";
-
-import * as data from "@data/apps/ui-testing-playground/home/data.json";
+import * as data from "../data/home/data.json";
 import * as actions from "@utils/base/web/actions";
 import * as locators from "../locators/home.locator";
 

@@ -46,6 +46,7 @@ allure-report
 allure-results
 html-report
 html-report.zip
+reports
 
 # Typescript v1 declaration files
 typings
