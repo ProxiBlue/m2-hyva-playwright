@@ -2,7 +2,7 @@ import { PlaywrightTestConfig, devices } from "@playwright/test";
 
 const config: PlaywrightTestConfig = {
   testDir: "tests",
-  testMatch: "tests/home.spec.ts",
+  testMatch: "tests/*.spec.ts",
   timeout: 30 * 1000,
   retries: 3,
   workers: 3,
@@ -12,7 +12,7 @@ const config: PlaywrightTestConfig = {
     timeout: 20000,
   },
   use: {
-    // headless: true,
+    headless: true,
     actionTimeout: 0,
     trace: "retain-on-failure",
     ignoreHTTPSErrors: true,
@@ -25,7 +25,6 @@ const config: PlaywrightTestConfig = {
     },
   },
   reporter: [
-    // ["line"],
     ["list"],
     [
       "json",
@@ -40,7 +39,7 @@ const config: PlaywrightTestConfig = {
         open: "never",
       },
     ],
-    // ["./src/utils/reports/custom-reporter.ts"],
+    // ["../../utils/reports/custom-reporter.ts"],
     [
       "allure-playwright",
       {
@@ -54,28 +53,28 @@ const config: PlaywrightTestConfig = {
       name: "chromium",
       use: { ...devices["Desktop Chrome"] },
     },
-    // {
-    //   name: "firefox",
-    //   use: { ...devices["Desktop Firefox"] },
-    // },
-    // {
-    //   name: "webkit",
-    //   use: { ...devices["Desktop Safari"] },
-    // },
-    // {
-    //   name: "Pixel-5",
-    //   use: {
-    //     browserName: "chromium",
-    //     ...devices["Pixel 5"],
-    //   },
-    // },
-    // {
-    //   name: "iPhone-12",
-    //   use: {
-    //     browserName: "webkit",
-    //     ...devices["iPhone 12"],
-    //   },
-    // },
+    {
+      name: "firefox",
+      use: { ...devices["Desktop Firefox"] },
+    },
+    {
+      name: "webkit",
+      use: { ...devices["Desktop Safari"] },
+    },
+    {
+      name: "Pixel-5",
+      use: {
+        browserName: "chromium",
+        ...devices["Pixel 5"],
+      },
+    },
+    {
+      name: "iPhone-12",
+      use: {
+        browserName: "webkit",
+        ...devices["iPhone 12"],
+      },
+    },
   ],
 };
 
