@@ -1,6 +1,7 @@
+import fs, { PathLike } from "fs";
 import * as fsPromises from "fs/promises";
 
-export const holdBeforeFileExists = async (filePath, timeout) => {
+export const holdBeforeFileExists = async (filePath: any, timeout: number) => {
   timeout = timeout < 1000 ? 1000 : timeout;
   try {
     var nom = 0;
@@ -25,7 +26,10 @@ export const holdBeforeFileExists = async (filePath, timeout) => {
   }
 };
 
-export const isFileUpdateComplete = (filePath, timeout) => {
+export const isFileUpdateComplete = async (
+  filePath: PathLike,
+  timeout: number
+) => {
   const abortController = new AbortController();
   const { signal } = abortController;
   setTimeout(() => abortController.abort(), timeout);
@@ -37,4 +41,4 @@ export const isFileUpdateComplete = (filePath, timeout) => {
       `'${event.eventType}' watch event was raised for ${event.filename}`
     );
   }
-}
+};
