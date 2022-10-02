@@ -10,6 +10,7 @@
     "baseUrl": ".",
     "paths": {
       /* Specify a set of entries that re-map imports to additional lookup locations. */
+      "@home/*": ["./*"],
       "@data/*": ["data/*"],
       "@utils/*": ["src/utils/*"],
       "@config": ["playwright.config.ts"],

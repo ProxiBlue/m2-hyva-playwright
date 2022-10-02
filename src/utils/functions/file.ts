@@ -1,5 +1,6 @@
 import fs, { PathLike } from "fs";
 import * as fsPromises from "fs/promises";
+import path from "path";
 
 export const holdBeforeFileExists = async (filePath: any, timeout: number) => {
   timeout = timeout < 1000 ? 1000 : timeout;
@@ -41,4 +42,16 @@ export const isFileUpdateComplete = async (
       `'${event.eventType}' watch event was raised for ${event.filename}`
     );
   }
+};
+
+export const removeFilesInDirectory = async (directory: string) => {
+  fs.readdir(directory, (err, files) => {
+    if (err) throw err;
+
+    for (const file of files) {
+      fs.unlink(path.join(directory, file), (err) => {
+        if (err) throw err;
+      });
+    }
+  });
 };

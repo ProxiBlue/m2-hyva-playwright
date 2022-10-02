@@ -1,4 +1,5 @@
 import { FullConfig } from "@playwright/test";
+import { removeFilesInDirectory } from "@utils/functions/file";
 import fs from "fs";
 import path from "path";
 
@@ -17,11 +18,9 @@ const globalSetup = async (config: FullConfig) => {
   );
 
   !fs.existsSync(reportPath) && fs.mkdirSync(reportPath, { recursive: true });
-  const fileName = path.join(reportPath, `playwright-report.zip`);
   process.env.REPORT_PATH = reportPath;
-  fs.existsSync(fileName) && fs.unlinkSync(fileName);
-  fs.existsSync(`./playwright-report.zip`) &&
-    fs.unlinkSync(`./playwright-report.zip`);
+  const allureReportPath = path.join(reportPath, "allure", "allure-result");
+  removeFilesInDirectory(allureReportPath);
 };
 
 export default globalSetup;

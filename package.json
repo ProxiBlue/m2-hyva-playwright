@@ -1,16 +1,19 @@
 {
   "name": "playwright-hands-on",
   "version": "1.0.0",
+  "private": true,
   "description": "",
-  "main": "index.js",
+  "workspaces": [
+    "src/apps/*"
+  ],
   "scripts": {
-    "test": "APP_NAME=ui-testing-playground NODE_ENV=dev playwright test",
-    "test:debug": "APP_NAME=ui-testing-playground NODE_ENV=dev PWDEBUG=1 playwright test",
-    "report": "npx playwright show-report src/apps/ui-testing-playground/reports/playwright-report",
-    "allure": "npx allure generate src/apps/ui-testing-playground/reports/allure/allure-result -o src/apps/ui-testing-playground/reports/allure/allure-report --clean && npx allure open src/apps/ui-testing-playground/reports/allure/allure-report"
+    "test": "yarn workspace ui-testing-playground test",
+    "test:debug": "yarn workspace ui-testing-playground test:debug",
+    "report": "yarn workspace ui-testing-playground report",
+    "allure": "yarn workspace ui-testing-playground allure"
   },
   "author": "Eric Stanley",
-  "license": "ISC",
+  "license": "MIT",
   "devDependencies": {
     "@playwright/test": "^1.25.2",
     "@types/adm-zip": "^0.5.0",
