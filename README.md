@@ -31,3 +31,5 @@ In the project directory, you can run:
 During the first run, the screenshots will be baselined and no validations will be done during this run. Once the run is complete, change the <code>retries</code> back to the number of retries you need.
 
 Starting second run, the screenshots will be compared with the baseline screenshot.
+
+#### For implementation of this framework for a brand new application. Check [here](https://www.stanleyeric.com/playwright-framework-implementation-part-1/)

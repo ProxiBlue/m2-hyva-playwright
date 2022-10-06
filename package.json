@@ -14,7 +14,11 @@
     "test:ui-testing-playground": "yarn workspace ui-testing-playground test",
     "test:debug:ui-testing-playground": "yarn workspace ui-testing-playground test:debug",
     "report:ui-testing-playground": "yarn workspace ui-testing-playground report",
-    "allure:ui-testing-playground": "yarn workspace ui-testing-playground allure"
+    "allure:ui-testing-playground": "yarn workspace ui-testing-playground allure",
+    "test:automation-practice": "yarn workspace automation-practice test",
+    "test:debug:automation-practice": "yarn workspace automation-practice test:debug",
+    "report:automation-practice": "yarn workspace automation-practice report",
+    "allure:automation-practice": "yarn workspace automation-practice allure"
   },
   "author": "Eric Stanley",
   "license": "MIT",
