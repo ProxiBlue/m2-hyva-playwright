@@ -1,13 +1,13 @@
-This project was bootstrapped with [playwright](https://playwright.dev/).
+This project was bootstrapped with <a href="https://playwright.dev/" target="_blank">playwright</a>.
 
-Testing site used - [UI Testing Playground](http://uitestingplayground.com/)
+Testing site used - <a href="http://uitestingplayground.com/" target="_blank">UI Testing Playground</a>
 
-For fast run, fork the [repo](https://github.com/inflectra/ui-test-automation-playground) and run it from local. Otherwise, change the below
+For fast run, fork the <a href="https://github.com/inflectra/ui-test-automation-playground" target="_blank">repo</a> and run it from local. Otherwise, change the below
 
-| Key           | Value                           | File                                                 |
-| ------------- | ------------------------------- | ---------------------------------------------------- |
-| `env.*.url`   | http://uitestingplayground.com/ | `src/apps/ui-testing-playground/config.json`         |
-| `urlContains` | uitestingplayground             | `src/apps/ui-testing-playground/data/home.data.json` |
+| Key           | Value                             | File                                                 |
+| ------------- | --------------------------------- | ---------------------------------------------------- |
+| `env.*.url`   | `http://uitestingplayground.com/` | `src/apps/ui-testing-playground/config.json`         |
+| `urlContains` | `uitestingplayground`             | `src/apps/ui-testing-playground/data/home.data.json` |
 
 ## :sparkles: Available Scripts
 
@@ -32,4 +32,4 @@ During the first run, the screenshots will be baselined and no validations will 
 
 Starting second run, the screenshots will be compared with the baseline screenshot.
 
-#### For implementation of this framework for a brand new application. Check [here](https://www.stanleyeric.com/playwright-framework-implementation-part-1/)
+#### For implementation of this framework for a brand new application. Check <a href="https://www.stanleyeric.com/playwright-framework-implementation-part-1/" target="_blank">here</a>
