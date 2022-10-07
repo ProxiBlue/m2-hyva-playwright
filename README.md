@@ -1,8 +1,8 @@
-This project was bootstrapped with [playwright](https://playwright.dev/){:target="\_blank"}.
+This project was bootstrapped with [playwright](https://playwright.dev/).
 
-Testing site used - [UI Testing Playground](http://uitestingplayground.com/){:target="\_blank"}
+Testing site used - [UI Testing Playground](http://uitestingplayground.com/)
 
-For fast run, fork the [repo](https://github.com/inflectra/ui-test-automation-playground){:target="\_blank"} and run it from local. Otherwise, change the below
+For fast run, fork the [repo](https://github.com/inflectra/ui-test-automation-playground) and run it from local. Otherwise, change the below
 
 | Key           | Value                           | File                                                 |
 | ------------- | ------------------------------- | ---------------------------------------------------- |
@@ -32,4 +32,4 @@ During the first run, the screenshots will be baselined and no validations will 
 
 Starting second run, the screenshots will be compared with the baseline screenshot.
 
-#### For implementation of this framework for a brand new application. Check [here](https://www.stanleyeric.com/playwright-framework-implementation-part-1/){:target="\_blank"}
+#### For implementation of this framework for a brand new application. Check [here](https://www.stanleyeric.com/playwright-framework-implementation-part-1/)
