@@ -71,6 +71,7 @@ typings
 .cache
 public
 .history
+package_bkp.json
 
 # Mac files
 .DS_Store
