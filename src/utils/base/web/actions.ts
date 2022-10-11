@@ -119,6 +119,26 @@ export const clickElement = async (
     async () => await page.locator(locator).click()
   );
 
+export const clickFirstElement = async (
+  page: Page,
+  locator: string,
+  workerInfo: TestInfo
+) =>
+  await test.step(
+    workerInfo.project.name + ": Click first element " + locator,
+    async () => await page.locator(locator).first().click()
+  );
+
+export const clickLastElement = async (
+  page: Page,
+  locator: string,
+  workerInfo: TestInfo
+) =>
+  await test.step(
+    workerInfo.project.name + ": Click last element " + locator,
+    async () => await page.locator(locator).last().click()
+  );
+
 export const javascriptClick = async (
   page: Page,
   locator: string,
