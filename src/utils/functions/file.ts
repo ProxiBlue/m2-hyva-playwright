@@ -55,3 +55,28 @@ export const removeFilesInDirectory = async (directory: string) => {
     }
   });
 };
+
+export const updateFile = async (
+  jsonFilePath: string,
+  key: string,
+  value: string
+) => {
+  const jsonFile = require(jsonFilePath);
+  jsonFile[key] = value;
+  try {
+    fs.writeFileSync(jsonFilePath, JSON.stringify(jsonFile, null, 2));
+  } catch (err) {
+    console.error(err);
+  }
+};
+
+export const appendFile = async (jsonFilePath: string, obj: any) => {
+  var data = fs.readFileSync(jsonFilePath);
+  var json = JSON.parse(data.toString());
+  json.push(obj);
+  try {
+    fs.writeFileSync(jsonFilePath, JSON.stringify(json, null, 2));
+  } catch (err) {
+    console.error(err);
+  }
+};
