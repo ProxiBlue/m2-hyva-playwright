@@ -21,7 +21,7 @@ In the project directory, you can run:
 | <code>**yarn report**</code>     | to serve default report                                                                 |
 | <code>**yarn allure**</code>     | to serve allure report                                                                  |
 
-**:exclamation:_Note:_** By default the tests are run in <code>headless</code> mode. Screenshots will not be captured in this mode as it causes problems during validation between headless and headed mode. For validating screenshots, change the below in <code>playwright.config.js</code>
+**:exclamation:_Note:_** By default the tests are run in <code>headless</code> mode. Screenshots will not be captured in this mode as it causes problems during validation between headless and headed mode. For validating screenshots, change the below in <code>src/apps/ui-testing-playground/playwright.config.js</code>
 
 | Field      | Value   |
 | ---------- | ------- |
