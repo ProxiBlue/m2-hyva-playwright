@@ -1,0 +1,13 @@
+{
+  "name": "luma",
+  "version": "1.0.0",
+  "private": true,
+  "author": "Lucas van Staden",
+  "license": "MIT",
+  "scripts": {
+    "test": "APP_NAME=luma NODE_ENV=dev playwright test",
+    "test:debug": "APP_NAME=luma NODE_ENV=dev PWDEBUG=1 playwright test",
+    "report": "npx playwright show-report reports/playwright-report",
+    "allure": "npx allure generate reports/allure/allure-result -o reports/allure/allure-report --clean && npx allure open reports/allure/allure-report"
+  }
+}
