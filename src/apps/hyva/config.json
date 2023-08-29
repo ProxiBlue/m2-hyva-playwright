@@ -1,0 +1,7 @@
+{
+  "env": {
+    "dev": { "url": "https://hyva.m.uptactics.test" },
+    "test": { "url": "https://hyva.m.uptactics.test" },
+    "uat": { "url": "https://hyva.m.uptactics.test" }
+  }
+}

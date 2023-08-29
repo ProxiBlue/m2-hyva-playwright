@@ -4,7 +4,7 @@ const config: PlaywrightTestConfig = {
   testDir: "tests",
   testMatch: "tests/*.spec.ts",
   timeout: 30 * 1000,
-  retries: 3,
+  retries: 0,
   workers: 3,
   globalSetup: require.resolve("@home/global-setup"),
   globalTeardown: require.resolve("@home/global-teardown"),
@@ -12,7 +12,7 @@ const config: PlaywrightTestConfig = {
     timeout: 20000,
   },
   use: {
-    headless: true,
+    headless: false,
     actionTimeout: 0,
     trace: "retain-on-failure",
     ignoreHTTPSErrors: true,
