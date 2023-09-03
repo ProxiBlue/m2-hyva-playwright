@@ -12,8 +12,8 @@ export const initConfig = (appName: string) => {
 
   (() => {
     switch (process.env.NODE_ENV) {
-      case "test":
-        process.env.URL = jsonData.env.test.url;
+      case "live":
+        process.env.URL = jsonData.env.live.url;
         break;
 
       case "dev":

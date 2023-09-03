@@ -1,7 +1,0 @@
-{
-  "title": "Click",
-  "successButton": "btn-success",
-  "primaryButton": "btn-primary",
-  "beforeClickScreenshotName": "before-click",
-  "afterClickScreenshotName": "after-click"
-}

@@ -1,7 +1,7 @@
 {
   "compilerOptions": {
     "target": "es6",
-    "module": "es6",
+    "module": "es2020",
     "moduleResolution": "node",
     "experimentalDecorators": true,
     "noImplicitAny": true,
@@ -14,7 +14,8 @@
       "@data/*": ["data/*"],
       "@utils/*": ["src/utils/*"],
       "@config": ["playwright.config.ts"],
-      "@common/*": ["src/apps/common/*"]
+      "@common/*": ["src/apps/common/*"],
+      "@hyva/*": ["src/apps/hyva/*"]
     }
   },
   "exclude": ["node_modules"]

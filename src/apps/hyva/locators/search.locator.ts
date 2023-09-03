@@ -1,4 +1,5 @@
-export const headerSearchField = "#search"
+export const headerSearchField = "[name='q']"
+export const headerSearchFieldMobile = "#search_mini_form-mobile>>.search"
 export const headerSearchIcon =  "#menu-search-icon"
 export const noResultsMessage = ".message.notice"
 export const searchSuggestions = "[x-text=\"searchResult.title\"]"

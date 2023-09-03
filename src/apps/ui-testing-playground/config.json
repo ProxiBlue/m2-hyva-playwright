@@ -1,7 +1,0 @@
-{
-  "env": {
-    "dev": { "url": "http://localhost:3000/" },
-    "test": { "url": "http://localhost:3001/" },
-    "uat": { "url": "http://localhost:3002/" }
-  }
-}

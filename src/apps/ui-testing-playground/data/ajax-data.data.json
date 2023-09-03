@@ -1,6 +1,0 @@
-{
-  "title": "AJAX Data",
-  "successText": "Data loaded with AJAX get request.",
-  "verifyTitleScreenshotName": "verify-title",
-  "verifyAJAXMessageScreenshotName": "verify-ajax-message"
-}
