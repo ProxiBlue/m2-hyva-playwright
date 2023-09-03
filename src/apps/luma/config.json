@@ -1,7 +1,0 @@
-{
-  "env": {
-    "dev": { "url": "https://lcdscreen244.m24.ittools.test/" },
-    "test": { "url": "https://lcdscreen244.m24.ittools.test/" },
-    "uat": { "url": "https://lcdscreen244.m24.ittools.test/" }
-  }
-}

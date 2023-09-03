@@ -79,6 +79,17 @@ export const verifyElementExists = async (
     async () => await expect(page.locator(locator)).toHaveCount(1)
   );
 
+export const verifyElementCount = async (
+    page: Page,
+    locator: string,
+    count: number,
+    workerInfo: TestInfo
+) =>
+    await test.step(
+        workerInfo.project.name + ": Verify element count " + locator,
+        async () => await expect(page.locator(locator)).toHaveCount(count)
+    );
+
 export const verifyElementDoesNotExists = async (
   page: Page,
   locator: string,
@@ -283,3 +294,28 @@ export const elementHasClass = async (
         ? true
         : false
   );
+export const getElementByText = async (
+    page: Page,
+    locator: string,
+    text: string,
+    workerInfo: TestInfo
+) =>
+    await test.step(
+        workerInfo.project.name + ": Get element by text " + text,
+        async () => await page.locator(locator).getByText(text)
+    );
+
+export const waitForLoadState = async (
+    page: Page,
+    state: string,
+    workerInfo: TestInfo
+) =>
+    await test.step(
+        workerInfo.project.name + ": Wait for load state " + state,
+        async () => await page.waitForLoadState(state)
+    );
+
+export const parsePrice = function (price: string) {
+  return parseFloat(price.replace(/[^0-9-.]/g, ""));
+}
+

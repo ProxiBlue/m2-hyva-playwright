@@ -1,8 +1,8 @@
 import BasePage from "./base.page";
 import type { Page, TestInfo } from "@playwright/test";
-import { test, expect } from "@hyva/fixtures";
+import { test, expect } from "../fixtures";
 import * as actions from "@utils/base/web/actions";
-import * as locators from "@hyva/locators/home.locator";
+import * as locators from "../locators/home.locator";
 
 // dynamically import the test JSON data based on the APP_NAME env variable
 // and if the file exixts in APP path, and if not default to teh base data
@@ -34,5 +34,8 @@ export default class HomePage extends BasePage {
         );
     }
 
+    async verifyHasCategoryList() {
+        await actions.verifyElementExists(this.page, locators.category_grid, this.workerInfo);
+    }
 
 }

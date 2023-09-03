@@ -25,7 +25,7 @@ describe("Home", () => {
         await homePage.verifyDomTitle();
     });
 
-    test.skip('Can perform search from homepage', async ({homePage, isMobile}) => {
+    test('Can perform search from homepage', async ({homePage, isMobile}) => {
         await homePage.navigateTo();
         if (isMobile) {
             await homePage.page.click(searchSelectors.headerSearchIcon);
@@ -33,7 +33,6 @@ describe("Home", () => {
             await homePage.page.fill(searchSelectors.headerSearchFieldMobile, data.search_term, {force: true});
             await homePage.page.press(searchSelectors.headerSearchFieldMobile, 'Enter');
         } else {
-            await homePage.page.click(searchSelectors.headerSearchIcon);
             await homePage.page.waitForSelector(searchSelectors.headerSearchField);
             await homePage.page.fill(searchSelectors.headerSearchField, data.search_term);
             await homePage.page.press(searchSelectors.headerSearchField, 'Enter');

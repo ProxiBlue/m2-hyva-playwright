@@ -1,0 +1,7 @@
+{
+  "env": {
+    "dev": { "url": "https://pvcpipesupplies244.m.uptactics.test/" },
+    "uat": { "url": "https://ppsdever.com/" },
+    "live": { "url": "https://pvcpipesupplies.com/" }
+  }
+}
