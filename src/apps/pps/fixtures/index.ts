@@ -1,18 +1,18 @@
-import { test as baseTest } from "@playwright/test";
-import CartPage from "../pages/cart.page";
+import { test as hyvaBase } from "@hyva/fixtures";
 import CommonPage from "@common/pages/common.page";
+import PPSCartPage from "../pages/cart.page";
+import PPSHomePage from "../pages/home.page";
 
 type pages = {
-    cartPage: CartPage;
     commonPage: CommonPage;
 };
 
-const testPages = baseTest.extend<pages>({
-    commonPage: async ({ page }, use, workerInfo) => {
-        await use(new CommonPage(page, workerInfo));
-    },
+const testPages = hyvaBase.extend<pages>({
     cartPage: async ({ page }, use, workerInfo) => {
-        await use(new CartPage(page, workerInfo));
+        await use(new PPSCartPage(page, workerInfo));
+    },
+    homePage: async ({ page }, use, workerInfo) => {
+        await use(new PPSHomePage(page, workerInfo));
     },
 });
 

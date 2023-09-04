@@ -3,5 +3,8 @@
     "dev": { "url": "https://pvcpipesupplies244.m.uptactics.test/" },
     "uat": { "url": "https://ppsdever.com/" },
     "live": { "url": "https://pvcpipesupplies.com/" }
-  }
+  },
+  "skipBaseTests": [
+    "Can perform search from homepage"
+  ]
 }

@@ -4,6 +4,7 @@ import HomePage from "@hyva/pages/home.page";
 import SimpleProductPage from "@hyva/pages/simple_product.page";
 import CartPage from "@hyva/pages/cart.page";
 
+
 type pages = {
     commonPage: CommonPage;
     homePage: HomePage;
