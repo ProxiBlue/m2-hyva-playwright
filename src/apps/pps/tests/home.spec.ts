@@ -5,8 +5,8 @@ import {expect} from "@playwright/test";
 
 describe("Home", () => {
 
-    test('Can perform search from homepage', async ({homePage}) => {
+    test('Can perform search from homepage', async ({homePage, isMobile }) => {
         await homePage.navigateTo();
-        await homePage.canSearchFromHomepage();
+        await homePage.canSearchFromHomepage(isMobile);
     });
 });
