@@ -1,4 +1,4 @@
-import { test, describe } from "@hyva/fixtures";
+import { test, describe } from "../fixtures";
 import * as actions from "@utils/base/web/actions";
 import * as locators from "@hyva/locators/product.locator";
 import { expect } from "@playwright/test";
