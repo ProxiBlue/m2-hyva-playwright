@@ -3,6 +3,7 @@ import CommonPage from "@common/pages/common.page";
 import HomePage from "@hyva/pages/home.page";
 import SimpleProductPage from "@hyva/pages/simple_product.page";
 import CartPage from "@hyva/pages/cart.page";
+import CategoryPage from "@hyva/pages/category.page";
 
 
 type pages = {
@@ -10,6 +11,7 @@ type pages = {
     homePage: HomePage;
     simpleProductPage: SimpleProductPage;
     cartPage: CartPage;
+    categoryPage: CategoryPage;
 };
 
 const testPages = baseTest.extend<pages>({
@@ -25,7 +27,12 @@ const testPages = baseTest.extend<pages>({
     cartPage: async ({ page }, use, workerInfo) => {
         await use(new CartPage(page, workerInfo));
     },
+    categoryPage: async ({ page }, use, workerInfo) => {
+        await use(new CategoryPage(page, workerInfo));
+    },
 });
+
+baseTest.use({ ignoreHTTPSErrors: true})
 
 export const test = testPages;
 export const expect = testPages.expect;

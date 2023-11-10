@@ -4,7 +4,7 @@ export const productGridItem = ".product-item";
 export const productGridItemInfo = ".product-info";
 export const productItemLink = ".product-item-link";
 
-export const productItemName = ".product-item-name";
+export const productItemName = ".product-item-link";
 
 export const productItemPrice = ".price";
 export const productItemPriceRegular = ".price-wrapper>>.price";
@@ -14,3 +14,7 @@ export const productItemPriceNew = ".new-price>>.price";
 
 export const product_qty_input = "[name='qty']";
 export const product_add_to_cart_button = "#product-addtocart-button"
+
+export const addToCompare = "Add to Compare";
+
+export const compareLink = "#compare-link";

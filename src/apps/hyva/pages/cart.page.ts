@@ -1,9 +1,8 @@
 import BasePage from "./base.page";
-import type { Page, TestInfo } from "@playwright/test";
-import { test, expect } from "@hyva/fixtures";
+import type {Page, TestInfo} from "@playwright/test";
+import {expect} from "@hyva/fixtures";
 import * as actions from "@utils/base/web/actions";
 import * as locators from "@hyva/locators/cart.locator";
-import {cart_row_item, cart_table, cart_table_body} from "@hyva/locators/cart.locator";
 
 // dynamically import the test JSON data based on the APP_NAME env variable
 // and if the file exixts in APP path, and if not default to teh base data
@@ -23,18 +22,17 @@ export default class CartPage extends BasePage {
     constructor(public page: Page, public workerInfo: TestInfo) {
         super(page, workerInfo, data, locators);
     }
+
     async changeQuantity(itemRowNum: number, newQuantity: number) {
         const itemRow = locators.cart_table + '>>' + locators.cart_table_body + ">>nth=" + itemRowNum + '>>' + locators.cart_row_item_info
         const qtyInput = itemRow + '>>' + locators.cart_row_qty_input;
         const beforeSubTotal = await actions.getInnerText(this.page, itemRow + '>>' + locators.cart_row_subtotal, this.workerInfo);
         await actions.verifyElementExists(this.page, itemRow, this.workerInfo);
-        await actions.fill(this.page,qtyInput,'2',this.workerInfo);
-        await actions.clickElement(this.page, locators.update_cart_button, this.workerInfo).then(async () => {
-            await this.page.waitForLoadState('networkidle');
-            const afterSubTotal = actions.parsePrice(await actions.getInnerText(this.page, itemRow + '>>' + locators.cart_row_subtotal, this.workerInfo));
-            let updatedTotal = actions.parsePrice(beforeSubTotal) * newQuantity;
-            expect(afterSubTotal).toEqual(updatedTotal);
-        });
+        await actions.fill(this.page, qtyInput, '2', this.workerInfo);
+        let expectedUpdatedTotal = actions.parsePrice(beforeSubTotal) * newQuantity;
+        await actions.clickElement(this.page, locators.update_cart_button, this.workerInfo);
+        await this.page.waitForLoadState('networkidle');
+        await expect(this.page.locator('#shopping-cart-table').getByText(expectedUpdatedTotal.toString())).toBeVisible({timeout:5000});
     }
 
     async deleteItem(itemRowNum: number) {
@@ -51,10 +49,10 @@ export default class CartPage extends BasePage {
         let subTotal = await actions.getInnerText(this.page, itemRow + '>>' + locators.cart_row_subtotal, this.workerInfo);
         // mobiles (and seems safari) get the label string included, so strip it if it exists
         // i am sure there is s smarter regex way, but i am not feeling smart right now ;)
-        subTotal = subTotal.replace(data.subtotal_label + ': ','');
-        subTotal = subTotal.replace(data.subtotal_label + ':','');
-        subTotal = subTotal.replace(data.subtotal_label + ' ','');
-        subTotal = subTotal.replace(data.subtotal_label,'');
+        subTotal = subTotal.replace(data.subtotal_label + ': ', '');
+        subTotal = subTotal.replace(data.subtotal_label + ':', '');
+        subTotal = subTotal.replace(data.subtotal_label + ' ', '');
+        subTotal = subTotal.replace(data.subtotal_label, '');
         return subTotal;
     }
 
@@ -67,10 +65,10 @@ export default class CartPage extends BasePage {
         await this.page.locator('#cart-totals').getByText(total).first().innerText().then((value) => {
             // mobiles (and seems safari) get the label string included, so strip it if it exists
             // i am sure there is s smarter regex way, but i am not feeling smart right now ;)
-            value = value.replace(data.subtotal_label + ': ','');
-            value = value.replace(data.subtotal_label + ':','');
-            value = value.replace(data.subtotal_label + ' ','');
-            value = value.replace(data.subtotal_label,'');
+            value = value.replace(data.subtotal_label + ': ', '');
+            value = value.replace(data.subtotal_label + ':', '');
+            value = value.replace(data.subtotal_label + ' ', '');
+            value = value.replace(data.subtotal_label, '');
             expect(value).toEqual(total);
         });
     }
@@ -82,10 +80,10 @@ export default class CartPage extends BasePage {
         await this.page.locator('#cart-totals').getByText(total).first().innerText().then((value) => {
             // mobiles (and seems safari) get the label string included, so strip it if it exists
             // i am sure there is s smarter regex way, but i am not feeling smart right now ;)
-            value = value.replace(label + ': ','');
-            value = value.replace(label + ':','');
-            value = value.replace(label + ' ','');
-            value = value.replace(label,'');
+            value = value.replace(label + ': ', '');
+            value = value.replace(label + ':', '');
+            value = value.replace(label + ' ', '');
+            value = value.replace(label, '');
             expect(actions.parsePrice(value)).toEqual(total);
         });
     }
@@ -99,10 +97,10 @@ export default class CartPage extends BasePage {
         await this.page.locator('#cart-totals').getByText(total).nth(1).innerText().then((value) => {
             // mobiles (and seems safari) get the label string included, so strip it if it exists
             // ditto!
-            value = value.replace(data.grandtotal_label + ': ','');
-            value = value.replace(data.grandtotal_label + ':','');
-            value = value.replace(data.grandtotal_label + ' ','');
-            value = value.replace(data.grandtotal_label,'');
+            value = value.replace(data.grandtotal_label + ': ', '');
+            value = value.replace(data.grandtotal_label + ':', '');
+            value = value.replace(data.grandtotal_label + ' ', '');
+            value = value.replace(data.grandtotal_label, '');
             expect(value).toEqual(total);
         });
     }
@@ -112,9 +110,8 @@ export default class CartPage extends BasePage {
         await actions.clickElement(this.page, locators.cart_clear, this.workerInfo).then(async () => {
             await this.page.waitForLoadState('networkidle');
             await actions.verifyElementIsVisible(this.page, "[aria-label='Are you sure?']", this.workerInfo);
-            await actions.clickElement(this.page, "[aria-label='Are you sure?']>>.btn-primary", this.workerInfo).then(async () => {
-                await this.page.waitForLoadState('networkidle');
-            });
+            await actions.clickElement(this.page, "[aria-label='Are you sure?']>>.btn-primary", this.workerInfo)
+            await this.page.waitForLoadState('networkidle');
         });
     }
 
@@ -123,9 +120,8 @@ export default class CartPage extends BasePage {
         await actions.clickElement(this.page, locators.cart_clear, this.workerInfo).then(async () => {
             await this.page.waitForLoadState('networkidle');
             await actions.verifyElementIsVisible(this.page, "[aria-label='Are you sure?']", this.workerInfo);
-            await actions.clickElement(this.page, "[aria-label='Are you sure?']>>.btn>>nth=0", this.workerInfo).then(async () => {
-                await this.page.waitForLoadState('networkidle');
-            });
+            await actions.clickElement(this.page, "[aria-label='Are you sure?']>>.btn>>nth=0", this.workerInfo)
+            await this.page.waitForLoadState('networkidle');
         });
     }
 

@@ -1,0 +1,37 @@
+{
+  "url": "/women/bottoms-women.html",
+  "header_title": "Bottoms - Women",
+  "page_title_text": "Bottoms",
+  "filter_heading": "SHOP BY",
+  "sorter_price": "Price",
+  "sorter_position": "Position",
+  "sorter_name": "Product Name",
+  "ascending": "Set Ascending Direction",
+  "filters": {
+    "Style":
+    {
+      "Base Layer": 4,
+      "Basic": 10
+    },
+    "Size": {
+      "Filter Size 28": 25,
+      "Filter Size 29": 25
+    },
+    "Price": {},
+    "Color": {
+      "Filter Color Black": 12
+    },
+    "Material": {},
+    "Eco Collection": {},
+    "Performance Fabric": {},
+    "Erin Recommends": {},
+    "New": {},
+    "Sale": {},
+    "Pattern": {},
+    "Climate": {}
+  },
+  "limiter": ["36","12","24"],
+  "breadcrums": ["Home","Women","Bottoms"],
+  "grid_mode" : "mode-grid",
+  "list_mode" : "mode-list"
+}
