@@ -110,6 +110,16 @@ export const verifyElementIsVisible = async (
     async () => expect(await page.locator(locator).isVisible()).toBe(true)
   );
 
+export const verifyElementIsNotVisible = async (
+    page: Page,
+    locator: string,
+    workerInfo: TestInfo
+) =>
+    await test.step(
+        workerInfo.project.name + ": Verify element is NOT visible " + locator,
+        async () => expect(await page.locator(locator).isVisible()).toBe(false)
+    );
+
 export const verifyElementIsEnabled = async (
   page: Page,
   locator: string,

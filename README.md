@@ -1,3 +1,29 @@
+# Magento 2 Hyva playwright tests
+
+This project was bootstrapped with [Eric Stanley's Playwright Framework](https://github.com/eric-stanley/playwright-framework).
+
+## Instroduction
+
+The goal of this project is to create an extensible Playwright tetsing environment for Magento 2 + Hyva projects.
+The main focus is the ability to have a base set of Hyva tests, that can be extended upon by a sub git project for hyva based sites, without having to edit the base Hyva tests.
+The ideal would then be that community driven tests can be added to expand the base Hyva tests, which can then be expanded on by each user to their own tests for their own sites tweaks.
+
+Please see the vide here for an overview.
+
+## Built as I went along
+
+Please note that this project was built as I learnt playwright and other aspects. SOme thinsg may likely be improved upon, so feel free to join in and help improve.
+
+I am no expert in anything!
+
+## Getting started
+
+* Get playwirght installed and working on your system. How is outside the scope of this readme. I use vagrant with docker.
+* 
+---------------------------------------------
+
+Original boostrap readme content below, left as it still applies.
+
 This project was bootstrapped with [playwright](https://playwright.dev/).
 
 Testing site used - [UI Testing Playground](http://uitestingplayground.com/)

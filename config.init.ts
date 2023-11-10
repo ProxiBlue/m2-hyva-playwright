@@ -10,6 +10,7 @@ export const initConfig = (appName: string) => {
     );
     let jsonData = require(configFile);
     process.env.skipBaseTests = jsonData.skipBaseTests;
+    process.env.mailcatcher = jsonData.mailcatcher;
 
     (() => {
         switch (process.env.NODE_ENV) {
