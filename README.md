@@ -1,6 +1,8 @@
 # Magento 2 Hyva playwright tests
 
 This project was bootstrapped with [Eric Stanley's Playwright Framework](https://github.com/eric-stanley/playwright-framework).
+I had made quite a few changes how it works to accomodate my needs, and those are not upstream compatible with the original project, so this project now stands appart going forward.
+Credit to Eric for his work.
 
 ## Instroduction
 
@@ -14,7 +16,7 @@ Please see the vide here for an overview.
 
 Please note that this project was built as I learnt playwright and other aspects. SOme thinsg may likely be improved upon, so feel free to join in and help improve.
 
-I am not an expert in anything!
+I am certanly not an expert in anything playwright or js related!
 
 ## Things needed
 
@@ -47,7 +49,9 @@ You will see teh actual command run is: `APP_NAME=hyva NODE_ENV=dev playwright t
 OR remove headless
 `APP_NAME=hyva NODE_ENV=dev npx playwright test --headed`
 
-you can see teh commands are in the package.json scripts section for each app. Example: https://github.com/ProxiBlue/m2-hyva-playwright/blob/main/src/apps/hyva/package.json
+you can see the commands are in the package.json scripts section for each app. Example: https://github.com/ProxiBlue/m2-hyva-playwright/blob/main/src/apps/hyva/package.json
+
+ref: ref: https://youtu.be/R6wQaD1cP2Q
 
 ## Adding your own tests for your app
 
@@ -102,6 +106,9 @@ You can also run the tests from the app folder, as noted above.
 * run `cd src/apps/pps`
 * run `npx yarn test-live`
 
+![2023-11-11_19-41](https://github.com/ProxiBlue/m2-hyva-playwright/assets/4994260/e396b920-332e-40af-9d97-b47795938210)
+  
+
 ## Things of interest
 
 ### App fixtures file
@@ -131,6 +138,14 @@ It is preferred to keep tests in 'pages' classes, and then call those from the t
 This allows for extensibility
 
 In your app, this is not really needed, unless you will have apps extending apps, and so on.
+
+### Using the bootstrapped frameowrk actions
+
+You will see the framework I based this work on has some utility actions and resources.
+I use them in some places, and in others not.
+I kind of moved away from using them, as I wanted to learn more on how to use playwright functionality natively, and using the actions did not teach me that.
+I am at times swapping between the two. Depens on how I feel in that moment really. Is not important to me
+
 
 ---------------------------------------------
 
