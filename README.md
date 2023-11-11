@@ -63,9 +63,9 @@ This allows you to have your own tests, and not have to worry about them being o
 
 The test in your apps will extend the tests in the Hyva base, for those that need to be tweaked, or just run the base Hyva ones, but against your site.
 
-You can also set base Hyva tests to be skipped, for anything you don;t want, or had completely replaced (more on that below)
+You can also set base Hyva tests to be skipped, for anything you don't want, or had completely replaced (more on that below)
 
-There is a bash script that will boostrap your app structure under src/apps/{yourappname} and add the needed files.
+There is a bash script that will bootsrap your app structure under src/apps/{yourappname} and add the needed files.
 You can run it from the root folder with `./bootstrapNewApp.sh {yourappname}` (no spaces in app name)
 This will initialise a blank git repo allowing you to add and commit your tests to your own (private) repo.
 You will need to add in your own remote to push commits to. (I am assuming you know how to do all that using GIT)
@@ -81,9 +81,9 @@ Let's clone that into place, and run the example tests.
 
 * run `cd src/apps`
 * run `git clone git@github.com:ProxiBlue/pps-example-tests.git pps`
-* run `cd ../../../` (which brings you back to teh main top level folder of teh repo)
+* run `cd ../../../` (which brings you back to the main top level folder of the repo)
 
-Now you can run the tests for the pps app, against the Hyva demo site.
+Now you can run the tests made for the Hyva base theme, against your site (app) theme.
 
 You will see in teh run, the base Hyva tests will run first, then after that the PPS (app) tests will run.
 
