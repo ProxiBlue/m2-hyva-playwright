@@ -22,7 +22,7 @@ I am not an expert in anything!
 
 ## Getting started
 
-* Get a Linux/Mac box to work in. I work inside a docker deployed box based on: `mcr.microsoft.com/playwright:v1.36.2-focal`
+* Get a Linux/Mac box to work on. (no tested/used on windows)
 * Clone this repo and cd into it.
 * Run `npm install` to install dependencies
 * Run `npm install playwright`

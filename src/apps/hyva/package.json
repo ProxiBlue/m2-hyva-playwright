@@ -5,7 +5,7 @@
   "author": "Lucas van Staden",
   "license": "MIT",
   "scripts": {
-    "test-dev": "APP_NAME=hyva NODE_ENV=dev TEST_BASE=hyva playwright test",
+    "test-dev": "APP_NAME=hyva NODE_ENV=dev playwright test",
     "test-uat": "APP_NAME=hyva NODE_ENV=uat TEST_BASE=hyva playwright test",
     "test-live": "APP_NAME=hyva NODE_ENV=live playwright test",
     "test:debug": "APP_NAME=hyva NODE_ENV=dev PWDEBUG=1 playwright test",

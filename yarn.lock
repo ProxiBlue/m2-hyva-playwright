@@ -144,6 +144,10 @@ playwright@^1.37.1:
   dependencies:
     playwright-core "1.37.1"
 
+"pps@file:/vagrant/sites/pvcpipesupplies_244/tests/playwright-framework/src/apps/pps":
+  version "1.0.0"
+  resolved "file:src/apps/pps"
+
 properties@^1.2.1:
   version "1.2.1"
   resolved "https://registry.npmjs.org/properties/-/properties-1.2.1.tgz"
@@ -172,10 +176,6 @@ typescript@^4.8.3, typescript@>=2.7:
   version "4.8.3"
   resolved "https://registry.npmjs.org/typescript/-/typescript-4.8.3.tgz"
   integrity sha512-goMHfm00nWPa8UvR/CPSvykqf6dVV8x/dp0c5mFTMTIu0u0FlGWRioyy7Nn0PGAdHxpJZnuO/ut+PpQ8UiHAig==
-
-"ui-testing-playground@file:/vagrant/sites/pvcpipesupplies_244/tests/playwright-framework/src/apps/ui-testing-playground":
-  version "1.0.0"
-  resolved "file:src/apps/ui-testing-playground"
 
 uuid@^8.3.0:
   version "8.3.2"
