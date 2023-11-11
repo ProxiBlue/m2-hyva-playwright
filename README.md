@@ -147,6 +147,8 @@ I use them in some places, and in others not.
 I kind of moved away from using them, as I wanted to learn more on how to use playwright functionality natively, and using the actions did not teach me that.
 I am at times swapping between the two. Depens on how I feel in that moment really. Is not important to me
 
+You can watch this as it gives some more info on working: https://youtu.be/mz2zec4I18Q
+
 
 ---------------------------------------------
 
