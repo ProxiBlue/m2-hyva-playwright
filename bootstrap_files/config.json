@@ -1,0 +1,11 @@
+{
+  "env": {
+    "dev": { "url": "" },
+    "uat": { "url": "" },
+    "live": { "url": "" }
+  },
+  "mailcatcher": "",
+  "skipBaseTests": [
+
+  ]
+}
