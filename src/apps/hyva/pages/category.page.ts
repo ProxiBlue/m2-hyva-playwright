@@ -121,7 +121,7 @@ export default class CategoryPage extends BasePage {
         for (limitId in data.limiter) {
             limit = data.limiter[limitId]
             await this.page.selectOption(locators.limiter, {label: limit});
-            await this.page.waitForSelector(locators.toolbar_amount);
+            await this.page.waitForSelector(pageLocators.footer);
             const totalProducts = await this.page.locator(locators.toolbar_amount).last().textContent();
             if (parseInt(totalProducts) < parseInt(limit)) {
                 await expect(await this.page.locator(locators.product_name).count()).toBe(parseInt(totalProducts));

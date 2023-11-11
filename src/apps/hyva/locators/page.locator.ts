@@ -10,3 +10,5 @@ export const breadcrumbs = "Breadcrumb"
 export const comapre_page_title = "h1"
 
 export const compare_table = ".table-wrapper"
+
+export const footer = ".page-footer"
