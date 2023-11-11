@@ -22,8 +22,26 @@ I am not an expert in anything!
 
 ## Getting started
 
-* Get playwirght installed and working. How is outside the scope of this readme. I use vagrant with docker.
-* 
+* Get a Linux/Mac box to work in. I work inside a docker deployed box based on: `mcr.microsoft.com/playwright:v1.36.2-focal`
+* Clone this repo and cd into it.
+* Run `npm install` to install dependencies
+* Run `npm playwright install` to install playwright dependencies
+
+## Running tests
+
+At this point, you will be ready to run the base Hyva tests, against the Hyva example website.
+Check the config file https://github.com/ProxiBlue/m2-hyva-playwright/blob/main/src/apps/hyva/config.json where you can
+see the site urls defined. In this cas, they are all teh same. (you will make edits to this later when you setup your own app)
+
+The -dev (as example is the environment used in commands below), so you can run tests against multiple hosts (live/uat/dev etc)
+You can run: `yarn workspace hyva test-{environment}` in the root folder to run the tests. eg `yarn workspace hyva test-dev`
+
+OR you can run it from the app base folder
+
+* run `cd src/apps/hyva`
+* run `yarn test-{environment}` where site corresponds to the site defined in the config file. eg `yarn test-dev`
+
+
 ---------------------------------------------
 
 Original boostrap readme content below, left as it still applies.
