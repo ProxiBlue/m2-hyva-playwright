@@ -12,9 +12,10 @@ The ideal would then be that community driven tests can be added to expand the b
 
 Please see the vide here for an overview.
 
-## Built as I went along
+## Built as I went along / Learning
 
-Please note that this project was built as I learnt playwright and other aspects. SOme thinsg may likely be improved upon, so feel free to join in and help improve.
+Please note that this project was built as I learnt playwright and other aspects. Some things may likely be improved upon, be changed, so feel free to join in and help improve.
+I figured I can put the idea forward even though not many tests exists as yet. It is a WIP.
 
 I am certanly not an expert in anything playwright or js related!
 
