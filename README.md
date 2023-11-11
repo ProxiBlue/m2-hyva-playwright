@@ -35,12 +35,12 @@ Check the config file https://github.com/ProxiBlue/m2-hyva-playwright/blob/main/
 see the site urls defined. In this cas, they are all teh same. (you will make edits to this later when you setup your own app)
 
 The -dev (as example is the environment used in commands below), so you can run tests against multiple hosts (live/uat/dev etc)
-You can run: `yarn workspace hyva test-{environment}` in the root folder to run the tests. eg `yarn workspace hyva test-dev`
+You can run: `npx yarn workspace hyva test-{environment}` in the root folder to run the tests. eg `yarn workspace hyva test-dev`
 
 OR you can run it from the app base folder
 
 * run `cd src/apps/hyva`
-* run `yarn test-{environment}` where site corresponds to the site defined in the config file. eg `yarn test-dev`
+* run `npx yarn test-{environment}` where site corresponds to the site defined in the config file. eg `yarn test-dev`
 
 
 ---------------------------------------------
