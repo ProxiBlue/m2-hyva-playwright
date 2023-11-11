@@ -83,3 +83,7 @@ yarn-error.log
 # Yarn Integrity file
 .yarn-integrity
 .now
+
+src/apps/
+!src/apps/hyva
+!src/apps/common

@@ -14,11 +14,15 @@ Please see the vide here for an overview.
 
 Please note that this project was built as I learnt playwright and other aspects. SOme thinsg may likely be improved upon, so feel free to join in and help improve.
 
-I am no expert in anything!
+I am not an expert in anything!
+
+## Things needed
+
+* a matrix of tests / hyva features tested / outstanding
 
 ## Getting started
 
-* Get playwirght installed and working on your system. How is outside the scope of this readme. I use vagrant with docker.
+* Get playwirght installed and working. How is outside the scope of this readme. I use vagrant with docker.
 * 
 ---------------------------------------------
 
