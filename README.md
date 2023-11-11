@@ -136,7 +136,7 @@ This way you can extend the base tests with you own data files.
 If you simply create a data file in your app, with the same name as one in the base Hyva tests, your app data file will be loaded instead of the Hyva base one.
 You don't need to do anything else there. So you can use your site data with the base hyva tests without changing the base hyva files, making it a lot easier to update from upstream.
 
-This is achieved by dynamic loading in teh base Hyva classes
+This is achieved by dynamic imports in the base Hyva classes. You'd not need this in your app classes, unless you plan to have a base app, that is extended by other apps.
 
 ```
 // dynamically import the test JSON data based on the APP_NAME env variable
