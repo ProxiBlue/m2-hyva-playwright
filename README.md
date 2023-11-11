@@ -6,15 +6,14 @@ Credit to Eric for his work.
 
 ## Instroduction
 
-The goal of this project is to create an extensible Playwright tetsing environment for Magento 2 + Hyva projects.
+The goal of this project is to create an extensible Playwright testing environment for Magento 2 + Hyva projects.
 The main focus is the ability to have a base set of Hyva tests, that can be extended upon by a sub git project for hyva based sites, without having to edit the base Hyva tests.
-The ideal would then be that community driven tests can be added to expand the base Hyva tests, which can then be expanded on by each user to their own tests for their own sites tweaks.
-
-Please see the vide here for an overview.
+The ideal would then be that community driven tests can be added to expand the base Hyva tests, which can then be extended by each user to their own tests for their own sites tweaks, without having to edit the community tests.
 
 ## Built as I went along / Learning
 
-Please note that this project was built as I learnt playwright and other aspects. Some things may likely be improved upon, be changed, so feel free to join in and help improve.
+Please note that this project was built as I learnt playwright and other aspects. 
+Some things may likely be improved upon, and be changed, so feel free to join in and help improve.
 I figured I can put the idea forward even though not many tests exists as yet. It is a WIP.
 
 I am certanly not an expert in anything playwright or js related!
@@ -25,7 +24,7 @@ I am certanly not an expert in anything playwright or js related!
 
 ## Getting started
 
-* Get a Linux/Mac box to work on. (no tested/used on windows)
+* Get a Linux/Mac box to work on. (no tested/used on windows) (using playwright dockers makes it easier, as all needed packages are installed)
 * Clone this repo and cd into it.
 * Run `npm install` to install dependencies
 * Run `npm install playwright`
@@ -35,9 +34,9 @@ I am certanly not an expert in anything playwright or js related!
 
 At this point, you will be ready to run the base Hyva tests, against the Hyva example website.
 Check the config file https://github.com/ProxiBlue/m2-hyva-playwright/blob/main/src/apps/hyva/config.json where you can
-see the site urls defined. In this cas, they are all teh same. (you will make edits to this later when you setup your own app)
+see the site urls defined. In this cas, they are all the same. (you will make edits to this later when you setup your own app)
 
-The -dev (as example is the environment used in commands below), so you can run tests against multiple hosts (live/uat/dev etc)
+You can run tests against multiple hosts (live/uat/dev etc)
 You can run: `npx yarn workspace hyva test-{environment}` in the root folder to run the tests. eg `yarn workspace hyva test-dev`
 
 OR you can run it from the app base folder
@@ -45,7 +44,7 @@ OR you can run it from the app base folder
 * run `cd src/apps/hyva`
 * run `npx yarn test-{environment}` where site corresponds to the site defined in the config file. eg `yarn test-dev`
 
-You will see teh actual command run is: `APP_NAME=hyva NODE_ENV=dev playwright test`, so you can run it in the UI as well.
+You will see the actual command run is: `APP_NAME=hyva NODE_ENV=dev playwright test`, so you can run it in the UI as well.
 `APP_NAME=hyva NODE_ENV=dev npx playwright test --ui`
 OR remove headless
 `APP_NAME=hyva NODE_ENV=dev npx playwright test --headed`
