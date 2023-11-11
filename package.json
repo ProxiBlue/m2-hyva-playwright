@@ -1,5 +1,5 @@
 {
-  "name": "playwright-hands-on",
+  "name": "m2-hyva-playwright",
   "version": "1.0.0",
   "private": true,
   "description": "",
@@ -12,15 +12,9 @@
     "test-uat:hyva": "yarn workspace hyva test-uat",
     "test:debug:hyva": "yarn workspace hyva test:debug",
     "report:hyva": "yarn workspace hyva report",
-    "allure:hyva": "yarn workspace hyva allure",
-    "test-dev:pps": "yarn workspace pps test-dev",
-    "test-live:pps": "yarn workspace pps test-live",
-    "test-uat:pps": "yarn workspace pps test-uat",
-    "test:debug:pps": "yarn workspace pps test:debug",
-    "report:pps": "yarn workspace pps report",
-    "allure:pps": "yarn workspace pps allure"
+    "allure:hyva": "yarn workspace hyva allure"
   },
-  "author": "Eric Stanley",
+  "author": "Lucas van Staden",
   "license": "MIT",
   "devDependencies": {
     "@faker-js/faker": "^7.5.0",

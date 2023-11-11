@@ -1,8 +1,8 @@
 #!/bin/bash
 
-
-mkdir src/apps/$1 &&
+mkdir -p src/apps/$1 &&
 cd src/apps/$1 &&
+git init &&
 mkdir data &&
 mkdir fixtures &&
 mkdir locators &&
@@ -13,5 +13,6 @@ touch package.json &&
 touch playwright.config.ts &&
 touch data/home.data.json &&
 touch fixtures/index.ts &&
+printf "reports\ntest-results" > .gitignore
 
 
