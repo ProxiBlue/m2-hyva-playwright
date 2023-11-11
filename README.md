@@ -42,6 +42,36 @@ OR you can run it from the app base folder
 * run `cd src/apps/hyva`
 * run `npx yarn test-{environment}` where site corresponds to the site defined in the config file. eg `yarn test-dev`
 
+You will see teh actual command run is: `APP_NAME=hyva NODE_ENV=dev playwright test`, so you can run it in the UI as well.
+`APP_NAME=hyva NODE_ENV=dev npx playwright test --ui`
+OR remove headless
+`APP_NAME=hyva NODE_ENV=dev npx playwright test --headed`
+
+you can see teh commands are in the package.json scripts section for each app. Example: https://github.com/ProxiBlue/m2-hyva-playwright/blob/main/src/apps/hyva/package.json
+
+## Adding your own tests for your app
+
+Ok, so great, but not very helpful to run tests against the Hyva demo store. So let's add your own app.
+
+The idea behind this setup is to have your apps as sub-git projects under the src/app folder.
+
+This allows you to have your own tests, and not have to worry about them being overwritten when you update the base Hyva tests.
+
+The test in your apps will extend the tests in the Hyva base, for those that need to be tweaked, or just run the base Hyva ones, but against your site.
+
+You can also set base Hyva tests to be skipped, for anything you don;t want, or had completely replaced (more on that below)
+
+There is a bash script that will boostrap your app structure under src/apps/{yourappname} and add the needed files.
+You can run it from the root folder with `./bootstrapNewApp.sh {yourappname}` (no spaces in app name)
+This will initialise a blank git repo to allow you add and commit your tests to your own (private) repo.
+You will need to add in your own remote to push commits to. (I am assuming you know how to do all that using GIT)
+
+
+
+
+
+
+
 
 ---------------------------------------------
 
