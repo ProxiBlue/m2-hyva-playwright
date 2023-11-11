@@ -85,19 +85,19 @@ Let's clone that into place, and run the example tests.
 
 Now you can run the tests made for the Hyva base theme, against your site (app) theme.
 
-You will see in teh run, the base Hyva tests will run first, then after that the PPS (app) tests will run.
+You will see in the run, the base Hyva tests will run first, and after that the PPS (app) tests will run.
 
-You will see some tests in teh base Hyva is skipped, as they were replaced with corresponding tests in the PPS app, or simply not wanted (as maybe the app don;t have that module/functionality installed)
+You will see some tests in the base Hyva is skipped, as they were replaced with corresponding tests in the PPS app, or simply not wanted (as maybe the app don't have that module/functionality installed)
 
-You can skip tests by defining them in the config.json file, under the `skipBaseTests` key. (Still wanting for a better way, if any ideas :) )_
+You can skip tests by defining them in the config.json file, under the `skipBaseTests` key. (Still wanting for a better way, if any ideas :) )
 ref: https://github.com/ProxiBlue/pps-example-tests/blob/main/config.json#L7C4-L7C17
 
-For this purpose, any tests added to teh base Hyva tests MUST start with a skip tests line, to allow that test to be skipped by any defined apps
+For this purpose, any tests added to the base Hyva tests MUST start with a skip tests line, to allow that test to be skipped by any defined apps
 ```test.skip(process.env.skipBaseTests.includes(testInfo.title), "Test skipped for this environment: " + process.env.APP_NAME);```
 
 I am still learning playwright, so maybe there is a better way to implement this idea!
 
-So, from teh top level folder, run `npx yarn workspace pps test-live` to run the tests for the pps app, against the PPS site.
+So, from the top level folder, run `npx yarn workspace pps test-live` to run the tests for the pps app, against the PPS site.
 You will see here that although we are running the base Hyva tests, under the hyva app folder, the tests are using the playwright config and data files from the PPS app.
 This is achieved by the adjusted command: `APP_NAME=pps NODE_ENV=live TEST_BASE=hyva playwright test` where the APP_NAME is designating which app to use as base to run the tests, but TEST_BASE designates where to run tests from.
 
