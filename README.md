@@ -132,6 +132,29 @@ The PPSHomePage class then extends the base HYva HomePage and allows to override
 This then allows PPS tests to re-use base Hyva functions, and replace others.
 
 You can choose to import Hyva base locators/data json files, or local ones for changes in your app.
+This way you can extend the base tests with you own data files.
+
+If you simply create a data file in your app, with the same name as one in the base Hyva tests, your app data file will be loaded instead of the Hyva base one.
+You don't need to do anything else there. So you can use your site data with the base hyva tests without changing the base hyva files, making it a lot easier to update from upstream.
+
+This is achieved by dynamic loading in teh base Hyva classes
+
+```
+// dynamically import the test JSON data based on the APP_NAME env variable
+// and if the file exixts in APP path, and if not default to teh base data
+let data = {};
+const fs = require("fs");
+if (fs.existsSync(__dirname + '/../../' + process.env.APP_NAME + '/data/cart.data.json')) {
+    import('../../' + process.env.APP_NAME + '/data/cart.data.json').then((dynamicData) => {
+        data = dynamicData;
+    });
+} else {
+    import('../data/cart.data.json').then((dynamicData) => {
+        data = dynamicData;
+    });
+}
+```
+
 
 ### Using Page classes for tests instead of placing tests directly in test files.
 
