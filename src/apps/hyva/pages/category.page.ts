@@ -184,15 +184,15 @@ export default class CategoryPage extends BasePage {
         const successMessage1 = await this.page.locator(pageLocators.message_success);
         await expect(await successMessage1.textContent()).toContain(firstProductName.trim());
         await successMessage1.getByLabel(pageLocators.messageClose).click();
-        await expect(this.page.locator(productLocators.compareLink)).toBeVisible();
         await expect(await this.page.locator(productLocators.compareLink).textContent()).toContain("1");
+        await expect(this.page.locator(productLocators.compareLink)).toBeVisible();
         await LastAddToCompare.click();
         await this.page.waitForSelector(pageLocators.message_success);
         const successMessage2 = await this.page.locator(pageLocators.message_success);
         await expect(await successMessage2.textContent()).toContain(lastProductName.trim());
         await successMessage2.getByLabel(pageLocators.messageClose).click();
-        await expect(this.page.locator(productLocators.compareLink)).toBeVisible();
         await expect(await this.page.locator(productLocators.compareLink).textContent()).toContain("2");
+        await expect(this.page.locator(productLocators.compareLink)).toBeVisible();
         await this.page.locator(productLocators.compareLink).click();
         await this.page.waitForSelector(pageLocators.comapre_page_title);
         await expect(await this.page.locator(pageLocators.comapre_page_title).textContent()).toContain(pageData.compare_products_title);
