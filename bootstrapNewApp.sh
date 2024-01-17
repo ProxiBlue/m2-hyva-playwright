@@ -3,7 +3,6 @@
 mkdir -p src/apps/$1 &&
 cd src/apps/$1 &&
 git init &&
-git branch -m main &&
 mkdir data &&
 mkdir fixtures &&
 mkdir locators &&
@@ -17,7 +16,7 @@ cp ../../../bootstrap_files/config.json ./ &&
 cp ../hyva/playwright.config.ts ./ &&
 cp ../../../bootstrap_files/package.json ./ &&
 cp ../../../bootstrap_files/fixtures_index.ts ./fixtures/index.ts &&
-sed -i "s/APP_NAME/$1/g" package.json
+sed -i "s/NEW_APP_NAME/$1/g" package.json
 
 
 
