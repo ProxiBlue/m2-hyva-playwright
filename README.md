@@ -27,7 +27,7 @@ I am certanly not an expert in anything playwright or js related!
 * Run `npm install` to install dependencies
 * Run `npm install playwright`
 * Run `yarn run playwright install --with-deps` to install playwright and browser dependencies
-
+* craete a folder for allure test results: ```mkdir ./src/apps/hyva/reports/allure/allure-result```
 ## Running tests
 
 At this point, you will be ready to run the base Hyva tests, against the Hyva example website.
