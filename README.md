@@ -50,8 +50,11 @@ OR remove headless
 `APP_NAME=hyva NODE_ENV=dev npx playwright test --headed`
 
 you can see the commands are in the package.json scripts section for each app. Example: https://github.com/ProxiBlue/m2-hyva-playwright/blob/main/src/apps/hyva/package.json
+<<<<<<< HEAD
 
 ref: ref: https://youtu.be/R6wQaD1cP2Q
+=======
+>>>>>>> fbc566c (updates. improve skip test method. Test improvements.)
 
 ## Adding your own tests for your app
 
@@ -85,17 +88,22 @@ Let's clone that into place, and run the example tests.
 
 Now you can run the tests made for the Hyva base theme, against your site (app) theme.
 
-You will see in the run, the base Hyva tests will run first, and after that the PPS (app) tests will run.
-
-You will see some tests in the base Hyva is skipped, as they were replaced with corresponding tests in the PPS app, or simply not wanted (as maybe the app don't have that module/functionality installed)
+You will see in the run, the base Hyva tests will run first, then after that the PPS (app) tests will run.
 
 You can skip tests by defining them in the config.json file, under the `skipBaseTests` key. (Still wanting for a better way, if any ideas :) )
 ref: https://github.com/ProxiBlue/pps-example-tests/blob/main/config.json#L7C4-L7C17
 
-For this purpose, any tests added to the base Hyva tests MUST start with a skip tests line, to allow that test to be skipped by any defined apps
+For this purpose, any tests added to the base Hyva tests MUST have a skip tests line, to allow that test to be skipped by any defined apps
 ```test.skip(process.env.skipBaseTests.includes(testInfo.title), "Test skipped for this environment: " + process.env.APP_NAME);```
 
-I am still learning playwright, so maybe there is a better way to implement this idea!
+This can be defined in a beforeEach function, or in the test itself. (I am still learning playwright, so maybe there is a better way to implement this idea!)
+
+```
+    test.beforeEach(async ({ homePage}, testInfo) => {
+        test.skip(process.env.skipBaseTests.includes(testInfo.title), testInfo.title + " test skipped for this environment: " + process.env.APP_NAME);
+        await homePage.navigateTo();
+    });
+```
 
 So, from the top level folder, run `npx yarn workspace pps test-live` to run the tests for the pps app, against the PPS site.
 You will see here that although we are running the base Hyva tests, under the hyva app folder, the tests are using the playwright config and data files from the PPS app.
@@ -170,44 +178,4 @@ I kind of moved away from using them, as I wanted to learn more on how to use pl
 I am at times swapping between the two. Depens on how I feel in that moment really. Is not important to me
 
 You can watch this as it gives some more info on working: https://youtu.be/mz2zec4I18Q
-
-
----------------------------------------------
-
-Original boostrap readme content below, left as it still applies.
-
-This project was bootstrapped with [playwright](https://playwright.dev/).
-
-Testing site used - [UI Testing Playground](http://uitestingplayground.com/)
-
-For fast run, fork the [repo](https://github.com/inflectra/ui-test-automation-playground) and run it from local. Otherwise, change the below
-
-| Key           | Value                             | File                                                 |
-| ------------- | --------------------------------- | ---------------------------------------------------- |
-| `env.*.url`   | `http://uitestingplayground.com/` | `src/apps/ui-testing-playground/config.json`         |
-| `urlContains` | `uitestingplayground`             | `src/apps/ui-testing-playground/data/home.data.json` |
-
-## :sparkles: Available Scripts
-
-In the project directory, you can run:
-
-| _Command_                        | _Description_                                                                           |
-| -------------------------------- | --------------------------------------------------------------------------------------- |
-| <code>**yarn**</code>            | to install dependencies (**_always run this first before running any other commands_**) |
-| <code>**yarn test**</code>       | to run tests                                                                            |
-| <code>**yarn test:debug**</code> | to run tests in `debug` mode                                                            |
-| <code>**yarn report**</code>     | to serve default report                                                                 |
-| <code>**yarn allure**</code>     | to serve allure report                                                                  |
-
-**:exclamation:_Note:_** By default the tests are run in <code>headless</code> mode. Screenshots will not be captured in this mode as it causes problems during validation between headless and headed mode. For validating screenshots, change the below in <code>src/apps/ui-testing-playground/playwright.config.js</code>
-
-| Field      | Value   |
-| ---------- | ------- |
-| `headless` | `false` |
-| `retries`  | `0`     |
-
-During the first run, the screenshots will be baselined and no validations will be done during this run. Once the run is complete, change the <code>retries</code> back to the number of retries you need.
-
-Starting second run, the screenshots will be compared with the baseline screenshot.
-
-#### For implementation of this framework for a brand new application. Check [here](https://www.stanleyeric.com/playwright-framework-implementation-part-1/)
+You can also see a run of the current tests here: https://asciinema.org/a/KWSqlCqKqU4XXDP25K0f17WWT

@@ -87,3 +87,7 @@ yarn-error.log
 src/apps/
 !src/apps/hyva
 !src/apps/common
+/test-results/
+/playwright-report/
+/blob-report/
+/playwright/.cache/

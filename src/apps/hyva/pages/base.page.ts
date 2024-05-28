@@ -8,6 +8,8 @@ export default class BasePage {
 
     async navigateTo() {
         await actions.navigateTo(this.page, process.env.URL + this.data.url, this.workerInfo);
+        await this.page.waitForLoadState('networkidle');
+        await this.page.waitForLoadState('domcontentloaded');
         const url = this.page.url();
 
         await test.step(
@@ -26,6 +28,8 @@ export default class BasePage {
     }
 
     async verifyPageTitle() {
+        await this.page.waitForLoadState('networkidle');
+        await this.page.waitForLoadState('domcontentloaded');
         const titleText = await actions.getInnerText(
             this.page,
             this.locators.title,
@@ -35,6 +39,8 @@ export default class BasePage {
     }
 
     async verifyDomTitle() {
+        await this.page.waitForLoadState('networkidle');
+        await this.page.waitForLoadState('domcontentloaded');
         await actions.verifyPageTitle(this.page, this.data["header_title"], this.workerInfo);
     }
 }
