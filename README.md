@@ -3,8 +3,13 @@
 ## Instroduction
 
 The goal of this project is to create an extensible Playwright testing environment for Magento 2 + Hyva projects.
-The main focus is the ability to have a base set of Hyva tests, that can be extended upon by a sub git project for hyva based sites, without having to edit the base Hyva tests.
-The ideal would then be that community driven tests can be added to expand the base Hyva tests, which can then be extended by each user to their own tests for their own sites tweaks, without having to edit the community tests.
+The main focus of this project was to: 
+
+* have a base set of Hyva tests, which can be extended / updated by community members without affecting your own site specific tests
+* Have a set of sub-tests (site tests) on a private repo that you can layer 'ontop' of the base hyva tests.
+
+This process will ease the pain of updaing the base tests and not have merge conflict hell each time you update the base HYva tests 
+as you will have no need to adjust those tests in any way. (unless the point is to contribute updates/new tests)
 
 ## Built as I went along / Learning
 
