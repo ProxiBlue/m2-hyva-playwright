@@ -8,7 +8,7 @@ The main focus of this project was to:
 * have a base set of Hyva tests, which can be extended / updated by community members without affecting your own site specific tests
 * Have a set of sub-tests (site tests) on a private repo that you can layer 'ontop' of the base hyva tests.
 
-This process will ease the pain of updaing the base tests and not have merge conflict hell each time you update the base HYva tests 
+This process will ease the pain of updating the base tests and not have merge conflict hell each time you update the base Hyva tests 
 as you will have no need to adjust those tests in any way. (unless the point is to contribute updates/new tests)
 
 ## Built as I went along / Learning
