@@ -30,7 +30,6 @@ I am certanly not an expert in anything playwright or js related!
 * Clone this repo and cd into it. ```git clone git@github.com:ProxiBlue/m2-hyva-playwright.git```
 * You need to end up in a folder ```tests/m2-hyva-playwright```
 * Run `npm install` to install dependencies
-* Run `npm install playwright`
 * Run `yarn run playwright install --with-deps` to install playwright and browser dependencies
 * craete a folder for allure test results: ```mkdir -p ./src/apps/hyva/reports/allure/allure-result```
 ## Running tests
