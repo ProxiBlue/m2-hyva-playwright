@@ -21,10 +21,12 @@ I am certanly not an expert in anything playwright or js related!
 ## Getting started
 
 * Get a Linux/Mac box to work on. (no tested/used on windows) (using playwright dockers makes it easier, as all needed packages are installed)
-* Clone this repo and cd into it.
+* Create a folder called 'tests' (case MaTTeRs) and cd into it.
+* Clone this repo and cd into it. ```git clone git@github.com:ProxiBlue/m2-hyva-playwright.git```
+* You need to end up in a folder ```tests/m2-hyva-playwright```
 * Run `npm install` to install dependencies
 * Run `npm install playwright`
-* Run `npx playwright install` to install playwright dependencies
+* Run `yarn run playwright install --with-deps` to install playwright and browser dependencies
 
 ## Running tests
 
@@ -46,11 +48,8 @@ OR remove headless
 `APP_NAME=hyva NODE_ENV=dev npx playwright test --headed`
 
 you can see the commands are in the package.json scripts section for each app. Example: https://github.com/ProxiBlue/m2-hyva-playwright/blob/main/src/apps/hyva/package.json
-<<<<<<< HEAD
 
 ref: ref: https://youtu.be/R6wQaD1cP2Q
-=======
->>>>>>> fbc566c (updates. improve skip test method. Test improvements.)
 
 ## Adding your own tests for your app
 
