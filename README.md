@@ -1,9 +1,5 @@
 # Magento 2 Hyva playwright tests
 
-This project was bootstrapped with [Eric Stanley's Playwright Framework](https://github.com/eric-stanley/playwright-framework).
-I had made quite a few changes how it works to accomodate my needs, and those are not upstream compatible with the original project, so this project now stands appart going forward.
-Credit to Eric for his work.
-
 ## Instroduction
 
 The goal of this project is to create an extensible Playwright testing environment for Magento 2 + Hyva projects.
@@ -179,3 +175,10 @@ I am at times swapping between the two. Depens on how I feel in that moment real
 
 You can watch this as it gives some more info on working: https://youtu.be/mz2zec4I18Q
 You can also see a run of the current tests here: https://asciinema.org/a/KWSqlCqKqU4XXDP25K0f17WWT
+
+## Acknowledgement
+
+This project was bootstrapped with [Eric Stanley's Playwright Framework](https://github.com/eric-stanley/playwright-framework).
+I had made quite a few changes how it works to accomodate my needs, and those are not upstream compatible with the original project, so this project now stands appart going forward.
+Credit to Eric for his work.
+
