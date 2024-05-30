@@ -11,7 +11,7 @@ describe("Home", () => {
         await homePage.verifyDomTitle();
     });
 
-    test('it can perform search from homepage ', async ({homePage, isMobile}, testInfo) => {
+    test('it can perform search from homepage', async ({homePage, isMobile}, testInfo) => {
         await homePage.canSearchFromHomepage(isMobile);
     });
 });
