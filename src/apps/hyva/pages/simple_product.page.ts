@@ -45,8 +45,8 @@ export default class SimpleProductPage extends BasePage {
         await actions.clickElement(this.page, locators.product_add_to_cart_button, this.workerInfo);
         await this.page.waitForLoadState('networkidle');
         await this.page.waitForLoadState('domcontentloaded');
-        //await actions.verifyElementIsVisible(this.page, pageLocators.message_success, this.workerInfo);
-        //expect(await this.page.locator(pageLocators.message_success).textContent()).toContain(data["name"]);
+        await actions.verifyElementIsVisible(this.page, pageLocators.message_success, this.workerInfo);
+        expect(await this.page.locator(pageLocators.message_success).textContent()).toContain(data["name"]);
     }
 
     async getProductPrice() {

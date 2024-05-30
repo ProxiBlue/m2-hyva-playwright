@@ -11,39 +11,39 @@ describe("Category Product List actions", () => {
         await categoryPage.checkFilter();
     });
 
-    test("Can sort products on price from lowest to highest", async ({ categoryPage }, testInfo) => {
+    test("it can sort the products on price from lowest to highest", async ({ categoryPage }, testInfo) => {
         await categoryPage.sortProductsByPriceLowToHigh();
     });
 
-    test("Can sort products on price from highest to lowest", async ({ categoryPage }, testInfo) => {
+    test("it can sort the products on price from highest to lowest", async ({ categoryPage }, testInfo) => {
         await categoryPage.sortProductsByPriceHighToLow();
     });
 
-    test("Can sort products by name ascending (a-z)", async ({ categoryPage }, testInfo) => {
+    test("it can sort the products by name (a-z)", async ({ categoryPage }, testInfo) => {
         await categoryPage.sortProductsByNameAscending();
     });
 
-    test("Can sort products by name descending (z-a)", async ({ categoryPage }, testInfo) => {
+    test("it can sort the products by name (z-a)", async ({ categoryPage }, testInfo) => {
         await categoryPage.sortProductsByNameDescending();
     });
 
-    test("Can Change number of products displayed (limiter)", async ({ categoryPage }, testInfo) => {
+    test("it can change the number of displayed products (limiter)", async ({ categoryPage }, testInfo) => {
         await categoryPage.limitProducts();
     });
 
-    test("Can see the correct breadcrumbs", async ({ categoryPage }, testInfo) => {
+    test("it checks if the breadcrumb is displayed correctly", async ({ categoryPage }, testInfo) => {
         await categoryPage.checkBreadcrumbs();
     });
 
-    test("Can swap between list and grid view", async ({ categoryPage }, testInfo) => {
+    test("it can switch from list to grid view", async ({ categoryPage }, testInfo) => {
         await categoryPage.ListAndGrid();
     });
 
-    test("Can move to next and previous page using pager", async ({ categoryPage }, testInfo) => {
+    test("it checks if the pagination is working", async ({ categoryPage }, testInfo) => {
         await categoryPage.checkPager();
     });
 
-    test("Can add to compare", async ({ categoryPage }, testInfo) => {
+    test("it can add multiple products to compare, and compare count indicators work.", async ({ categoryPage }, testInfo) => {
         await categoryPage.addToCompare();
     });
 

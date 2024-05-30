@@ -1,10 +1,10 @@
-import { PlaywrightTestConfig, devices } from "@playwright/test";
+import {devices, PlaywrightTestConfig} from "@playwright/test";
 
 const config: PlaywrightTestConfig = {
     testDir: process.env.TEST_BASE ? `../${process.env.TEST_BASE}/tests` : 'tests',
     testMatch: "tests/*.spec.ts",
-    timeout: 50 * 1000,
-    retries: 2,
+    timeout: 30 * 1000,
+    retries: 1,
     workers: 5,
     globalSetup: require.resolve("@home/global-setup"),
     globalTeardown: require.resolve("@home/global-teardown"),
@@ -50,9 +50,15 @@ const config: PlaywrightTestConfig = {
     projects: [
         {
             name: "chromium",
-            use: {
-                ...devices["Desktop Chrome"],
-            },
+            use: {...devices["Desktop Chrome"] },
+        },
+        {
+            name: "firefox",
+            use: { ...devices["Desktop Firefox"] },
+        },
+        {
+            name: "webkit",
+            use: { ...devices["Desktop Safari"] },
         }
     ],
 };

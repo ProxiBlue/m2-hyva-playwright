@@ -7,11 +7,11 @@ describe("Home", () => {
         await homePage.navigateTo();
     });
 
-    test("Verify home page", async ({homePage}, testInfo) => {
+    test("it can navigate to the homepage", async ({homePage}, testInfo) => {
         await homePage.verifyDomTitle();
     });
 
-    test('Can perform search from homepage', async ({homePage, isMobile}, testInfo) => {
+    test('it can perform search from homepage ', async ({homePage, isMobile}, testInfo) => {
         await homePage.canSearchFromHomepage(isMobile);
     });
 });

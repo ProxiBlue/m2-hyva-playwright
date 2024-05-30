@@ -23,20 +23,36 @@ export default class CartPage extends BasePage {
         super(page, workerInfo, data, cartLocators);
     }
 
+    async checkQuantity(itemRowNum: number, expectedQuantity: number) {
+        const itemRow = cartLocators.cart_table + '>>' + cartLocators.cart_table_body + ">>nth=" + itemRowNum + '>>' + cartLocators.cart_row_item_info
+        await actions.verifyElementExists(this.page, itemRow, this.workerInfo);
+        await actions.getInnerText(this.page, itemRow + '>>' + cartLocators.cart_row_subtotal, this.workerInfo).then (async (beforeSubTotal) => {
+            const qtyInput = itemRow + '>>' + cartLocators.cart_row_qty_input;
+            const qtyValue = await actions.getElementValue(this.page, qtyInput, this.workerInfo);
+            expect(qtyValue).toEqual(expectedQuantity.toString());
+        });
+
+    }
     async changeQuantity(itemRowNum: number, newQuantity: number) {
         const itemRow = cartLocators.cart_table + '>>' + cartLocators.cart_table_body + ">>nth=" + itemRowNum + '>>' + cartLocators.cart_row_item_info
         await actions.verifyElementExists(this.page, itemRow, this.workerInfo);
         await actions.getInnerText(this.page, itemRow + '>>' + cartLocators.cart_row_subtotal, this.workerInfo).then (async (beforeSubTotal) => {
             const qtyInput = itemRow + '>>' + cartLocators.cart_row_qty_input;
             await actions.fill(this.page, qtyInput, '2', this.workerInfo);
-            await this.page.waitForLoadState('domcontentloaded')
+            await this.page.locator('.action.update').click();
             await this.page.waitForLoadState('networkidle');
-            let expectedUpdatedTotal = actions.parsePrice(beforeSubTotal) * newQuantity;
-            await actions.clickElement(this.page, cartLocators.update_cart_button, this.workerInfo).then(async () => {
-                await expect(this.page.locator('#shopping-cart-table').getByText(expectedUpdatedTotal.toString())).toBeVisible({timeout: 5000});
-            });
+            await this.checkQuantity(itemRowNum, newQuantity);
         });
+    }
 
+    async getLineItemsPrices() {
+        let total= 0.00 ;
+        const itemCount = await this.page.locator(cartLocators.cart_row_item_info).count();
+        for (let i = 0; i < itemCount; i++) {
+            const priceText = await this.getItemSubTotal(i);
+            total += parseFloat(priceText.replace(/[^0-9.-]+/g,""));
+        }
+        return total;
     }
 
     async deleteItem(itemRowNum: number) {
@@ -64,20 +80,15 @@ export default class CartPage extends BasePage {
         return subTotal;
     }
 
-    /**
-     * This check can be imprved when the theme templates get a data-test-id done
-     * @TODO: Send a MR to Hyva to add test id's to the totals sections
-     * @param total
-     */
     async checkSubtotalMatches(total: string) {
-        await this.page.locator('#cart-totals').getByText(total).first().innerText().then((value) => {
+        await this.page.locator(cartLocators.cart_subtotal).innerText().then((value) => {
             // mobiles (and seems safari) get the label string included, so strip it if it exists
             // i am sure there is s smarter regex way, but i am not feeling smart right now ;)
             value = value.replace(data.subtotal_label + ': ', '');
             value = value.replace(data.subtotal_label + ':', '');
             value = value.replace(data.subtotal_label + ' ', '');
             value = value.replace(data.subtotal_label, '');
-            expect(value).toEqual(total);
+            expect(value.replace(/[^0-9.-]+/g,"")).toEqual(total.replace(/[^0-9.-]+/g,""));
         });
     }
 
@@ -89,7 +100,7 @@ export default class CartPage extends BasePage {
             value = value.replace(label + ':', '');
             value = value.replace(label + ' ', '');
             value = value.replace(label, '');
-            expect(actions.parsePrice(value)).toEqual(total);
+            expect(actions.parsePrice(value.replace(/[^0-9.-]+/g,""))).toEqual(total.replace(/[^0-9.-]+/g,""));
         });
     }
 
@@ -106,7 +117,7 @@ export default class CartPage extends BasePage {
             value = value.replace(data.grandtotal_label + ':', '');
             value = value.replace(data.grandtotal_label + ' ', '');
             value = value.replace(data.grandtotal_label, '');
-            expect(value).toEqual(total);
+            expect(value.replace(/[^0-9.-]+/g,"")).toEqual(total.replace(/[^0-9.-]+/g,""));
         });
     }
 

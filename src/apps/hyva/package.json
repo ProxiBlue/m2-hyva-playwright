@@ -9,6 +9,7 @@
     "test-uat": "APP_NAME=hyva NODE_ENV=uat TEST_BASE=hyva playwright test",
     "test-live": "APP_NAME=hyva NODE_ENV=live playwright test",
     "test:debug": "APP_NAME=hyva NODE_ENV=dev PWDEBUG=1 playwright test",
+    "test:ui": "APP_NAME=hyva NODE_ENV=dev playwright test --ui",
     "report": "npx playwright show-report reports/playwright-report",
     "allure": "npx allure generate reports/allure/allure-result -o reports/allure/allure-report --clean && npx allure open reports/allure/allure-report"
   }

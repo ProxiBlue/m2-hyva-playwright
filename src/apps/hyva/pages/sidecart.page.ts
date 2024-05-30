@@ -8,7 +8,7 @@ import * as locators from "@hyva/locators/sidecart.locator";
 // and if the file exixts in APP path, and if not default to teh base data
 let data = {};
 const fs = require("fs");
-if (fs.existsSync(__dirname + '/../../' + process.env.APP_NAME + '/data/cart.data.json')) {
+if (fs.existsSync(__dirname + '/../../' + process.env.APP_NAME + '/data/sidecart.data.json')) {
     import('../../' + process.env.APP_NAME + '/data/sidecart.data.json').then((dynamicData) => {
         data = dynamicData;
     });
@@ -37,45 +37,47 @@ export default class SideCartPage extends BasePage {
         });
     }
 
-    async changeQuantity(itemRowNum: number, newQuantity: number) {
-        const itemRow = locators.cart_table + '>>' + locators.cart_table_body + ">>nth=" + itemRowNum + '>>' + locators.cart_row_item_info
-        await actions.verifyElementExists(this.page, itemRow, this.workerInfo);
-        await actions.getInnerText(this.page, itemRow + '>>' + locators.cart_row_subtotal, this.workerInfo).then (async (beforeSubTotal) => {
-            const qtyInput = itemRow + '>>' + locators.cart_row_qty_input;
-            await actions.fill(this.page, qtyInput, '2', this.workerInfo);
-            await this.page.waitForLoadState('domcontentloaded')
-            await this.page.waitForLoadState('networkidle');
-            let expectedUpdatedTotal = actions.parsePrice(beforeSubTotal) * newQuantity;
-            await actions.clickElement(this.page, locators.update_cart_button, this.workerInfo).then(async () => {
-                await expect(this.page.locator('#shopping-cart-table').getByText(expectedUpdatedTotal.toString())).toBeVisible({timeout: 5000});
-            });
-        });
-
-    }
-
-    async deleteItem(itemRowNum: number) {
-        const itemRow = locators.cart_table + '>>' + locators.cart_table_body + ">>nth=" + itemRowNum;
-        await actions.verifyElementExists(this.page, itemRow, this.workerInfo);
-        const deleteButton = itemRow + '>>' + locators.cart_item_row_delete;
-        await actions.verifyElementExists(this.page, deleteButton, this.workerInfo);
-        await actions.clickElement(this.page, deleteButton, this.workerInfo).then(async () => {
-            await this.page.waitForLoadState('networkidle');
-            await actions.verifyElementIsVisible(this.page, cartLocators.cart_empty, this.workerInfo);
-        });
-    }
+    // async changeQuantity(itemRowNum: number, newQuantity: number) {
+    //     const itemRow = locators.cart_table + '>>' + locators.cart_table_body + ">>nth=" + itemRowNum + '>>' + locators.cart_row_item_info
+    //     await actions.verifyElementExists(this.page, itemRow, this.workerInfo);
+    //     await actions.getInnerText(this.page, itemRow + '>>' + locators.cart_row_subtotal, this.workerInfo).then (async (beforeSubTotal) => {
+    //         const qtyInput = itemRow + '>>' + locators.cart_row_qty_input;
+    //         await actions.fill(this.page, qtyInput, '2', this.workerInfo);
+    //         await this.page.waitForLoadState('domcontentloaded')
+    //         await this.page.waitForLoadState('networkidle');
+    //         let expectedUpdatedTotal = actions.parsePrice(beforeSubTotal) * newQuantity;
+    //         await actions.clickElement(this.page, locators.update_cart_button, this.workerInfo).then(async () => {
+    //             await expect(this.page.locator('#shopping-cart-table').getByText(expectedUpdatedTotal.toString())).toBeVisible({timeout: 5000});
+    //         });
+    //     });
+    // }
+    //
+    // async deleteItem(itemRowNum: number) {
+    //     const itemRow = locators.cart_table + '>>' + locators.cart_table_body + ">>nth=" + itemRowNum;
+    //     await actions.verifyElementExists(this.page, itemRow, this.workerInfo);
+    //     const deleteButton = itemRow + '>>' + locators.cart_item_row_delete;
+    //     await actions.verifyElementExists(this.page, deleteButton, this.workerInfo);
+    //     await actions.clickElement(this.page, deleteButton, this.workerInfo).then(async () => {
+    //         await this.page.waitForLoadState('networkidle');
+    //         await actions.verifyElementIsVisible(this.page, cartLocators.cart_empty, this.workerInfo);
+    //     });
+    // }
 
     async getItemPrice(itemRowNum: number) {
         this.page.waitForLoadState('domcontentloaded')
         const itemRow = locators.items + ">>nth=" + itemRowNum;
+        const itemRowPrice = itemRow + '>>' + locators.price;
         await actions.verifyElementExists(this.page, itemRow, this.workerInfo);
-        let itemPrice = await actions.getInnerText(this.page, locators.items + ">>nth=" + itemRowNum + '>>' + locators.price, this.workerInfo);
+        // scroll the item into view
+        await this.page.locator(itemRowPrice).scrollIntoViewIfNeeded();
+        let itemPrice = await this.page.locator(itemRowPrice).textContent();
         return itemPrice;
     }
 
     async getMiniCartSubtotal() {
         this.page.waitForLoadState('domcontentloaded')
         await actions.verifyElementExists(this.page, locators.subTotal, this.workerInfo);
-        let subTotal = await actions.getInnerText(this.page,  locators.subTotal, this.workerInfo);
+        let subTotal = await this.page.locator(locators.subTotal).textContent();
         return subTotal;
     }
 
