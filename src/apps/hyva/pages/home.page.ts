@@ -44,7 +44,7 @@ export default class HomePage extends BasePage {
         }
         await this.page.waitForSelector(pageLocators.pageTitle);
         const mainHeadingText = await this.page.$eval(pageLocators.pageTitle, (el) => el.textContent);
-        await expect(mainHeadingText).toContain(this.data.search_term);
+        expect(mainHeadingText).toContain(this.data.search_term);
         await actions.verifyElementIsVisible(this.page, product.productGrid, this.workerInfo);
         await expect.poll(async () => this.page.locator(product.productGridItem).count()).toBeGreaterThan(0);
     }
