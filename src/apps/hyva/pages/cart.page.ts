@@ -41,6 +41,7 @@ export default class CartPage extends BasePage {
             await actions.fill(this.page, qtyInput, '2', this.workerInfo);
             await this.page.locator('.action.update').click();
             await this.page.waitForLoadState('networkidle');
+            await this.page.waitForLoadState('domcontentloaded');
             await this.checkQuantity(itemRowNum, newQuantity);
         });
     }
@@ -62,6 +63,7 @@ export default class CartPage extends BasePage {
         await actions.verifyElementExists(this.page, deleteButton, this.workerInfo);
         await actions.clickElement(this.page, deleteButton, this.workerInfo).then(async () => {
             await this.page.waitForLoadState('networkidle');
+            await this.page.waitForLoadState('domcontentloaded');
             await actions.verifyElementIsVisible(this.page, cartLocators.cart_empty, this.workerInfo);
         });
     }
@@ -81,7 +83,7 @@ export default class CartPage extends BasePage {
     }
 
     async checkSubtotalMatches(total: string) {
-        await this.page.locator(cartLocators.cart_subtotal).innerText().then((value) => {
+        await this.page.locator(cartLocators.cart_subtotal).textContent().then((value) => {
             // mobiles (and seems safari) get the label string included, so strip it if it exists
             // i am sure there is s smarter regex way, but i am not feeling smart right now ;)
             value = value.replace(data.subtotal_label + ': ', '');
@@ -93,7 +95,7 @@ export default class CartPage extends BasePage {
     }
 
     async checkShippingMatches(total: string, label: string) {
-        await this.page.locator('#cart-totals').getByText(total).first().innerText().then((value) => {
+        await this.page.locator('#cart-totals').getByText(total).first().textContent().then((value) => {
             // mobiles (and seems safari) get the label string included, so strip it if it exists
             // i am sure there is s smarter regex way, but i am not feeling smart right now ;)
             value = value.replace(label + ': ', '');
@@ -110,7 +112,7 @@ export default class CartPage extends BasePage {
      * @param total
      */
     async checkGrandTotalMatches(total: string) {
-        await this.page.locator('#cart-totals').getByText(total).nth(1).innerText().then((value) => {
+        await this.page.locator('#cart-totals').getByText(total).nth(1).textContent().then((value) => {
             // mobiles (and seems safari) get the label string included, so strip it if it exists
             // ditto!
             value = value.replace(data.grandtotal_label + ': ', '');
@@ -125,9 +127,11 @@ export default class CartPage extends BasePage {
         await actions.verifyElementExists(this.page, cartLocators.cart_clear, this.workerInfo);
         await actions.clickElement(this.page, cartLocators.cart_clear, this.workerInfo).then(async () => {
             await this.page.waitForLoadState('networkidle');
+            await this.page.waitForLoadState('domcontentloaded');
             await actions.verifyElementIsVisible(this.page, "[aria-label='Are you sure?']", this.workerInfo);
             await actions.clickElement(this.page, "[aria-label='Are you sure?']>>.btn-primary", this.workerInfo)
             await this.page.waitForLoadState('networkidle');
+            await this.page.waitForLoadState('domcontentloaded');
         });
     }
 
@@ -135,9 +139,11 @@ export default class CartPage extends BasePage {
         await actions.verifyElementExists(this.page, cartLocators.cart_clear, this.workerInfo);
         await actions.clickElement(this.page, cartLocators.cart_clear, this.workerInfo).then(async () => {
             await this.page.waitForLoadState('networkidle');
+            await this.page.waitForLoadState('domcontentloaded');
             await actions.verifyElementIsVisible(this.page, "[aria-label='Are you sure?']", this.workerInfo);
             await actions.clickElement(this.page, "[aria-label='Are you sure?']>>.btn>>nth=0", this.workerInfo)
             await this.page.waitForLoadState('networkidle');
+            await this.page.waitForLoadState('domcontentloaded');
         });
     }
 

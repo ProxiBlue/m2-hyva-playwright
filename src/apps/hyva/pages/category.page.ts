@@ -46,6 +46,7 @@ export default class CategoryPage extends BasePage {
         const filterButton = await this.page.getByRole('button', {name: filter + ' filter'});
         const filterContainer = await this.page.locator('.filter-option', {has: filterButton});
         await filterButton.click();
+        await this.page.waitForLoadState('domcontentloaded');
         await expect(await filterContainer.getByRole('link', {name: option})).toBeVisible();
         const filterOption = await filterContainer.getByLabel(option);
         const attrClass = await filterOption.getAttribute('class')
@@ -58,6 +59,7 @@ export default class CategoryPage extends BasePage {
             let filterText = await filterOption.allTextContents();
         }
         await filterOption.click();
+        await this.page.waitForLoadState('domcontentloaded');
         await this.page.waitForSelector(locators.active_filtering_content)
         await expect(await this.page.textContent(locators.active_filtering_content)).toContain(filterText);
         await expect(filterButton).not.toBeVisible();
@@ -81,6 +83,7 @@ export default class CategoryPage extends BasePage {
         await this.page.selectOption(locators.toolbar_sorter, {label: data.sorter_price});
         await this.page.waitForSelector(locators.toolbar_amount);
         await this.page.getByRole('link', {name: locators.toolbar_sorter_action}).first().click();
+        await this.page.waitForLoadState('domcontentloaded');
         await this.page.waitForSelector(locators.toolbar_amount);
         const productPrices = await this.page.locator(locators.product_price).allTextContents();
         const productPricesSorted = productPrices.sort((a, b) => {
@@ -101,6 +104,7 @@ export default class CategoryPage extends BasePage {
         await this.page.selectOption(locators.toolbar_sorter, {label: data.sorter_name});
         await this.page.waitForSelector(locators.toolbar_amount);
         await this.page.getByRole('link', {name: locators.toolbar_sorter_action}).click();
+        await this.page.waitForLoadState('domcontentloaded');
         await this.page.waitForSelector(locators.toolbar_amount);
         const products = await this.page.locator(locators.product_name).allTextContents();
         const productsSorted = products.sort((a, b) => {
@@ -146,9 +150,11 @@ export default class CategoryPage extends BasePage {
         const currentVieMode = await this.page.locator(locators.product_grid).getAttribute('class');
         if (currentVieMode.includes(data.grid_mode, 0)) {
             await this.page.getByLabel(locators.products_list_button).click();
+            await this.page.waitForLoadState('domcontentloaded');
             await this.page.waitForSelector(locators.list_mode);
         } else {
             await this.page.getByLabel(locators.products_grid_button).click();
+            await this.page.waitForLoadState('domcontentloaded');
             await this.page.waitForSelector(locators.grid_mode);
         }
     }
@@ -156,18 +162,21 @@ export default class CategoryPage extends BasePage {
     async checkPager() {
         await this.page.selectOption(locators.limiter, {label: '12'});
         await this.page.waitForSelector(locators.toolbar_amount);
-        await expect(await this.page.getByLabel(locators.pager).first()).toBeVisible();
-        await expect(await this.page.locator(locators.toolbar_amount).first().textContent()).toBe("1");
-        await expect(await this.page.locator(locators.toolbar_amount + '>>nth=1').textContent()).toBe("12");
+        expect(this.page.getByLabel(locators.pager).first()).toBeVisible();
+        expect(await this.page.locator(locators.toolbar_amount).first().textContent()).toBe("1");
+        expect(await this.page.locator(locators.toolbar_amount + '>>nth=1').textContent()).toBe("12");
         await this.page.getByRole('link', {name: 'Next'}).first().click();
+        await this.page.waitForLoadState('domcontentloaded');
         await this.page.waitForSelector(locators.toolbar_amount);
-        await expect(await this.page.locator(locators.toolbar_amount).first().textContent()).toBe("13");
-        await expect(await this.page.locator(locators.toolbar_amount + ' >>nth=1').textContent()).toBe("24");
+        expect(await this.page.locator(locators.toolbar_amount).first().textContent()).toBe("13");
+        expect(await this.page.locator(locators.toolbar_amount + ' >>nth=1').textContent()).toBe("24");
         await this.page.getByRole('link', {name: 'Previous'}).first().click();
-        await expect(await this.page.locator(locators.toolbar_amount).first().textContent()).toBe("1");
-        await expect(await this.page.locator(locators.toolbar_amount + '>>nth=1').textContent()).toBe("12");
+        await this.page.waitForLoadState('domcontentloaded');
+        expect(await this.page.locator(locators.toolbar_amount).first().textContent()).toBe("1");
+        expect(await this.page.locator(locators.toolbar_amount + '>>nth=1').textContent()).toBe("12");
         await this.page.getByRole('link', { name: 'Page 3' }).first().click();
-        await expect(await this.page.locator(locators.toolbar_amount).first().textContent()).toBe("25");
+        await this.page.waitForLoadState('domcontentloaded');
+        expect(await this.page.locator(locators.toolbar_amount).first().textContent()).toBe("25");
     }
 
     async addToCompare() {
@@ -184,28 +193,28 @@ export default class CategoryPage extends BasePage {
         await this.page.waitForLoadState('domcontentloaded');
         //await this.page.waitForSelector(pageLocators.message_success);
         const successMessage1 = await this.page.locator(pageLocators.message_success);
-        await expect(await successMessage1.textContent()).toContain(firstProductName.trim());
+        expect(await successMessage1.textContent()).toContain(firstProductName.trim());
         await successMessage1.getByLabel(pageLocators.messageClose).click({ force: true });
         await this.page.waitForLoadState('networkidle');
         await this.page.waitForLoadState('domcontentloaded');
-        await expect(await this.page.locator(productLocators.compareLink).textContent()).toContain("1");
+        expect(await this.page.locator(productLocators.compareLink).textContent()).toContain("1");
         await expect(this.page.locator(productLocators.compareLink)).toBeVisible();
         await LastAddToCompare.click({ force: true });
         await this.page.waitForLoadState('networkidle');
         await this.page.waitForLoadState('domcontentloaded');
         await this.page.waitForSelector(pageLocators.message_success);
         const successMessage2 = await this.page.locator(pageLocators.message_success);
-        await expect(await successMessage2.textContent()).toContain(lastProductName.trim());
+        expect(await successMessage2.textContent()).toContain(lastProductName.trim());
         await successMessage2.getByLabel(pageLocators.messageClose).click();
-        await expect(await this.page.locator(productLocators.compareLink).textContent()).toContain("2");
+        expect(await this.page.locator(productLocators.compareLink).textContent()).toContain("2");
         await expect(this.page.locator(productLocators.compareLink)).toBeVisible();
         await this.page.locator(productLocators.compareLink).click();
         await this.page.waitForLoadState('networkidle');
         await this.page.waitForLoadState('domcontentloaded');
         await this.page.waitForSelector(pageLocators.comapre_page_title);
-        await expect(await this.page.locator(pageLocators.comapre_page_title).textContent()).toContain(pageData.compare_products_title);
-        await expect(await this.page.locator(pageLocators.compare_table)).toBeVisible();
-        await expect(await this.page.locator(pageLocators.compare_table).textContent()).toContain(firstProductName.trim());
-        await expect(await this.page.locator(pageLocators.compare_table).textContent()).toContain(lastProductName.trim());
+        expect(await this.page.locator(pageLocators.comapre_page_title).textContent()).toContain(pageData.compare_products_title);
+        await expect(this.page.locator(pageLocators.compare_table)).toBeVisible();
+        expect(await this.page.locator(pageLocators.compare_table).textContent()).toContain(firstProductName.trim());
+        expect(await this.page.locator(pageLocators.compare_table).textContent()).toContain(lastProductName.trim());
     }
 }
