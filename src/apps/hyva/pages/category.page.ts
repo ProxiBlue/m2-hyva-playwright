@@ -10,7 +10,7 @@ import * as pageData from "@hyva/data/page.data.json";
 // and if the file exixts in APP path, and if not default to teh base data
 let data = {};
 const fs = require("fs");
-if (fs.existsSync(__dirname + '/../../' + process.env.APP_NAME + '/data/cart.data.json')) {
+if (fs.existsSync(__dirname + '/../../' + process.env.APP_NAME + '/data/category.data.json')) {
     import('../../' + process.env.APP_NAME + '/data/category.data.json').then((dynamicData) => {
         data = dynamicData;
     });

@@ -25,12 +25,14 @@ export default class SideCartPage extends BasePage {
 
     async open() {
         this.page.waitForLoadState('domcontentloaded')
+        console.log('click menu icon');
         await actions.clickElement(this.page, locators.miniCartButton, this.workerInfo);
-        await this.page.waitForLoadState('networkidle');
+        await this.page.waitForTimeout(500);
         await this.page.waitForLoadState('domcontentloaded');
     }
 
     async checkQtyIndication(qty: number) {
+        await this.page.waitForSelector(locators.miniCartQtyIndicator);
         await actions.verifyElementIsVisible(this.page, locators.miniCartQtyIndicator, this.workerInfo);
         await actions.getInnerText(this.page, locators.miniCartQtyIndicator, this.workerInfo).then (async (qtyValue) => {
             expect(qtyValue).toEqual(qty.toString());

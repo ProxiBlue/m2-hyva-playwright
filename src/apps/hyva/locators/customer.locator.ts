@@ -1,0 +1,11 @@
+export const title = 'h1';
+export const login_email_field = "[name='login[username]']"
+export const login_password_field = "[name='login[password]']"
+export const create_firstname = "#firstname"
+export const create_lastname = "#lastname"
+export const create_email = "#email_address"
+export const create_password = "#password"
+export const create_password_confirm = "#password-confirmation"
+export const create_button = "Create an Account"
+export const login_button = "Sign In"
+export const logout_link  = "Sign Out"
