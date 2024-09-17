@@ -43,7 +43,7 @@ export default class SimpleProductPage extends BasePage {
     async addToCart() {
         await actions.fill(this.page, locators.product_qty_input, '1', this.workerInfo);
         await actions.clickElement(this.page, locators.product_add_to_cart_button, this.workerInfo);
-        await this.page.waitForLoadState('networkidle');
+        await this.page.waitForSelector('.message.success')
         await this.page.waitForLoadState('domcontentloaded');
         await actions.verifyElementIsVisible(this.page, pageLocators.message_success, this.workerInfo);
         expect(await this.page.locator(pageLocators.message_success).textContent()).toContain(data["name"]);

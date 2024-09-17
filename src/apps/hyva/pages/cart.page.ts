@@ -40,7 +40,7 @@ export default class CartPage extends BasePage {
             const qtyInput = itemRow + '>>' + cartLocators.cart_row_qty_input;
             await actions.fill(this.page, qtyInput, '2', this.workerInfo);
             await this.page.locator('.action.update').click();
-            await this.page.waitForLoadState('networkidle');
+            await this.page.waitForURL("**/checkout/cart");
             await this.page.waitForLoadState('domcontentloaded');
             await this.checkQuantity(itemRowNum, newQuantity);
         });

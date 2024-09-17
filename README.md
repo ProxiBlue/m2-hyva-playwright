@@ -26,9 +26,9 @@ Stolen from https://github.com/elgentos/magento2-cypress-testing-suite/
 
 | Spec file               | Group                           | Test                                                                                                                                                 |
 |-------------------------|---------------------------------|------------------------------------------------------------------------------------------------------------------------------------------------------|
-|                         | Account test creation           | :black_square_button: it can create an account to log in with                                                                                        |
+|                         | Account test creation           | :heavy_check_mark: it can create an account to log in with                                                                                        |
 |                         | Account activities              | :black_square_button: it creates an account to log in with and use for further testing                                                               |
-|                         |                                 | :black_square_button: it can log out                                                                                                                 |
+|                         |                                 | :heavy_check_mark: it can log out                                                                                                                 |
 |                         |                                 | :black_square_button: it can show the account information page and display the name of the customer                                                  |
 |                         |                                 | :black_square_button: it can change the password                                                                                                     |
 |                         |                                 | :black_square_button: it can change the name of the customer on the account information page                                                         |
