@@ -51,7 +51,7 @@ export default class CartPage extends BasePage {
         const itemCount = await this.page.locator(cartLocators.cart_row_item_info).count();
         for (let i = 0; i < itemCount; i++) {
             const priceText = await this.getItemSubTotal(i);
-            total += parseFloat(priceText.replace(/[^0-9.-]+/g,""));
+            total += actions.parsePrice(priceText);
         }
         return total;
     }
@@ -90,7 +90,7 @@ export default class CartPage extends BasePage {
             value = value.replace(data.subtotal_label + ':', '');
             value = value.replace(data.subtotal_label + ' ', '');
             value = value.replace(data.subtotal_label, '');
-            expect(value.replace(/[^0-9.-]+/g,"")).toEqual(total.replace(/[^0-9.-]+/g,""));
+            expect(actions.parsePrice(value)).toEqual(actions.parsePrice(total));
         });
     }
 
@@ -102,7 +102,7 @@ export default class CartPage extends BasePage {
             value = value.replace(label + ':', '');
             value = value.replace(label + ' ', '');
             value = value.replace(label, '');
-            expect(actions.parsePrice(value.replace(/[^0-9.-]+/g,""))).toEqual(total.replace(/[^0-9.-]+/g,""));
+            expect(actions.parsePrice(value)).toEqual(actions.parsePrice(total));
         });
     }
 
@@ -119,7 +119,7 @@ export default class CartPage extends BasePage {
             value = value.replace(data.grandtotal_label + ':', '');
             value = value.replace(data.grandtotal_label + ' ', '');
             value = value.replace(data.grandtotal_label, '');
-            expect(value.replace(/[^0-9.-]+/g,"")).toEqual(total.replace(/[^0-9.-]+/g,""));
+            expect(actions.parsePrice(value)).toEqual(actions.parsePrice(total));
         });
     }
 

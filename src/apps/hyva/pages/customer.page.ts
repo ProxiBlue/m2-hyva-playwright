@@ -3,7 +3,7 @@ import type {Page, TestInfo} from "@playwright/test";
 import {expect} from "@hyva/fixtures";
 import * as locators from "@hyva/locators/customer.locator";
 import * as pageLocators from "@hyva/locators/page.locator";
-
+import { CustomerData } from '@hyva/interfaces/CustomerData';
 
 // dynamically import the test JSON data based on the APP_NAME env variable
 // and if the file exixts in APP path, and if not default to teh base data
@@ -25,7 +25,8 @@ export default class CustomerPage extends BasePage {
         super(page, workerInfo, data, locators);
     }
 
-    async createAccount(firstName:string, lastName: string, email: string, password: string) {
+    async createAccount(customerData: CustomerData) {
+        this.workerInfo.project.name + ": Create Customer Account ",
         await this.navigateTo();
         await this.page.waitForLoadState('domcontentloaded');
         await expect(this.page.getByRole('link', { name: locators.create_button })).toBeVisible();
@@ -36,23 +37,24 @@ export default class CustomerPage extends BasePage {
         await expect(this.page.locator(locators.create_email)).toBeVisible();
         await expect(this.page.locator(locators.create_password)).toBeVisible();
         await expect(this.page.locator(locators.create_password_confirm)).toBeVisible();
-        await this.page.locator(locators.create_firstname).fill(firstName);
-        await this.page.locator(locators.create_lastname).fill(lastName);
-        await this.page.locator(locators.create_email).fill(email);
-        await this.page.locator(locators.create_password).fill(password);
-        await this.page.locator(locators.create_password_confirm).fill(password);
+        await this.page.locator(locators.create_firstname).fill(customerData.firstName);
+        await this.page.locator(locators.create_lastname).fill(customerData.lastName);
+        await this.page.locator(locators.create_email).fill(customerData.email);
+        await this.page.locator(locators.create_password).fill(customerData.password);
+        await this.page.locator(locators.create_password_confirm).fill(customerData.password);
         await this.page.getByRole('button', { name: locators.create_button }).click();
         await this.page.waitForLoadState('domcontentloaded');
         await this.page.waitForSelector(pageLocators.message_success);
     }
 
-    async login(firstName:string, lastName: string, email: string, password: string ) {
+    async login(customerData : CustomerData) {
+        this.workerInfo.project.name + ": Customer Login ",
         await this.navigateTo();
         await expect(this.page.getByRole('button', { name: locators.login_button })).toBeVisible();
         await expect(this.page.locator(locators.login_email_field)).toBeVisible();
         await expect(this.page.locator(locators.login_password_field)).toBeVisible();
-        await this.page.locator(locators.login_email_field).fill(email);
-        await this.page.locator(locators.login_password_field).fill(password);
+        await this.page.locator(locators.login_email_field).fill(customerData.email);
+        await this.page.locator(locators.login_password_field).fill(customerData.password);
         await this.page.getByRole('button', { name: locators.login_button }).click();
         await this.page.waitForLoadState('domcontentloaded');
         await this.page.waitForLoadState('networkidle');
@@ -62,6 +64,7 @@ export default class CustomerPage extends BasePage {
 
 
     async logout() {
+        this.workerInfo.project.name + ": Customer logout ",
         await this.page.waitForTimeout(2000);
         await this.page.getByRole('link', { name: locators.logout_link }).click();
         await this.page.waitForLoadState('domcontentloaded');

@@ -32,7 +32,7 @@ export default class AdminPage extends BasePage {
         await this.page.fill(locators.password, process.env.admin_password);
         await this.page.getByRole('button', { name: 'Sign in' }).click()
         await this.page.waitForSelector(locators.title)
-        expect(await this.page.locator(locators.title).textContent()).toContain(data["page_title_text"]);
+        expect(await this.page.locator(locators.title).textContent()).toContain(data.page_title_text);
     }
 
     async logout() {

@@ -1,5 +1,5 @@
 {
-  "url": "/customer/account",
+  "url": "customer/account",
   "header_title": "Customer Login",
   "page_title_text": "CUSTOMER LOGIN",
   "create_an_account_title": "Create New Customer Account",

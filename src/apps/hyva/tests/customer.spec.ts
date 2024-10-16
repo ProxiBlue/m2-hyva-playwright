@@ -13,9 +13,9 @@ const test = baseTest.extend<{ customerData: CustomerData }>({
 test.setTimeout(60000);
 
 test("it can create and login to account", async ({customerPage, customerData}, testInfo) => {
-    await customerPage.createAccount(customerData.firstName, customerData.lastName, customerData.email, customerData.password);
+    await customerPage.createAccount(customerData);
     await customerPage.logout();
-    await customerPage.login(customerData.firstName, customerData.lastName, customerData.email, customerData.password);
+    await customerPage.login(customerData);
 });
 
 
