@@ -25,7 +25,6 @@ export default class SideCartPage extends BasePage {
 
     async open() {
         this.page.waitForLoadState('domcontentloaded')
-        console.log('click menu icon');
         await actions.clickElement(this.page, locators.miniCartButton, this.workerInfo);
         await this.page.waitForTimeout(500);
         await this.page.waitForLoadState('domcontentloaded');

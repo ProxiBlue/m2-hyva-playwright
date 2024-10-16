@@ -23,7 +23,7 @@ export default class AdminPage extends BasePage {
     }
 
     async navigateTo() {
-        await actions.navigateTo(this.page, process.env.URL + data.url, this.workerInfo);
+        await actions.navigateTo(this.page, process.env.URL + process.env.admin_path, this.workerInfo);
         const url = this.page.url();
     }
 
@@ -32,7 +32,6 @@ export default class AdminPage extends BasePage {
         await this.page.fill(locators.password, process.env.admin_password);
         await this.page.getByRole('button', { name: 'Sign in' }).click()
         await this.page.waitForSelector(locators.title)
-        await actions.verifyElementIsVisible(this.page, locators.title, this.workerInfo);
         expect(await this.page.locator(locators.title).textContent()).toContain(data["page_title_text"]);
     }
 

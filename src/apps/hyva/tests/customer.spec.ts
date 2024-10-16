@@ -15,7 +15,7 @@ test.setTimeout(60000);
 test("it can create and login to account", async ({customerPage, customerData}, testInfo) => {
     await customerPage.createAccount(customerData.firstName, customerData.lastName, customerData.email, customerData.password);
     await customerPage.logout();
-    await customerPage.login(customerData.firstName, customerData.email, customerData.password);
+    await customerPage.login(customerData.firstName, customerData.lastName, customerData.email, customerData.password);
 });
 
 
