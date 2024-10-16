@@ -19,6 +19,33 @@ I figured I can put the idea forward even though not many tests exists as yet. I
 
 I am certainly not an expert in anything playwright or js related!
 
+## Admin tests user credentials
+
+Create a file named ```config.private.json``` in the root of your project (same location as config.json)
+Place into this file your admin user credentials that will be used for tests that required admin login.
+
+example:
+
+```
+{
+  "admin_user": "admin",
+  "admin_password": "2sdddfdfLYI%"
+}
+```
+
+Then in any tests that require admin login/auth you can use: 
+
+```
+process.env.admin_user
+process.env.admin_password
+```
+
+The file must not be commited to repo for security concerns.
+It is best to always create a dummy admin user for tests runs, and not use a real existing admin user
+
+
+
+
 ## Progress 
 
 Stolen from https://github.com/elgentos/magento2-cypress-testing-suite/
@@ -273,12 +300,24 @@ I am at times swapping between the two. Depens on how I feel in that moment real
 You can watch this as it gives some more info on working: https://youtu.be/mz2zec4I18Q
 You can also see a run of the current tests here: https://asciinema.org/a/KWSqlCqKqU4XXDP25K0f17WWT
 
-## Acknowledgement
+### Checkout tests
 
-This project was bootstrapped with [Eric Stanley's Playwright Framework](https://github.com/eric-stanley/playwright-framework).
-I had made quite a few changes how it works to accomodate my needs, and those are not upstream compatible with the original project, so this project now stands appart going forward.
-Credit to Eric for his work.
+Since Hyva is checkout independent, and you can some sites with different checkout solutions (be it Luma, react, Hyva checkout etc), it is best
+to keep checkout tests as a separate app.
 
+an example of such an app, using Luma checkout is here: https://github.com/ProxiBlue/m2-checkout-tests-example
+
+One thing to remember when doing so is to edit the default boostrap generated package.json file and remove the run of the base Hyva theme
+You'd likely not want to first run hyva tests before this. Keep the part after the bash '&&' - so as to just run the checkout tests.
+
+You can include all the fixtures, pages etc from other test apps (hyav/custom site app) bu importing them in the base index.ts fixtures file in this app.
+
+example: https://github.com/ProxiBlue/m2-checkout-tests-example/blob/main/fixtures/index.ts#L20 -> here I am importing the simple products page into this app, and I can then use it's functions in tests
+
+example: https://github.com/ProxiBlue/m2-checkout-tests-example/blob/main/tests/checkout.spec.ts#L8 -> here I am adding item to cart to checkout, making use of existing tests already built. so all you end up needing todo is the actual checkout parts.
+
+I also added a customer data object which uses faker to easily populate forms in checkout with example data in tests.
+see: https://github.com/ProxiBlue/m2-checkout-tests-example/blob/main/fixtures/index.ts#L26 and https://github.com/ProxiBlue/m2-checkout-tests-example/blob/main/pages/checkout.page.ts#L43 for examples on usage
 ## Example output
 
 ```$ APP_NAME=hyva NODE_ENV=dev playwright test
@@ -348,3 +387,9 @@ To open last HTML report run:
 
 Done in 106.68s.
 ```
+
+## Acknowledgement
+
+This project was bootstrapped with [Eric Stanley's Playwright Framework](https://github.com/eric-stanley/playwright-framework).
+I had made quite a few changes how it works to accomodate my needs, and those are not upstream compatible with the original project, so this project now stands appart going forward.
+Credit to Eric for his work.

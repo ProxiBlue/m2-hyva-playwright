@@ -1,6 +1,4 @@
 import path from "path";
-
-
 export const initConfig = (appName: string) => {
     const configFile = path.join(
         __dirname,
@@ -9,10 +7,19 @@ export const initConfig = (appName: string) => {
         appName,
         "config.json"
     );
+    const privateConfigFile = path.join(
+        __dirname,
+        "src",
+        "apps",
+        appName,
+        "config.private.json"
+    );
     let jsonData = require(configFile);
     process.env.skipBaseTests = jsonData.skipBaseTests;
     process.env.mailcatcher = jsonData.mailcatcher;
-
+    let privateData = require(privateConfigFile);
+    process.env.admin_user = privateData.admin_user;
+    process.env.admin_password = privateData.admin_password;
     (() => {
         switch (process.env.NODE_ENV) {
             case "live":

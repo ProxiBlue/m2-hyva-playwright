@@ -1,6 +1,6 @@
 import BasePage from "./base.page";
 import type { Page, TestInfo } from "@playwright/test";
-import { test, expect } from "@hyva/fixtures";
+import { expect } from "@hyva/fixtures";
 import * as actions from "@utils/base/web/actions";
 import * as locators from "@hyva/locators/home.locator";
 import * as searchSelectors from "@hyva/locators/search.locator";

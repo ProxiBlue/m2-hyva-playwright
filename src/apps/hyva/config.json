@@ -1,7 +1,7 @@
 {
   "env": {
-    "dev": { "url": "https://ddev-hyva-web/" },
-    "test": { "url": "https://ddev-hyva-web/" },
+    "dev": { "url": "https://hyva.ddev.site/" },
+    "test": { "url": "https://hyva.ddev.site/" },
     "live": { "url": "https://demo.hyva.io/" }
   }
 }
