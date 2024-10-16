@@ -88,3 +88,7 @@ yarn-error.log
 /playwright-report/
 /blob-report/
 /playwright/.cache/
+
+config.private.json
+src/apps/*
+!src/apps/hyva

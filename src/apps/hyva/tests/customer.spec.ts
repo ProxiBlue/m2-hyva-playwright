@@ -1,18 +1,21 @@
 import {test as baseTest} from "@hyva/fixtures";
 import {Customer} from "@hyva/fixtures/customer";
+import { CustomerData } from '@hyva/interfaces/CustomerData';
 
-const test = baseTest.extend<{ customerData: Customer }>({
+const test = baseTest.extend<{ customerData: CustomerData }>({
     customerData: async ({page}, use) => {
-        const customerData = use(new Customer());
+        const customer = new Customer();
+        const customerData: CustomerData = customer.getCustomerData();
+        await use(customerData);
     },
 });
 
 test.setTimeout(60000);
 
 test("it can create and login to account", async ({customerPage, customerData}, testInfo) => {
-    await customerPage.createAccount( customerData.getFirstName(), customerData.getLastName(), customerData.getEmail(), customerData.getPassword());
+    await customerPage.createAccount(customerData.firstName, customerData.lastName, customerData.email, customerData.password);
     await customerPage.logout();
-    await customerPage.login(customerData.getFirstName(), customerData.getLastName(), customerData.getEmail(), customerData.getPassword());
+    await customerPage.login(customerData.firstName, customerData.email, customerData.password);
 });
 
 
