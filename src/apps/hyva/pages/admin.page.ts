@@ -41,4 +41,13 @@ export default class AdminPage extends BasePage {
         await this.page.waitForSelector(locators.username)
     }
 
+    async navigateToOrdersPage() {
+        await this.page.locator(locators.admin_menu_sales).waitFor({ state: 'visible' });
+        await this.page.click(locators.admin_menu_sales);
+        await this.page.locator(locators.admin_menu_sales_orders).waitFor({ state: 'visible' });
+        await this.page.click(locators.admin_menu_sales_orders);
+        await this.page.waitForLoadState("networkidle")
+        await this.page.waitForLoadState("domcontentloaded")
+    }
+
 }
