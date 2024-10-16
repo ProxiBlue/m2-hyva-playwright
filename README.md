@@ -138,6 +138,7 @@ Stolen from https://github.com/elgentos/magento2-cypress-testing-suite/
 |                         |                                 | :black_square_button: it can show customer data                                                                                                      |
 |                         |                                 | :black_square_button: it processes orders and invoices correctly                                                                                     |
 |                         |                                 | :black_square_button: it can edit an order                                                                                                           |
+|                         |                                 | :black_square_button: it can edit an order                                                                                                           |
 
 
 Out the box we will tests: Chromium, webkit and firefox. Ref in playwright config file, you can add your own in your layered app.

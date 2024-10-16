@@ -33,23 +33,25 @@ export default class SimpleProductPage extends BasePage {
             this.locators.title,
             this.workerInfo
         );
-        await expect(titleText).toEqual(data["name"]);
+        await expect(titleText).toEqual(data.name);
     }
 
     async verifyDomTitle() {
-        await actions.verifyPageTitle(this.page, data["name"], this.workerInfo);
+        await actions.verifyPageTitle(this.page, data.name, this.workerInfo);
     }
 
     async addToCart() {
+        this.workerInfo.project.name + ": Add product to cart ";
         await actions.fill(this.page, locators.product_qty_input, '1', this.workerInfo);
         await actions.clickElement(this.page, locators.product_add_to_cart_button, this.workerInfo);
         await this.page.waitForSelector('.message.success')
         await this.page.waitForLoadState('domcontentloaded');
         await actions.verifyElementIsVisible(this.page, pageLocators.message_success, this.workerInfo);
-        expect(await this.page.locator(pageLocators.message_success).textContent()).toContain(data["name"]);
+        expect(await this.page.locator(pageLocators.message_success).textContent()).toContain(data.name);
     }
 
     async getProductPrice() {
+        this.workerInfo.project.name + ": Get product orice ";
         const productPrice = await actions.getInnerText(this.page, locators.productItemPriceRegular, this.workerInfo);
         return productPrice;
     }

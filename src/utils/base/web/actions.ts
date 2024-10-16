@@ -326,6 +326,6 @@ export const waitForLoadState = async (
     );
 
 export const parsePrice = function (price: string) {
-  return parseFloat(price.replace(/[^0-9-.]/g, ""));
+  return parseFloat(price.replace(/[^0-9-.]+/g, ""));
 }
 

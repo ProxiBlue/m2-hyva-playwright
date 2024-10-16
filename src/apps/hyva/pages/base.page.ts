@@ -33,12 +33,12 @@ export default class BasePage {
             this.locators.title,
             this.workerInfo
         );
-        let match = this.data["page_title_text"];
-        await expect(titleText.toString().toLowerCase()).toEqual(match.toString().toLowerCase());
+        let match = this.data.page_title_text;
+        expect(titleText.toString().toLowerCase()).toEqual(match.toString().toLowerCase());
     }
 
     async verifyDomTitle() {
         await this.page.waitForLoadState('domcontentloaded');
-        await actions.verifyPageTitle(this.page, this.data["header_title"], this.workerInfo);
+        await actions.verifyPageTitle(this.page, this.data.header_title, this.workerInfo);
     }
 }
