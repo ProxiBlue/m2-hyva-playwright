@@ -4,10 +4,13 @@ import * as productLocators from "@hyva/locators/product.locator";
 
 describe("Side cart price check", () => {
 
-    test('it checks if the prices in the slider are displayed correctly', async ({ page, simpleProductPage, sideCartPage }, testInfo) => {
+    test.beforeEach(async ({ simpleProductPage }, testInfo) => {
         test.skip(process.env.skipBaseTests.includes(testInfo.title), "Test skipped for this environment: " + process.env.APP_NAME);
         await simpleProductPage.navigateTo();
         await simpleProductPage.addToCart();
+    });
+
+    test('it checks if the prices in the slider are displayed correctly', async ({ simpleProductPage, sideCartPage }, testInfo) => {
         await sideCartPage.checkQtyIndication(1);
         let itemPrice = await simpleProductPage.getProductPrice();
         await sideCartPage.open();

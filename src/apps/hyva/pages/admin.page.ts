@@ -48,6 +48,10 @@ export default class AdminPage extends BasePage {
         await this.page.click(locators.admin_menu_sales_orders);
         await this.page.waitForLoadState("networkidle")
         await this.page.waitForLoadState("domcontentloaded")
+        const isVisible = await this.page.isVisible(locators.remove_filter_button);
+        if (isVisible) {
+            await this.page.click(locators.remove_filter_button);
+        }
     }
 
 }

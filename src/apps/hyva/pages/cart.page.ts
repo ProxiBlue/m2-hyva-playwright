@@ -26,17 +26,18 @@ export default class CartPage extends BasePage {
     async checkQuantity(itemRowNum: number, expectedQuantity: number) {
         const itemRow = cartLocators.cart_table + '>>' + cartLocators.cart_table_body + ">>nth=" + itemRowNum + '>>' + cartLocators.cart_row_item_info
         await actions.verifyElementExists(this.page, itemRow, this.workerInfo);
-        await actions.getInnerText(this.page, itemRow + '>>' + cartLocators.cart_row_subtotal, this.workerInfo).then (async (beforeSubTotal) => {
+        await actions.getInnerText(this.page, itemRow + '>>' + cartLocators.cart_row_subtotal, this.workerInfo).then(async (beforeSubTotal) => {
             const qtyInput = itemRow + '>>' + cartLocators.cart_row_qty_input;
             const qtyValue = await actions.getElementValue(this.page, qtyInput, this.workerInfo);
             expect(qtyValue).toEqual(expectedQuantity.toString());
         });
 
     }
+
     async changeQuantity(itemRowNum: number, newQuantity: number) {
         const itemRow = cartLocators.cart_table + '>>' + cartLocators.cart_table_body + ">>nth=" + itemRowNum + '>>' + cartLocators.cart_row_item_info
         await actions.verifyElementExists(this.page, itemRow, this.workerInfo);
-        await actions.getInnerText(this.page, itemRow + '>>' + cartLocators.cart_row_subtotal, this.workerInfo).then (async (beforeSubTotal) => {
+        await actions.getInnerText(this.page, itemRow + '>>' + cartLocators.cart_row_subtotal, this.workerInfo).then(async (beforeSubTotal) => {
             const qtyInput = itemRow + '>>' + cartLocators.cart_row_qty_input;
             await actions.fill(this.page, qtyInput, '2', this.workerInfo);
             await this.page.locator('.action.update').click();
@@ -47,7 +48,7 @@ export default class CartPage extends BasePage {
     }
 
     async getLineItemsPrices() {
-        let total= 0.00 ;
+        let total = 0.00;
         const itemCount = await this.page.locator(cartLocators.cart_row_item_info).count();
         for (let i = 0; i < itemCount; i++) {
             const priceText = await this.getItemSubTotal(i);
@@ -145,6 +146,14 @@ export default class CartPage extends BasePage {
             await this.page.waitForLoadState('networkidle');
             await this.page.waitForLoadState('domcontentloaded');
         });
+    }
+
+    async clickProceedToCheckout() {
+        this.workerInfo.project.name + ": Proceed to Checkout ";
+        await this.page.locator(cartLocators.checkout_button).click();
+        await this.page.waitForLoadState("domcontentloaded");
+        //await this.page.waitForSelector(cartLocators.shipping_label);
+        //expect(this.page.locator(cartLocators.title)).toContainText(data.header_title);
     }
 
 }

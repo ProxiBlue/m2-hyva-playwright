@@ -40,9 +40,9 @@ export default class SimpleProductPage extends BasePage {
         await actions.verifyPageTitle(this.page, data.name, this.workerInfo);
     }
 
-    async addToCart() {
+    async addToCart(qty : string = '1'): Promise<void> {
         this.workerInfo.project.name + ": Add product to cart ";
-        await actions.fill(this.page, locators.product_qty_input, '1', this.workerInfo);
+        await actions.fill(this.page, locators.product_qty_input, qty, this.workerInfo);
         await actions.clickElement(this.page, locators.product_add_to_cart_button, this.workerInfo);
         await this.page.waitForSelector('.message.success')
         await this.page.waitForLoadState('domcontentloaded');

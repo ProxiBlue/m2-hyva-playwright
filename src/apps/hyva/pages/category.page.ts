@@ -124,14 +124,18 @@ export default class CategoryPage extends BasePage {
         let limitId = 0;
         for (limitId in data.limiter) {
             limit = data.limiter[limitId]
-            await this.page.selectOption(locators.limiter, {label: limit});
             await this.page.waitForSelector(pageLocators.footer);
+            await this.page.locator(locators.limiter).scrollIntoViewIfNeeded();
+            await this.page.selectOption(locators.limiter, {value: limit});
+            await this.page.waitForLoadState('domcontentloaded');
+            await this.page.waitForLoadState('networkidle');
+            await this.page.waitForTimeout(1000);
             const totalProducts = await this.page.locator(locators.toolbar_amount).last().textContent();
             if (parseInt(totalProducts) < parseInt(limit)) {
-                await expect(await this.page.locator(locators.product_name).count()).toBe(parseInt(totalProducts));
+                expect(await this.page.locator(locators.product_name).count()).toBe(parseInt(totalProducts));
                 await expect(await this.page.getByLabel(locators.pager).first()).not.toBeVisible();
             } else {
-                await expect(await this.page.locator(locators.product_name).count()).toBe(parseInt(limit));
+                expect(await this.page.locator(locators.product_name).count()).toBe(parseInt(limit));
                 await expect(await this.page.getByLabel(locators.pager).first()).toBeVisible();
             }
         }
@@ -167,15 +171,21 @@ export default class CategoryPage extends BasePage {
         expect(await this.page.locator(locators.toolbar_amount + '>>nth=1').textContent()).toBe("12");
         await this.page.getByRole('link', {name: 'Next'}).first().click();
         await this.page.waitForLoadState('domcontentloaded');
+        await this.page.waitForLoadState('networkidle');
+        await this.page.waitForTimeout(1000);
         await this.page.waitForSelector(locators.toolbar_amount);
         expect(await this.page.locator(locators.toolbar_amount).first().textContent()).toBe("13");
         expect(await this.page.locator(locators.toolbar_amount + ' >>nth=1').textContent()).toBe("24");
         await this.page.getByRole('link', {name: 'Previous'}).first().click();
         await this.page.waitForLoadState('domcontentloaded');
+        await this.page.waitForLoadState('networkidle');
+        await this.page.waitForTimeout(1000);
         expect(await this.page.locator(locators.toolbar_amount).first().textContent()).toBe("1");
         expect(await this.page.locator(locators.toolbar_amount + '>>nth=1').textContent()).toBe("12");
         await this.page.getByRole('link', { name: 'Page 3' }).first().click();
         await this.page.waitForLoadState('domcontentloaded');
+        await this.page.waitForLoadState('networkidle');
+        await this.page.waitForTimeout(1000);
         expect(await this.page.locator(locators.toolbar_amount).first().textContent()).toBe("25");
     }
 

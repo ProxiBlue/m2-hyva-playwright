@@ -41,4 +41,8 @@ export default class BasePage {
         await this.page.waitForLoadState('domcontentloaded');
         await actions.verifyPageTitle(this.page, this.data.header_title, this.workerInfo);
     }
+
+    get pageData() {
+        return this.data;
+    }
 }

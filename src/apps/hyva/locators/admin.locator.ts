@@ -9,3 +9,4 @@ export const admin_sales_order_grid_cells = '.data-grid-cell-content';
 export const action_menu_item = '.action-menu-item';
 export const admin_grid_search = '.data-grid-search-control';
 export const admin_grid_search_submit = '.data-grid-search-control-wrap .action-submit';
+export const remove_filter_button = '.admin__current-filters-list .action-remove';

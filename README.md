@@ -54,7 +54,7 @@ Stolen from https://github.com/elgentos/magento2-cypress-testing-suite/
 | Spec file               | Group                           | Test                                                                                                                                                 |
 |-------------------------|---------------------------------|------------------------------------------------------------------------------------------------------------------------------------------------------|
 |                         | Account test creation           | :heavy_check_mark: it can create an account to log in with                                                                                        |
-|                         | Account activities              | :black_square_button: it creates an account to log in with and use for further testing                                                               |
+|                         | Account activities              | :heavy_check_mark: it creates an account to log in with and use for further testing                                                               |
 |                         |                                 | :heavy_check_mark: it can log out                                                                                                                 |
 |                         |                                 | :black_square_button: it can show the account information page and display the name of the customer                                                  |
 |                         |                                 | :black_square_button: it can change the password                                                                                                     |
@@ -80,13 +80,13 @@ Stolen from https://github.com/elgentos/magento2-cypress-testing-suite/
 |                         |                                 | :heavy_check_mark: it can sort the products on price from highest to lowest                                                                          |
 |                         |                                 | :heavy_check_mark: it can sort the products by name (a-z)                                                                                            |
 |                         |                                 | :heavy_check_mark: it can sort the products by name (z-a)                                                                                            |
-|                         |                                 | :black_square_button: it can change the number of products to be displayed                                                                           |
+|                         |                                 | :heavy_check_mark: it can change the number of products to be displayed                                                                           |
 |                         |                                 | :heavy_check_mark: it checks if the breadcrumb is displayed correctly                                                                                |
 |                         |                                 | :heavy_check_mark: it checks if the pagination is working                                                                                            |
 |                         |                                 | :heavy_check_mark: it can change the number of displayed products (limiter)                                                                          |
 |                         |                                 | :heavy_check_mark: it can switch from list to grid view                                                                                              |
 |                         |                                 | :heavy_check_mark: it can add multiple products to compare, and compare count indicators work.                                                       |
-|                         |                                 | :black_square_button: it can add a simple product directly to the cart.                                                                              |
+|                         |                                 | :heavy_check_mark: it can add a simple product directly to the cart.                                                                              |
 |                         |                                 | :black_square_button: it can add a configurable product with swatches directly to the cart.                                                          |
 |                         |                                 | :black_square_button: it can add a complex product to the cart. ref: https://demo.hyva.io/set-of-sprite-yoga-straps.html                             |
 | home.pec.ts             | Home page tests                 | :heavy_check_mark: it can navigate to the homepage                                                                                                   |
@@ -106,10 +106,10 @@ Stolen from https://github.com/elgentos/magento2-cypress-testing-suite/
 |                         |                                 | :black_square_button: it cannot add a non existing coupon                                                                                            |
 |                         |                                 | :black_square_button: it displays the correct product prices and totals                                                                              |
 |                         |                                 | :black_square_button: it merges an already existing cart when a customer logs in                                                                     |
-|                         | Minicart tests                  | :black_square_button: it can open the cart slider by clicking on the cart icon in the header                                                         |
+|                         | Minicart tests                  | :heavy_check_mark: it can open the cart slider by clicking on the cart icon in the header                                                         |
 | sidecart_prices.spec.ts |                                 | :heavy_check_mark: it checks if the prices in the slider are displayed correctly                                                                     |
 |                         |                                 | :black_square_button: it checks if the items in the slider are displayed correctly                                                                   |
-|                         |                                 | :black_square_button: it can delete an item in the cart slider                                                                                       |
+|                         |                                 | :heavy_check_mark: it can delete an item in the cart slider                                                                                       |
 |                         |                                 | :black_square_button: it can change the quantity of an item in the cart slider                                                                       |
 |                         |                                 | :black_square_button: it can navigate to the cart with a link in the slider                                                                          |
 |                         |                                 | :black_square_button: it can navigate to the checkout with a link in the slider                                                                      |
@@ -134,10 +134,9 @@ Stolen from https://github.com/elgentos/magento2-cypress-testing-suite/
 |                         | Contact form tests              | :black_square_button: it shows the contact form correctly                                                                                            |
 |                         |                                 | :black_square_button: it cannot submit a form when no valid email address is entered                                                                 |
 |                         |                                 | :black_square_button: it can submit the form when all validation passes                                                                              |
-|                         | Back-end tests                  | :black_square_button: it can login on the administration panel of the magento environment                                                            |
+|                         | Back-end tests                  | :heavy_check_mark: it can login on the administration panel of the magento environment                                                            |
 |                         |                                 | :black_square_button: it can show customer data                                                                                                      |
 |                         |                                 | :black_square_button: it processes orders and invoices correctly                                                                                     |
-|                         |                                 | :black_square_button: it can edit an order                                                                                                           |
 |                         |                                 | :black_square_button: it can edit an order                                                                                                           |
 
 
