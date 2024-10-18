@@ -28,6 +28,8 @@ export default class SideCartPage extends BasePage {
         await actions.clickElement(this.page, locators.miniCartButton, this.workerInfo);
         await this.page.waitForTimeout(500);
         await this.page.waitForLoadState('domcontentloaded');
+        const sideCartTitle = this.page.locator(locators.title);
+        await expect(sideCartTitle).toBeVisible();
     }
 
     async checkQtyIndication(qty: number) {
@@ -53,16 +55,20 @@ export default class SideCartPage extends BasePage {
     //     });
     // }
     //
-    // async deleteItem(itemRowNum: number) {
-    //     const itemRow = locators.cart_table + '>>' + locators.cart_table_body + ">>nth=" + itemRowNum;
-    //     await actions.verifyElementExists(this.page, itemRow, this.workerInfo);
-    //     const deleteButton = itemRow + '>>' + locators.cart_item_row_delete;
-    //     await actions.verifyElementExists(this.page, deleteButton, this.workerInfo);
-    //     await actions.clickElement(this.page, deleteButton, this.workerInfo).then(async () => {
-    //         await this.page.waitForLoadState('networkidle');
-    //         await actions.verifyElementIsVisible(this.page, cartLocators.cart_empty, this.workerInfo);
-    //     });
-    // }
+
+    async deleteAll() {
+        this.page.waitForLoadState('domcontentloaded')
+        const cartItems = await this.page.$$(locators.items);
+        for (let i = 0; i < cartItems.length; i++) {
+            const deleteButton = await cartItems[i].$(locators.item_delete_button);
+            await deleteButton.click();
+        }
+        const sideCart = this.page.locator(locators.side_cart);
+        await expect(sideCart).toContainText(data.cart_is_empty);
+        const remainingItems = await this.page.$$(locators.items);
+        expect(remainingItems.length).toBe(0);
+
+    }
 
     async getItemPrice(itemRowNum: number) {
         this.page.waitForLoadState('domcontentloaded')

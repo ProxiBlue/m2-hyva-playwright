@@ -16,3 +16,5 @@ export const cart_empty  = '.cart-empty';
 export const  cart_totals = '#cart-totals';
 export const cart_subtotal  = '[x-text="hyva.formatPrice(totalsData.subtotal)"]';
 export const cart_shipping  = '[x-text="hyva.formatPrice(segment.value)"]';
+
+export const checkout_button = "#checkout-link-button"

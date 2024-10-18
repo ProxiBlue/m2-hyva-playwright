@@ -30,7 +30,7 @@
     "Pattern": {},
     "Climate": {}
   },
-  "limiter": ["36","12","24"],
+  "limiter": ["36","24","12"],
   "breadcrums": ["Home","Women","Bottoms"],
   "grid_mode" : "mode-grid",
   "list_mode" : "mode-list"
