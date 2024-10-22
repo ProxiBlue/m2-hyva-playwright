@@ -5,7 +5,7 @@ const config: PlaywrightTestConfig = {
     testMatch: "tests/*.spec.ts",
     timeout: 30 * 1000,
     retries: 5,
-    workers: 5,
+    workers: 3,
     globalSetup: require.resolve("@home/global-setup"),
     globalTeardown: require.resolve("@home/global-teardown"),
     expect: {
