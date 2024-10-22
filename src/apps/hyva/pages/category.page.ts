@@ -125,7 +125,7 @@ export default class CategoryPage extends BasePage {
         for (limitId in data.limiter) {
             limit = data.limiter[limitId]
             await this.page.waitForSelector(pageLocators.footer);
-            await this.page.locator(locators.limiter).scrollIntoViewIfNeeded();
+            await this.page.locator(locators.limiter).first().scrollIntoViewIfNeeded();
             await this.page.selectOption(locators.limiter, {value: limit});
             await this.page.waitForLoadState('domcontentloaded');
             await this.page.waitForLoadState('networkidle');
