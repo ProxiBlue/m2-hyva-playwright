@@ -4,7 +4,8 @@ import { initConfig } from "./config.init";
 const appName = process.env.APP_NAME;
 initConfig(appName);
 
-const appDir = "../../" + appName;
+const appDir = "./src/apps/" + appName;
+
 export const appConfigPath = appDir + "/playwright.config.ts";
 
 declare global {

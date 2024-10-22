@@ -19,10 +19,17 @@ I figured I can put the idea forward even though not many tests exists as yet. I
 
 I am certainly not an expert in anything playwright or js related!
 
-## Admin tests user credentials
+## Admin & checkout split out as seperated apps
+
+* There is now an 'admin' app which you can pull in pages/fixtures of in your tests to effect admin related tests, or just use as is to test base admin functionalities
+* If you name your checkout app 'checkout' you can refer to its files and sources using ```@checkout```
+
+### Admin tests user credentials
 
 Create a file named ```config.private.json``` in the root of your project (same location as config.json)
 Place into this file your admin user credentials that will be used for tests that required admin login.
+
+** NOTE: Admin tests can only use 1 worker, as the admin login will negate existing logins. So admin tests must be run sequencially ! **
 
 example:
 

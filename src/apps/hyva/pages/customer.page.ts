@@ -1,9 +1,9 @@
-import BasePage from "./base.page";
+import BasePage from "@common/pages/base.page";
 import type {Page, TestInfo} from "@playwright/test";
 import {expect} from "@hyva/fixtures";
 import * as locators from "@hyva/locators/customer.locator";
 import * as pageLocators from "@hyva/locators/page.locator";
-import { CustomerData } from '@hyva/interfaces/CustomerData';
+import { CustomerData } from '@common/interfaces/CustomerData';
 
 // dynamically import the test JSON data based on the APP_NAME env variable
 // and if the file exixts in APP path, and if not default to teh base data
