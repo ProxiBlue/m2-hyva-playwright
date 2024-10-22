@@ -94,3 +94,4 @@ src/apps/*
 !src/apps/hyva
 !src/apps/admin
 !src/apps/luma
+!/src/apps/common
