@@ -15,7 +15,10 @@
       "@utils/*": ["src/utils/*"],
       "@config": ["playwright.config.ts"],
       "@common/*": ["src/apps/common/*"],
-      "@hyva/*": ["src/apps/hyva/*"]
+      "@hyva/*": ["src/apps/hyva/*"],
+      "@luma/*": ["src/apps/luma/*"],
+      "@admin/*": ["src/apps/admin/*"],
+      "@checkout/*": ["src/apps/checkout/*"]
     }
   },
   "exclude": ["node_modules"]

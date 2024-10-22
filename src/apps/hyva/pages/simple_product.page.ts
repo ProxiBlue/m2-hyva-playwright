@@ -1,4 +1,4 @@
-import BasePage from "./base.page";
+import BasePage from "@common/pages/base.page";
 import type { Page, TestInfo } from "@playwright/test";
 import { expect } from "@hyva/fixtures";
 import * as actions from "@utils/base/web/actions";

@@ -11,8 +11,7 @@
     "test-live:hyva": "yarn workspace hyva test-live",
     "test-uat:hyva": "yarn workspace hyva test-uat",
     "test:debug:hyva": "yarn workspace hyva test:debug",
-    "report:hyva": "yarn workspace hyva report",
-    "allure:hyva": "yarn workspace hyva allure"
+    "report:hyva": "yarn workspace hyva report"
   },
   "author": "Lucas van Staden",
   "license": "MIT",
