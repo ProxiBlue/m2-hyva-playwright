@@ -92,3 +92,5 @@ yarn-error.log
 config.private.json
 src/apps/*
 !src/apps/hyva
+!src/apps/admin
+!src/apps/luma

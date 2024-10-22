@@ -1,0 +1,12 @@
+{
+  "name": "admin",
+  "version": "1.0.0",
+  "private": true,
+  "license": "MIT",
+  "scripts": {
+    "test-dev": "APP_NAME=admin NODE_ENV=dev TEST_BASE=admin playwright test",
+    "test-uat": "APP_NAME=admin NODE_ENV=uat TEST_BASE=admin playwright test",
+    "report": "npx playwright show-report reports/playwright-report",
+    "allure": "npx allure generate reports/allure/allure-result -o reports/allure/allure-report --clean && npx allure open reports/allure/allure-report"
+  }
+}

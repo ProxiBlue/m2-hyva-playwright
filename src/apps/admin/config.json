@@ -1,0 +1,11 @@
+{
+  "env": {
+    "dev": { "url": "https://hyva.ddev.site/" },
+    "test": { "url": "https://hyva.ddev.site/" },
+    "live": { "url": "https://demo.hyva.io/" }
+  },
+  "mailcatcher": "",
+  "skipBaseTests": [
+
+  ]
+}
