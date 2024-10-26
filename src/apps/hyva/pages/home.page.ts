@@ -1,5 +1,5 @@
 import BasePage from "@common/pages/base.page";
-import type { Page, TestInfo } from "@playwright/test";
+import {Page, test, TestInfo} from "@playwright/test";
 import { expect } from "@hyva/fixtures";
 import * as actions from "@utils/base/web/actions";
 import * as locators from "@hyva/locators/home.locator";
@@ -12,11 +12,11 @@ import * as pageLocators from "@hyva/locators/page.locator";
 let data = {};
 const fs = require("fs");
 if (fs.existsSync(__dirname + '/../../' + process.env.APP_NAME + '/data/home.data.json')) {
-    import('../../' + process.env.APP_NAME + '/data/home.data.json').then((dynamicData) => {
+    import('../../' + process.env.APP_NAME + '/data/home.data.json', { assert: { type: "json" } }).then((dynamicData) => {
         data = dynamicData;
     });
 } else {
-    import('../data/home.data.json').then((dynamicData) => {
+    import(__dirname + '/../data/home.data.json', { assert: { type: "json" } }).then((dynamicData) => {
         data = dynamicData;
     });
 }
@@ -26,27 +26,32 @@ export default class HomePage extends BasePage {
     }
 
     async navigateTo() {
+        // @ts-ignore
         await actions.navigateTo(this.page, process.env.URL, this.workerInfo);
         const url = this.page.url();
     }
 
     async canSearchFromHomepage(isMobile: boolean) {
-        if (isMobile) {
-            await this.page.click(searchSelectors.headerSearchIcon);
-            await this.page.waitForSelector(searchSelectors.headerSearchFieldMobile);
-            await this.page.fill(searchSelectors.headerSearchFieldMobile, this.data.search_term, {force: true});
-            await this.page.press(searchSelectors.headerSearchFieldMobile, 'Enter');
-        } else {
-            await this.page.click(searchSelectors.headerSearchIcon);
-            await this.page.waitForSelector(searchSelectors.headerSearchField);
-            await this.page.fill(searchSelectors.headerSearchField, this.data.search_term);
-            await this.page.press(searchSelectors.headerSearchField, 'Enter');
-        }
-        await this.page.waitForSelector(pageLocators.pageTitle);
-        const mainHeadingText = await this.page.$eval(pageLocators.pageTitle, (el) => el.textContent);
-        expect(mainHeadingText).toContain(this.data.search_term);
-        await actions.verifyElementIsVisible(this.page, product.productGrid, this.workerInfo);
-        await expect.poll(async () => this.page.locator(product.productGridItem).count()).toBeGreaterThan(0);
+        await test.step(
+            this.workerInfo.project.name + ": Perform search on homepage ",
+            async () => {
+                if (isMobile) {
+                    await this.page.click(searchSelectors.headerSearchIcon);
+                    await this.page.waitForSelector(searchSelectors.headerSearchFieldMobile);
+                    await this.page.fill(searchSelectors.headerSearchFieldMobile, this.data.search_term, {force: true});
+                    await this.page.press(searchSelectors.headerSearchFieldMobile, 'Enter');
+                } else {
+                    await this.page.click(searchSelectors.headerSearchIcon);
+                    await this.page.waitForSelector(searchSelectors.headerSearchField);
+                    await this.page.fill(searchSelectors.headerSearchField, this.data.search_term);
+                    await this.page.press(searchSelectors.headerSearchField, 'Enter');
+                }
+                await this.page.waitForSelector(pageLocators.pageTitle);
+                const mainHeadingText = await this.page.$eval(pageLocators.pageTitle, (el) => el.textContent);
+                expect(mainHeadingText).toContain(this.data.search_term);
+                await actions.verifyElementIsVisible(this.page, product.productGrid, this.workerInfo);
+                await expect.poll(async () => this.page.locator(product.productGridItem).count()).toBeGreaterThan(0);
+            });
     }
 
 }

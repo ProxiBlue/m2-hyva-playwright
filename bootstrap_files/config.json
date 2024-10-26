@@ -5,7 +5,6 @@
     "live": { "url": "" }
   },
   "mailcatcher": "",
-  "skipBaseTests": [
-
-  ]
+  "skipBaseTests": [],
+  "faker_locale": "en_US"
 }

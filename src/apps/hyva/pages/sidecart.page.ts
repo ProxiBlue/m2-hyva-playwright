@@ -1,5 +1,5 @@
 import BasePage from "@common/pages/base.page";
-import type {Page, TestInfo} from "@playwright/test";
+import {Page, test, TestInfo} from "@playwright/test";
 import {expect} from "@hyva/fixtures";
 import * as actions from "@utils/base/web/actions";
 import * as locators from "@hyva/locators/sidecart.locator";
@@ -9,11 +9,11 @@ import * as locators from "@hyva/locators/sidecart.locator";
 let data = {};
 const fs = require("fs");
 if (fs.existsSync(__dirname + '/../../' + process.env.APP_NAME + '/data/sidecart.data.json')) {
-    import('../../' + process.env.APP_NAME + '/data/sidecart.data.json').then((dynamicData) => {
+    import('../../' + process.env.APP_NAME + '/data/sidecart.data.json', { assert: { type: "json" } }).then((dynamicData) => {
         data = dynamicData;
     });
 } else {
-    import('../data/sidecart.data.json').then((dynamicData) => {
+    import(__dirname + '/../data/sidecart.data.json', { assert: { type: "json" } }).then((dynamicData) => {
         data = dynamicData;
     });
 }
@@ -24,20 +24,28 @@ export default class SideCartPage extends BasePage {
     }
 
     async open() {
-        this.page.waitForLoadState('domcontentloaded')
-        await actions.clickElement(this.page, locators.miniCartButton, this.workerInfo);
-        await this.page.waitForTimeout(500);
-        await this.page.waitForLoadState('domcontentloaded');
-        const sideCartTitle = this.page.locator(locators.title);
-        await expect(sideCartTitle).toBeVisible();
+        await test.step(
+            this.workerInfo.project.name + ": Open Sidecart ",
+            async () => {
+                this.page.waitForLoadState('domcontentloaded')
+                await actions.clickElement(this.page, locators.miniCartButton, this.workerInfo);
+                await this.page.waitForTimeout(500);
+                await this.page.waitForLoadState('domcontentloaded');
+                const sideCartTitle = this.page.locator(locators.title);
+                await expect(sideCartTitle).toBeVisible();
+            });
     }
 
     async checkQtyIndication(qty: number) {
-        await this.page.waitForSelector(locators.miniCartQtyIndicator);
-        await actions.verifyElementIsVisible(this.page, locators.miniCartQtyIndicator, this.workerInfo);
-        await actions.getInnerText(this.page, locators.miniCartQtyIndicator, this.workerInfo).then (async (qtyValue) => {
-            expect(qtyValue).toEqual(qty.toString());
-        });
+        await test.step(
+            this.workerInfo.project.name + ": Check side cart qty ",
+            async () => {
+                await this.page.waitForSelector(locators.miniCartQtyIndicator);
+                await actions.verifyElementIsVisible(this.page, locators.miniCartQtyIndicator, this.workerInfo);
+                await actions.getInnerText(this.page, locators.miniCartQtyIndicator, this.workerInfo).then(async (qtyValue) => {
+                    expect(qtyValue).toEqual(qty.toString());
+                });
+            });
     }
 
     // async changeQuantity(itemRowNum: number, newQuantity: number) {
@@ -57,35 +65,49 @@ export default class SideCartPage extends BasePage {
     //
 
     async deleteAll() {
-        this.page.waitForLoadState('domcontentloaded')
-        const cartItems = await this.page.$$(locators.items);
-        for (let i = 0; i < cartItems.length; i++) {
-            const deleteButton = await cartItems[i].$(locators.item_delete_button);
-            await deleteButton.click();
-        }
-        const sideCart = this.page.locator(locators.side_cart);
-        await expect(sideCart).toContainText(data.cart_is_empty);
-        const remainingItems = await this.page.$$(locators.items);
-        expect(remainingItems.length).toBe(0);
+        await test.step(
+            this.workerInfo.project.name + ": Delete all items from side carts ",
+            async () => {
+                await this.page.waitForLoadState('domcontentloaded')
+                const cartItems = await this.page.$$(locators.items);
+                for (let i = 0; i < cartItems.length; i++) {
+                    const deleteButton = await cartItems[i].$(locators.item_delete_button);
+                    // @ts-ignore
+                    await deleteButton.click();
+                }
+                const sideCart = this.page.locator(locators.side_cart);
+                // @ts-ignore
+                await expect(sideCart).toContainText(data.default.cart_is_empty);
+                const remainingItems = await this.page.$$(locators.items);
+                expect(remainingItems.length).toBe(0);
+            });
 
     }
 
     async getItemPrice(itemRowNum: number) {
-        this.page.waitForLoadState('domcontentloaded')
-        const itemRow = locators.items + ">>nth=" + itemRowNum;
-        const itemRowPrice = itemRow + '>>' + locators.price;
-        await actions.verifyElementExists(this.page, itemRow, this.workerInfo);
-        // scroll the item into view
-        await this.page.locator(itemRowPrice).scrollIntoViewIfNeeded();
-        let itemPrice = await this.page.locator(itemRowPrice).textContent();
-        return itemPrice;
+        await test.step(
+            this.workerInfo.project.name + ": Get item price ",
+            async () => {
+                this.page.waitForLoadState('domcontentloaded')
+                const itemRow = locators.items + ">>nth=" + itemRowNum;
+                const itemRowPrice = itemRow + '>>' + locators.price;
+                await actions.verifyElementExists(this.page, itemRow, this.workerInfo);
+                // scroll the item into view
+                await this.page.locator(itemRowPrice).scrollIntoViewIfNeeded();
+                let itemPrice = await this.page.locator(itemRowPrice).textContent();
+                return itemPrice;
+            });
     }
 
     async getMiniCartSubtotal() {
-        this.page.waitForLoadState('domcontentloaded')
-        await actions.verifyElementExists(this.page, locators.subTotal, this.workerInfo);
-        let subTotal = await this.page.locator(locators.subTotal).textContent();
-        return subTotal;
+        await test.step(
+            this.workerInfo.project.name + ": Get sidecart sub totals ",
+            async () => {
+                this.page.waitForLoadState('domcontentloaded')
+                await actions.verifyElementExists(this.page, locators.subTotal, this.workerInfo);
+                let subTotal = await this.page.locator(locators.subTotal).textContent();
+                return subTotal;
+            });
     }
 
 }

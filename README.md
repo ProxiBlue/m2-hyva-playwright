@@ -50,6 +50,13 @@ process.env.admin_password
 The file must not be commited to repo for security concerns.
 It is best to always create a dummy admin user for tests runs, and not use a real existing admin user
 
+## Locale for address data
+
+The tests use faker.js, and you can set your locale in the config.json file : ```"faker_locale": "en_AU"```
+
+Note that country selection is excluded from the built-in customer generated data as faker.js will not limit country to the selected locale.
+You have to do country selections yourself.
+
 
 
 

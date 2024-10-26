@@ -1,8 +1,8 @@
 import BasePage from "@common/pages/base.page";
 import {Page, test, TestInfo} from "@playwright/test";
-import {expect} from "@hyva/fixtures";
-import * as locators from "@hyva/locators/customer.locator";
-import * as pageLocators from "@hyva/locators/page.locator";
+import {expect} from "@luma/fixtures";
+import * as locators from "@luma/locators/customer.locator";
+import * as pageLocators from "@luma/locators/page.locator";
 import { CustomerData } from '@common/interfaces/CustomerData';
 
 // dynamically import the test JSON data based on the APP_NAME env variable
@@ -63,10 +63,10 @@ export default class CustomerPage extends BasePage {
             this.workerInfo.project.name + ": Customer Logout ",
             async () => {
                 await this.page.waitForTimeout(2000);
+                await this.page.locator('.customer-welcome .action.switch').first().click();
                 await this.page.getByRole('link', {name: locators.logout_link}).click();
                 await this.page.waitForLoadState('domcontentloaded');
                 await this.page.waitForTimeout(6000);
-                //await expect(this.page.locator(pageLocators.pageTitle)).toContainText(data.default.logged_out);
             });
     }
 

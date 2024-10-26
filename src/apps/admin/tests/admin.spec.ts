@@ -2,7 +2,8 @@ import {describe, test} from "@admin/fixtures";
 
 describe("Admin", () => {
 
-    test.beforeEach(async ({ adminPage}, testInfo) => {
+    test.beforeEach(async ({ adminPage }, testInfo) => {
+        // @ts-ignore
         test.skip(process.env.skipBaseTests.includes(testInfo.title), testInfo.title + " test skipped for this environment: " + process.env.APP_NAME);
         await adminPage.navigateTo();
     });
