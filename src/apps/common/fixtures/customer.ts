@@ -1,50 +1,78 @@
-import { faker } from '@faker-js/faker/locale/en'; /* https://fakerjs.dev/api/internet */
-import { CustomerData } from '@common/interfaces/CustomerData';
+import { allFakers } from '@faker-js/faker';
+import {CustomerData} from '@common/interfaces/CustomerData';
 
-export class Customer {
 
-    private readonly firstName: string;
-    private readonly lastName: string;
-    private readonly email: string;
-    private readonly password: string;
-    private readonly street_one_line: string;
-    private readonly state: string;
-    private readonly city: string;
-    private readonly zip: string;
-    private readonly state_code : string;
-    private readonly country: string;
-    private readonly phone: string;
-
-    constructor() {
-        this.firstName = faker.name.firstName();
-        this.lastName = faker.name.lastName();
-        this.email = this.firstName+'.'+this.lastName+'@example.com';
-        this.password = faker.internet.password(20);
-        this.street_one_line = faker.address.streetAddress();
-        this.state = faker.address.state();
-        this.city = faker.address.city();
-        this.zip = faker.address.zipCodeByState(this.state);
-        this.state_code = faker.address.stateAbbr();
-        this.country = faker.address.country();
-        this.phone = faker.phone.number('555-#######');
+/**
+ * Country is excluded as it does not adhere to locale.
+ * If you need to put / set country, it needs to be a separate action in your tests
+ *
+ * @param locale
+ */
+export async function createCustomerData(locale: string = "en_US"): Promise<CustomerData> {
+    // @ts-ignore
+    const stateMap: { [key: string]: string } = {
+        NSW: "New South Wales",
+        ACT: "Australian Capital Territory",
+        VIC: "Victoria",
+        QLD: "Queensland",
+        SA: "South Australia",
+        WA: "Western Australia",
+        TAS: "Tasmania",
+        NT: "Northern Territory"
+    };
+    const fakerLocale = allFakers[locale];
+    fakerLocale.rawDefinitions.location.postcode_by_state = {
+        NSW: [
+            '{{number.int({"min": 2000,"max": 2599})}}',
+            '{{number.int({"min": 2619,"max": 2899})}}'
+        ],
+        ACT: [
+            '{{number.int({"min": 2600,"max": 2618})}}',
+            '{{number.int({"min": 2900,"max": 2920})}}'
+        ],
+        VIC: [
+            '{{number.int({"min": 3000,"max": 3999})}}',
+            '{{number.int({"min": 8000,"max": 8999})}}'
+        ],
+        QLD: [
+            '{{number.int({"min": 4000,"max": 4999})}}',
+            '{{number.int({"min": 9000,"max": 9999})}}'
+        ],
+        SA: [
+            '{{number.int({"min": 5000,"max": 5799})}}',
+            '{{number.int({"min": 5800,"max": 5999})}}'
+        ],
+        WA: [
+            '{{number.int({"min": 6000,"max": 6797})}}',
+            '{{number.int({"min": 6800,"max": 6999})}}'
+        ],
+        TAS: [
+            '{{number.int({"min": 7000,"max": 7799})}}',
+            '{{number.int({"min": 7800,"max": 7999})}}'
+        ],
+        NT: [
+            '{{number.int({"min": 0800,"max": 0899})}}',
+            '{{number.int({"min": 0900,"max": 0999})}}'
+        ]
     }
-
-    getCustomerData(): CustomerData {
-        return {
-            firstName: this.firstName,
-            lastName: this.lastName,
-            email: this.email,
-            password: this.password,
-            street_one_line: this.street_one_line,
-            state: this.state,
-            city: this.city,
-            zip: this.zip,
-            state_code: this.state_code,
-            country: this.country,
-            phone: this.phone
-        };
-    }
-
-
-
+    let firstname = fakerLocale.person.firstName();
+    let lastname = fakerLocale.person.lastName();
+    let email = fakerLocale.internet.email({firstName: firstname, lastName: lastname});
+    let state = fakerLocale.location.state( {abbreviated: true});
+    return {
+        firstName: firstname,
+        lastName: lastname,
+        email: email,
+        password: fakerLocale.internet.password({length: 20, memorable: true, pattern: /[A-Z0-9]/, prefix: '@-1'}),
+        street_one_line: fakerLocale.location.streetAddress(),
+        state: stateMap[state],
+        city: fakerLocale.location.city(),
+        zip: fakerLocale.location.zipCode({
+            state: state
+        }),
+        state_code: fakerLocale.location.state({abbreviated: true}),
+        phone: fakerLocale.phone.number()
+    };
 }
+
+

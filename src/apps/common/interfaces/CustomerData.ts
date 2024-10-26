@@ -10,6 +10,5 @@ export interface CustomerData {
     city: string;
     zip: string;
     state_code: string;
-    country: string;
     phone: string;
 }

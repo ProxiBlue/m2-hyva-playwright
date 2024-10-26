@@ -6,6 +6,7 @@ import * as pageLocators from "@hyva/locators/page.locator";
 describe("Side cart price check", () => {
 
     test.beforeEach(async ({ simpleProductPage }, testInfo) => {
+        // @ts-ignore
         test.skip(process.env.skipBaseTests.includes(testInfo.title), "Test skipped for this environment: " + process.env.APP_NAME);
         await simpleProductPage.navigateTo();
         await simpleProductPage.addToCart();
@@ -25,9 +26,13 @@ describe("Side cart price check", () => {
         const cartItems = await page.$$(locators.items);
         for (let i = 0; i < cartItems.length; i++) {
             const lineItemNameElement = await cartItems[i].$(locators.line_item_name)
+            expect(lineItemNameElement).not.toBeNull()
+            // @ts-ignore
             const lineItemName = await lineItemNameElement.textContent();
             await page.waitForTimeout(500);
             const editButton = await cartItems[i].$(locators.item_edit_button);
+            expect(editButton).not.toBeNull();
+            // @ts-ignore
             await editButton.click();
             await page.waitForLoadState("networkidle");
             await page.waitForLoadState("domcontentloaded");

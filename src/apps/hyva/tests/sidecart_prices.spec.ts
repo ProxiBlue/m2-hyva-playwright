@@ -1,10 +1,10 @@
 import { test, describe, expect } from "@hyva/fixtures";
-
-import * as productLocators from "@hyva/locators/product.locator";
+import * as actions from "@utils/base/web/actions";
 
 describe("Side cart price check", () => {
 
     test.beforeEach(async ({ simpleProductPage }, testInfo) => {
+        // @ts-ignore
         test.skip(process.env.skipBaseTests.includes(testInfo.title), "Test skipped for this environment: " + process.env.APP_NAME);
         await simpleProductPage.navigateTo();
         await simpleProductPage.addToCart();
@@ -18,10 +18,12 @@ describe("Side cart price check", () => {
         let lineItemPrice = await sideCartPage.getItemPrice(0);
         expect(lineItemPrice).toEqual(itemPrice);
         let miniCartSubtotalText = await sideCartPage.getMiniCartSubtotal();
-        let total = Number(miniCartSubtotalText.replace(/[^0-9\.-]+/g, ""));
-        let cleanItemPrice = Number(itemPrice.replace(/[^0-9\.-]+/g, ""));
+        expect(miniCartSubtotalText).not.toBeNull()
+        // @ts-ignore
+        let total = actions.parsePrice(miniCartSubtotalText);
+        let cleanItemPrice = actions.parsePrice(itemPrice);
         expect(total).toEqual(cleanItemPrice);
-        // lets add in another item, and confirm price is increased correctly
+        // let's add in another item, and confirm price is increased correctly
         await simpleProductPage.navigateTo();
         itemPrice = await simpleProductPage.getProductPrice();
         await simpleProductPage.addToCart();
@@ -31,8 +33,10 @@ describe("Side cart price check", () => {
         lineItemPrice = await sideCartPage.getItemPrice(0)
         expect(lineItemPrice).toEqual(itemPrice);
         miniCartSubtotalText = await sideCartPage.getMiniCartSubtotal();
-        total = Number(miniCartSubtotalText.replace(/[^0-9\.-]+/g, ""));
-        cleanItemPrice = Number(itemPrice.replace(/[^0-9\.-]+/g, "")) * 2;
+        expect(miniCartSubtotalText).not.toBeNull()
+        // @ts-ignore
+        total = actions.parsePrice(miniCartSubtotalText);
+        cleanItemPrice = actions.parsePrice(itemPrice) * 2;
         expect(total).toEqual(cleanItemPrice);
     });
 

@@ -1,8 +1,8 @@
 import BasePage from "@common/pages/base.page";
 import {Page, test, TestInfo} from "@playwright/test";
-import {expect} from "@hyva/fixtures";
+import {expect} from "@luma/fixtures";
 import * as actions from "@utils/base/web/actions";
-import * as cartLocators from "@hyva/locators/cart.locator";
+import * as cartLocators from "@luma/locators/cart.locator";
 
 // dynamically import the test JSON data based on the APP_NAME env variable
 // and if the file exixts in APP path, and if not default to teh base data
@@ -56,16 +56,14 @@ export default class CartPage extends BasePage {
     }
 
     async getLineItemsPrices() {
-
         let total = 0.00;
         const itemCount = await this.page.locator(cartLocators.cart_row_item_info).count();
         for (let i = 0; i < itemCount; i++) {
             const priceText = await this.getItemSubTotal(i);
             //@ts-ignore
-            total += actions.parsePrice(priceText);
+            total += priceText;
         }
         return total;
-
     }
 
     async deleteItem(itemRowNum: number) {
@@ -89,17 +87,8 @@ export default class CartPage extends BasePage {
         const itemRow = cartLocators.cart_table + '>>' + cartLocators.cart_table_body + ">>nth=" + itemRowNum;
         await actions.verifyElementExists(this.page, itemRow, this.workerInfo);
         let subTotal = await actions.getInnerText(this.page, itemRow + '>>' + cartLocators.cart_row_subtotal, this.workerInfo);
-        // mobiles (and seems safari) get the label string included, so strip it if it exists
-        // I am sure there is s smarter regex way, but i am not feeling smart right now ;)
-        // @ts-ignore
-        subTotal = subTotal.replace(data.default.subtotal_label + ': ', '');
-        // @ts-ignore
-        subTotal = subTotal.replace(data.default.subtotal_label + ':', '');
-        // @ts-ignore
-        subTotal = subTotal.replace(data.default.subtotal_label + ' ', '');
-        // @ts-ignore
-        subTotal = subTotal.replace(data.default.subtotal_label, '');
-        return subTotal;
+        expect(subTotal).not.toBeNull();
+        return actions.parsePrice(subTotal);
     }
 
     async checkSubtotalMatches(total: string) {
@@ -206,8 +195,6 @@ export default class CartPage extends BasePage {
             async () => {
                 await this.page.locator(cartLocators.checkout_button).click();
                 await this.page.waitForLoadState("domcontentloaded");
-                //await this.page.waitForSelector(cartLocators.shipping_label);
-                //expect(this.page.locator(cartLocators.title)).toContainText(data.default.header_title);
             });
     }
 

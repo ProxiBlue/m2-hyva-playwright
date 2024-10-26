@@ -1,6 +1,6 @@
 import { test as baseTest } from "@playwright/test";
 import CommonPage from "@common/pages/common.page";
-import { Customer } from "@common/fixtures/customer";
+import { createCustomerData } from "@common/fixtures/customer";
 import { CustomerData } from '@common/interfaces/CustomerData';
 
 type pages = {
@@ -13,8 +13,7 @@ const testPages = baseTest.extend<pages>({
         await use(new CommonPage(page, workerInfo));
     },
     customerData: async ({ page }, use) => {
-        const customer = new Customer();
-        const customerData: CustomerData = customer.getCustomerData();
+        const customerData: CustomerData = await createCustomerData(process.env.faker_locale);
         await use(customerData);
     },
 });

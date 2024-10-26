@@ -1,12 +1,10 @@
-import { test as hyvaBase } from "@hyva/fixtures";
-import CommonPage from "@common/pages/common.page";
-
+import { test as testBase } from "@common/fixtures";
 
 type pages = {
-    commonPage: CommonPage;
+
 };
 
-const testPages = hyvaBase.extend<pages>({
+const testPages = testBase.extend<pages>({
 
 });
 

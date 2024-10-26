@@ -3,6 +3,7 @@ import {describe, test} from "@hyva/fixtures";
 describe("Home", () => {
 
     test.beforeEach(async ({ homePage}, testInfo) => {
+        // @ts-ignore
         test.skip(process.env.skipBaseTests.includes(testInfo.title), testInfo.title + " test skipped for this environment: " + process.env.APP_NAME);
         await homePage.navigateTo();
     });

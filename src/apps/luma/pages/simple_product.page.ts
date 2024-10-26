@@ -1,9 +1,9 @@
 import BasePage from "@common/pages/base.page";
 import {Page, test, TestInfo} from "@playwright/test";
-import { expect } from "@hyva/fixtures";
+import { expect } from "@common/fixtures";
 import * as actions from "@utils/base/web/actions";
-import * as locators from "@hyva/locators/product.locator";
-import * as pageLocators from "@hyva/locators/page.locator";
+import * as locators from "@luma/locators/product.locator";
+import * as pageLocators from "@luma/locators/page.locator";
 
 // dynamically import the test JSON data based on the APP_NAME env variable
 // and if the file exixts in APP path, and if not default to teh base data
@@ -18,8 +18,6 @@ if (fs.existsSync(__dirname + '/../../' + process.env.APP_NAME + '/data/simple_p
         data = dynamicData;
     });
 }
-
-//import * as data from "../data/simple_product.data.json";
 
 export default class SimpleProductPage extends BasePage {
 
