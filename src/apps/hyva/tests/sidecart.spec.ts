@@ -3,7 +3,7 @@ import * as locators from "@hyva/locators/sidecart.locator";
 import * as productLocators from "@hyva/locators/product.locator";
 import * as pageLocators from "@hyva/locators/page.locator";
 
-describe("Side cart price check", () => {
+describe("Side cart check", () => {
 
     test.beforeEach(async ({ simpleProductPage }, testInfo) => {
         // @ts-ignore
