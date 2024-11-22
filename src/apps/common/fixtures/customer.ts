@@ -9,7 +9,6 @@ import {CustomerData} from '@common/interfaces/CustomerData';
  * @param locale
  */
 export async function createCustomerData(locale: string = "en_US"): Promise<CustomerData> {
-    // @ts-ignore
     const stateMap: { [key: string]: string } = {
         NSW: "New South Wales",
         ACT: "Australian Capital Territory",
@@ -20,6 +19,7 @@ export async function createCustomerData(locale: string = "en_US"): Promise<Cust
         TAS: "Tasmania",
         NT: "Northern Territory"
     };
+    // @ts-ignore
     const fakerLocale = allFakers[locale];
     fakerLocale.rawDefinitions.location.postcode_by_state = {
         NSW: [
