@@ -1,6 +1,6 @@
 import BasePage from "@common/pages/base.page";
 import {Page, test, TestInfo} from "@playwright/test";
-import { expect } from "@hyva/fixtures";
+import {expect} from "@hyva/fixtures";
 import * as actions from "@utils/base/web/actions";
 import * as locators from "@hyva/locators/product.locator";
 import * as pageLocators from "@hyva/locators/page.locator";
@@ -10,11 +10,11 @@ import * as pageLocators from "@hyva/locators/page.locator";
 let data = {};
 const fs = require("fs");
 if (fs.existsSync(__dirname + '/../../' + process.env.APP_NAME + '/data/simple_product.data.json')) {
-    import('../../' + process.env.APP_NAME + '/data/simple_product.data.json', { assert: { type: "json" } }).then((dynamicData) => {
+    import('../../' + process.env.APP_NAME + '/data/simple_product.data.json', {assert: {type: "json"}}).then((dynamicData) => {
         data = dynamicData;
     });
 } else {
-    import(__dirname + '/../data/simple_product.data.json', { assert: { type: "json" } }).then((dynamicData) => {
+    import(__dirname + '/../data/simple_product.data.json', {assert: {type: "json"}}).then((dynamicData) => {
         data = dynamicData;
     });
 }
@@ -42,7 +42,7 @@ export default class SimpleProductPage extends BasePage {
         await actions.verifyPageTitle(this.page, data.default.name, this.workerInfo);
     }
 
-    async addToCart(qty : string = '1'): Promise<void> {
+    async addToCart(qty: string = '1'): Promise<void> {
         await test.step(
             this.workerInfo.project.name + ": Add product to cart ",
             async () => {
@@ -57,12 +57,8 @@ export default class SimpleProductPage extends BasePage {
     }
 
     async getProductPrice() {
-        await test.step(
-            this.workerInfo.project.name + ": Get product price ",
-            async () => {
-                const productPrice = await actions.getInnerText(this.page, locators.productItemPriceRegular, this.workerInfo);
-                return productPrice;
-            });
+        const productPrice = await actions.getInnerText(this.page, locators.productItemPriceRegular, this.workerInfo);
+        return productPrice;
     }
 
 }

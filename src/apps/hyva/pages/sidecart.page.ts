@@ -9,11 +9,11 @@ import * as locators from "@hyva/locators/sidecart.locator";
 let data = {};
 const fs = require("fs");
 if (fs.existsSync(__dirname + '/../../' + process.env.APP_NAME + '/data/sidecart.data.json')) {
-    import('../../' + process.env.APP_NAME + '/data/sidecart.data.json', { assert: { type: "json" } }).then((dynamicData) => {
+    import('../../' + process.env.APP_NAME + '/data/sidecart.data.json', {assert: {type: "json"}}).then((dynamicData) => {
         data = dynamicData;
     });
 } else {
-    import(__dirname + '/../data/sidecart.data.json', { assert: { type: "json" } }).then((dynamicData) => {
+    import(__dirname + '/../data/sidecart.data.json', {assert: {type: "json"}}).then((dynamicData) => {
         data = dynamicData;
     });
 }
@@ -85,29 +85,22 @@ export default class SideCartPage extends BasePage {
     }
 
     async getItemPrice(itemRowNum: number) {
-        await test.step(
-            this.workerInfo.project.name + ": Get item price ",
-            async () => {
-                this.page.waitForLoadState('domcontentloaded')
-                const itemRow = locators.items + ">>nth=" + itemRowNum;
-                const itemRowPrice = itemRow + '>>' + locators.price;
-                await actions.verifyElementExists(this.page, itemRow, this.workerInfo);
-                // scroll the item into view
-                await this.page.locator(itemRowPrice).scrollIntoViewIfNeeded();
-                let itemPrice = await this.page.locator(itemRowPrice).textContent();
-                return itemPrice;
-            });
+        this.page.waitForLoadState('domcontentloaded')
+        const itemRow = locators.items + ">>nth=" + itemRowNum;
+        const itemRowPrice = itemRow + '>>' + locators.price;
+        await actions.verifyElementExists(this.page, itemRow, this.workerInfo);
+        // scroll the item into view
+        await this.page.locator(itemRowPrice).scrollIntoViewIfNeeded();
+        let itemPrice = await this.page.locator(itemRowPrice).textContent();
+        return itemPrice;
     }
 
     async getMiniCartSubtotal() {
-        await test.step(
-            this.workerInfo.project.name + ": Get sidecart sub totals ",
-            async () => {
-                this.page.waitForLoadState('domcontentloaded')
-                await actions.verifyElementExists(this.page, locators.subTotal, this.workerInfo);
-                let subTotal = await this.page.locator(locators.subTotal).textContent();
-                return subTotal;
-            });
+        this.page.waitForLoadState('domcontentloaded')
+        await actions.verifyElementExists(this.page, locators.subTotal, this.workerInfo);
+        let subTotal = await this.page.locator(locators.subTotal).textContent();
+        return subTotal;
+
     }
 
 }
