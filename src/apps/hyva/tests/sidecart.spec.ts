@@ -44,22 +44,22 @@ describe("Side cart check", () => {
             await page.waitForSelector('.message.success')
             await page.waitForLoadState('domcontentloaded');
             expect(await page.locator(pageLocators.message_success).isVisible()).toBe(true)
-            expect(await page.locator(pageLocators.message_success).textContent()).toContain(sideCartPage.pageData.product_was_updated);
+            expect(await page.locator(pageLocators.message_success).textContent()).toContain(sideCartPage.pageData.default.product_was_updated);
         }
     });
 
     test('it can navigate to the cart with a link in the slider', async ({ sideCartPage, page, cartPage }) => {
         await sideCartPage.open();
-        await page.waitForSelector('text='+sideCartPage.pageData.view_and_edit_cart_link, { state: 'visible' });
-        await page.click('text='+sideCartPage.pageData.view_and_edit_cart_link);
+        await page.waitForSelector('text='+sideCartPage.pageData.default.view_and_edit_cart_link, { state: 'visible' });
+        await page.click('text='+sideCartPage.pageData.default.view_and_edit_cart_link);
         await page.waitForLoadState("domcontentloaded");
-        await page.waitForSelector('text='+cartPage.pageData.page_title_text, { state: 'visible' });
+        await page.waitForSelector('text='+cartPage.pageData.default.page_title_text, { state: 'visible' });
     })
 
     test('it can navigate to checkout with a button in the slider', async ({ sideCartPage, page }) => {
         await sideCartPage.open();
-        await page.waitForSelector('text='+sideCartPage.pageData.checkout_link, { state: 'visible' });
-        await page.click('text='+sideCartPage.pageData.checkout_link);
+        await page.waitForSelector('text='+sideCartPage.pageData.default.checkout_link, { state: 'visible' });
+        await page.click('text='+sideCartPage.pageData.default.checkout_link);
         await page.waitForLoadState("domcontentloaded");
     })
 

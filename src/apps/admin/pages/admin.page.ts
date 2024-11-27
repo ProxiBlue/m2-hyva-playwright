@@ -41,6 +41,7 @@ export default class AdminPage extends BasePage {
                 await this.page.waitForSelector(locators.title)
                 // @ts-ignore
                 expect(await this.page.locator(locators.title).textContent()).toContain(data.default.page_title_text);
+                // and sometmes there is a dialog, just refresh and it will go away
             });
     }
 
@@ -58,6 +59,7 @@ export default class AdminPage extends BasePage {
         await test.step(
             this.workerInfo.project.name + ": Navigate to Orders Page ",
             async () => {
+                await this.page.reload();
                 await this.page.locator(locators.admin_menu_sales).waitFor({state: 'visible'});
                 await this.page.click(locators.admin_menu_sales);
                 await this.page.locator(locators.admin_menu_sales_orders).waitFor({state: 'visible'});
