@@ -42,6 +42,8 @@ export default class AdminPage extends BasePage {
                 // @ts-ignore
                 expect(await this.page.locator(locators.title).textContent()).toContain(data.default.page_title_text);
                 // and sometmes there is a dialog, just refresh and it will go away
+                await this.page.reload();
+                await this.page.waitForSelector(locators.title)
             });
     }
 
@@ -70,6 +72,30 @@ export default class AdminPage extends BasePage {
                 if (isVisible) {
                     await this.page.click(locators.remove_filter_button);
                 }
+            });
+    }
+
+    async checkIfOrderExistsByIncrementId(incrementId: string) {
+        await test.step(
+            this.workerInfo.project.name + ": Check if order exists by increment id ",
+            async () => {
+                const isVisible = await this.page.isVisible(locators.remove_filter_button);
+                if (isVisible) {
+                    await this.page.click(locators.remove_filter_button);
+                }
+                await this.page.locator(locators.filter_button_expand).waitFor({state: 'visible'});
+                await this.page.click(locators.filter_button_expand);
+                await this.page.locator(locators.filter_increment_id).waitFor({state: 'visible'});
+                await this.page.locator(locators.filter_increment_id).fill(incrementId);
+                await this.page.click(locators.filter_apply);
+                await this.page.waitForLoadState("networkidle")
+                await this.page.waitForLoadState("domcontentloaded")
+                const rows = this.page.locator(".data-grid tbody tr");
+                const rowCount = await rows.count();
+                expect(rowCount).toBe(1);
+                const idCell = rows.nth(0).locator("td:nth-child(2) .data-grid-cell-content");
+                const idText = await idCell.textContent();
+                expect(idText?.trim()).toBe(incrementId);
             });
     }
 
