@@ -80,7 +80,7 @@ export async function createCustomerData(locale: string = "en_US"): Promise<Cust
         city: fakerLocale.location.city(),
         zip: zip,
         state_code: fakerLocale.location.state({abbreviated: true}),
-        phone: fakerLocale.phone.number()
+        phone: fakerLocale.phone.number({ style: 'national' })
     };
 }
 

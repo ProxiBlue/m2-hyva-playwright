@@ -22,3 +22,6 @@ export const send_email_confirmation = '#send_confirmation';
 export const place_order_button = '.order-toatls-actions .actions .save.primary'
 
 export const admin_success_message = '.message.message-success.success'
+export const filter_button_expand = '[data-action="grid-filter-expand"]'
+export const filter_increment_id = '[name="increment_id"]'
+export const filter_apply = '[data-action="grid-filter-apply"]'

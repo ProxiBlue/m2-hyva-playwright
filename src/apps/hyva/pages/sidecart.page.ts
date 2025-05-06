@@ -40,6 +40,9 @@ export default class SideCartPage extends BasePage {
         await test.step(
             this.workerInfo.project.name + ": Check side cart qty ",
             async () => {
+                // browse to homepage
+                this.page.reload();
+                await this.page.waitForLoadState('domcontentloaded');
                 await this.page.waitForSelector(locators.miniCartQtyIndicator);
                 await actions.verifyElementIsVisible(this.page, locators.miniCartQtyIndicator, this.workerInfo);
                 await actions.getInnerText(this.page, locators.miniCartQtyIndicator, this.workerInfo).then(async (qtyValue) => {

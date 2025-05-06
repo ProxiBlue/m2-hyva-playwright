@@ -9,7 +9,8 @@ export const toolbar_amount = ".toolbar-number"
 
 export const toolbar_sorter = ".sorter-options"
 
-export const toolbar_sorter_action = "sort-descending"
+export const toolbar_sorter_action_asc = "Set Ascending Direction"
+export const toolbar_sorter_action_desc = "Set Descending Direction"
 
 export const limiter = ".limiter-options"
 

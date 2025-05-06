@@ -11,11 +11,11 @@ import * as pageData from "@hyva/data/page.data.json";
 let data = {};
 const fs = require("fs");
 if (fs.existsSync(__dirname + '/../../' + process.env.APP_NAME + '/data/category.data.json')) {
-    import('../../' + process.env.APP_NAME + '/data/category.data.json', { assert: { type: "json" } }).then((dynamicData) => {
+    import('../../' + process.env.APP_NAME + '/data/category.data.json', {assert: {type: "json"}}).then((dynamicData) => {
         data = dynamicData;
     });
 } else {
-    import(__dirname + '/../data/category.data.json', { assert: { type: "json" } }).then((dynamicData) => {
+    import(__dirname + '/../data/category.data.json', {assert: {type: "json"}}).then((dynamicData) => {
         data = dynamicData;
     });
 }
@@ -86,15 +86,17 @@ export default class CategoryPage extends BasePage {
         await test.step(
             this.workerInfo.project.name + ": Sort products ",
             async () => {
-        // @ts-ignore
-        await this.page.selectOption(locators.toolbar_sorter, {label: data.sorter_price});
-        await this.page.waitForSelector(locators.toolbar_amount);
-        const productPrices = await this.page.locator(locators.product_price).allTextContents();
-        const productPricesSorted = productPrices.sort((a, b) => {
-            return parseFloat(a) - parseFloat(b);
-        });
-        expect(productPrices).toEqual(productPricesSorted);
-        });
+                await this.sortProductsByPriceHighToLow(); // ensure we flip first, else this test is not valid
+                // @ts-ignore
+                await this.page.selectOption(locators.toolbar_sorter, {label: data.sorter_price});
+                await this.page.waitForSelector(locators.toolbar_amount);
+                await this.page.getByRole('link', {name: locators.toolbar_sorter_action_asc}).first().click();
+                const productPrices = await this.page.locator(locators.product_price).allTextContents();
+                const productPricesSorted = productPrices.sort((a, b) => {
+                    return parseFloat(a) - parseFloat(b);
+                });
+                expect(productPrices).toEqual(productPricesSorted);
+            });
     }
 
     async sortProductsByPriceHighToLow() {
@@ -104,7 +106,7 @@ export default class CategoryPage extends BasePage {
                 // @ts-ignore
                 await this.page.selectOption(locators.toolbar_sorter, {label: data.sorter_price});
                 await this.page.waitForSelector(locators.toolbar_amount);
-                await this.page.getByRole('link', {name: locators.toolbar_sorter_action}).first().click();
+                await this.page.getByRole('link', {name: locators.toolbar_sorter_action_desc}).first().click();
                 await this.page.waitForLoadState('domcontentloaded');
                 await this.page.waitForSelector(locators.toolbar_amount);
                 const productPrices = await this.page.locator(locators.product_price).allTextContents();
@@ -135,6 +137,7 @@ export default class CategoryPage extends BasePage {
                 // @ts-ignore
                 await this.page.selectOption(locators.toolbar_sorter, {label: data.sorter_name});
                 await this.page.waitForSelector(locators.toolbar_amount);
+                // @ts-ignore
                 await this.page.getByRole('link', {name: locators.toolbar_sorter_action}).click();
                 await this.page.waitForLoadState('domcontentloaded');
                 await this.page.waitForSelector(locators.toolbar_amount);
