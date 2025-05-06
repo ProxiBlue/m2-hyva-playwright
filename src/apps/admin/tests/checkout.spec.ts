@@ -1,21 +1,47 @@
 import {describe, test} from "@admin/fixtures";
 import * as locators from "@admin/locators/orders.locator";
 
-describe("Admin Checkout: Bank Transfer", () => {
+describe("Admin Checkouts", () => {
 
-    test("checkout using bank transfer payment", async ({adminPage, customerData, adminOrdersPage}, testInfo) => {
+    test.beforeEach(async ({adminPage, adminOrdersPage}, testInfo) => {
         // @ts-ignore
-        test.skip(process.env.skipBaseTests.includes(testInfo.title), "Test skipped for this environment: " + process.env.APP_NAME);
-        await ordersPage.navigateTo();
+        test.skip(process.env.skipBaseTests.includes(testInfo.title), testInfo.title + " test skipped for this environment: " + process.env.APP_NAME);
+        await adminPage.navigateTo();
         await adminPage.login();
-        await adminPage.navigateToOrdersPage();
-        await adminPage.createNewOrderWithNewCustomer(customerData)
-        await adminPage.selectFirstSimpleProductToAddToOrder();
-        await adminPage.selectFirstShippingMethodToAddToOrder();
-        await adminPage.selectPaymentMethodByText('Bank Transfer Payment');
-        await adminPage.disableOrderEmailSend();
-        await adminPage.placeOrder()
+        await adminOrdersPage.navigateTo();
     });
+
+    test("checkout using Check / Money order", async ({customerData, adminOrdersPage}, testInfo) => {
+        await adminOrdersPage.createNewOrderWithNewCustomer(customerData)
+        await adminOrdersPage.selectFirstSimpleProductToAddToOrder();
+        await adminOrdersPage.selectFirstShippingMethodToAddToOrder();
+        await adminOrdersPage.selectPaymentMethodByText('Check / Money order');
+        await adminOrdersPage.disableOrderEmailSend();
+        await adminOrdersPage.placeOrder()
+    });
+
+    test("checkout using Cash on Delivery", async ({adminOrdersPage, customerData}, testInfo) => {
+        await adminOrdersPage.createNewOrderWithNewCustomer(customerData)
+        await adminOrdersPage.selectFirstSimpleProductToAddToOrder();
+        await adminOrdersPage.selectFirstShippingMethodToAddToOrder();
+        await adminOrdersPage.selectPaymentMethodByText('Cash On Delivery');
+        await adminOrdersPage.disableOrderEmailSend();
+        await adminOrdersPage.placeOrder()
+    });
+
+    test("checkout using Purchase Order", async ({adminOrdersPage, customerData}, testInfo) => {
+        await adminOrdersPage.createNewOrderWithNewCustomer(customerData)
+        await adminOrdersPage.selectFirstSimpleProductToAddToOrder();
+        await adminOrdersPage.selectFirstShippingMethodToAddToOrder();
+        await adminOrdersPage.selectPaymentMethodByText('Purchase Order');
+        await adminOrdersPage.page.locator('input[name="payment[po_number]"]').fill('PO123456789').then(async () => {
+            await adminOrdersPage.disableOrderEmailSend();
+            await adminOrdersPage.placeOrder()
+        })
+
+    });
+
+
 
 
 });

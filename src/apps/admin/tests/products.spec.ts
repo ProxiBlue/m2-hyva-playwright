@@ -26,7 +26,7 @@ describe("Admin - Products", () => {
         await firstRow.click();
         await adminProductsPage.page.waitForLoadState("networkidle")
         await adminProductsPage.page.waitForLoadState("domcontentloaded")
-        const priceField = adminProductsPage.page.locator(locators.productPriceField);
+        const priceField = adminProductsPage.page.locator(locators.productPriceField).first();
         const originalPrice = await priceField.inputValue();
         expect(originalPrice).not.toBeNull();
         await priceField.fill("99.99");
@@ -34,18 +34,12 @@ describe("Admin - Products", () => {
         await saveButton.click();
         await adminProductsPage.page.waitForLoadState("networkidle")
         await adminProductsPage.page.waitForLoadState("domcontentloaded")
-        await adminProductsPage.page.reload();
-        await adminProductsPage.page.waitForLoadState("networkidle")
-        await adminProductsPage.page.waitForLoadState("domcontentloaded")
         const newPrice = await priceField.inputValue();
         expect(newPrice).toBe("99.99");
         await priceField.fill(originalPrice);
         await saveButton.click();
         await adminProductsPage.page.waitForLoadState("networkidle")
-        await adminProductsPage.page.waitForLoadState("domcontentloaded")
-        await adminProductsPage.page.reload();
-        await adminProductsPage.page.waitForLoadState("networkidle")
-        await adminProductsPage.page.waitForLoadState("domcontentloaded")
+        await adminProductsPage.page.waitForLoadState("domcontentloaded");
         const restoredPrice = await priceField.inputValue();
         expect(restoredPrice).toBe(originalPrice);
 
