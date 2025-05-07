@@ -1,5 +1,4 @@
-import type { Page, TestInfo } from "@playwright/test";
-import { test, expect } from "@playwright/test";
+import { Page, TestInfo, test, expect } from "@playwright/test";
 import * as actions from "@utils/base/web/actions";
 
 export default class BasePage {

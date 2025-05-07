@@ -1,6 +1,5 @@
 import BasePage from "@common/pages/base.page";
-import {Page, test, TestInfo} from "@playwright/test";
-import {expect} from "@hyva/fixtures";
+import {Page, TestInfo, expect, test} from "@playwright/test";
 import * as locators from "@hyva/locators/category.locator";
 import * as productLocators from "@hyva/locators/product.locator";
 import * as pageLocators from "@hyva/locators/page.locator";
