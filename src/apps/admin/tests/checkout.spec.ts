@@ -1,5 +1,5 @@
 import {describe, test} from "@admin/fixtures";
-import * as locators from "@admin/locators/orders.locator";
+
 
 describe("Admin Checkouts", () => {
 

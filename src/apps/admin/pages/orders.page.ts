@@ -1,11 +1,9 @@
 import BasePage from "@common/pages/base.page";
-import {Page, TestInfo, test} from "@playwright/test";
-import {expect} from "@common/fixtures";
+import {Page, TestInfo, expect, test} from "@playwright/test";
 import * as actions from "@utils/base/web/actions";
 import * as locators from "@admin/locators/orders.locator";
 import {CustomerData} from '@common/interfaces/CustomerData';
 import * as CustomerFormLocators from "../locators/orderCustomerForm.locator"
-import {order_success_message} from "@admin/locators/orders.locator";
 
 // dynamically import the test JSON data based on the APP_NAME env variable
 // and if the file exits in APP path, and if not default to teh base data
@@ -20,7 +18,7 @@ if (fs.existsSync(__dirname + '/../../' + process.env.APP_NAME + '/data/orders.d
         data = dynamicData;
     });
 }
-export default class ordersPage extends BasePage {
+export default class AdminOrdersPage extends BasePage {
     constructor(public page: Page, public workerInfo: TestInfo) {
         super(page, workerInfo, data, locators); // pass the data and locators to teh base page class
     }

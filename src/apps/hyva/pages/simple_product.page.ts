@@ -1,6 +1,5 @@
 import BasePage from "@common/pages/base.page";
-import {Page, test, TestInfo} from "@playwright/test";
-import {expect} from "@hyva/fixtures";
+import {Page, TestInfo, expect, test} from "@playwright/test";
 import * as actions from "@utils/base/web/actions";
 import * as locators from "@hyva/locators/product.locator";
 import * as pageLocators from "@hyva/locators/page.locator";
@@ -18,8 +17,6 @@ if (fs.existsSync(__dirname + '/../../' + process.env.APP_NAME + '/data/simple_p
         data = dynamicData;
     });
 }
-
-//import * as data from "../data/simple_product.data.json";
 
 export default class SimpleProductPage extends BasePage {
 

@@ -1,6 +1,5 @@
 import BasePage from "@common/pages/base.page";
-import {Page, test, TestInfo} from "@playwright/test";
-import { expect } from "@common/fixtures";
+import {Page, TestInfo, expect, test} from "@playwright/test";
 import * as actions from "@utils/base/web/actions";
 import * as locators from "@luma/locators/product.locator";
 import * as pageLocators from "@luma/locators/page.locator";

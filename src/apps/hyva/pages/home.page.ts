@@ -1,27 +1,12 @@
 import BasePage from "@common/pages/base.page";
-import {Page, test, TestInfo} from "@playwright/test";
-import { expect } from "@hyva/fixtures";
+import {Page, test, TestInfo, expect} from "@playwright/test";
 import * as actions from "@utils/base/web/actions";
-import * as locators from "@hyva/locators/home.locator";
 import * as searchSelectors from "@hyva/locators/search.locator";
 import * as product from "@hyva/locators/product.locator";
 import * as pageLocators from "@hyva/locators/page.locator";
 
-// dynamically import the test JSON data based on the APP_NAME env variable
-// and if the file exixts in APP path, and if not default to teh base data
-let data = {};
-const fs = require("fs");
-if (fs.existsSync(__dirname + '/../../' + process.env.APP_NAME + '/data/home.data.json')) {
-    import('../../' + process.env.APP_NAME + '/data/home.data.json', { assert: { type: "json" } }).then((dynamicData) => {
-        data = dynamicData;
-    });
-} else {
-    import(__dirname + '/../data/home.data.json', { assert: { type: "json" } }).then((dynamicData) => {
-        data = dynamicData;
-    });
-}
 export default class HomePage extends BasePage {
-    constructor(public page: Page, public workerInfo: TestInfo) {
+    constructor(public page: Page, public workerInfo: TestInfo, data: any, locators: any) {
         super(page, workerInfo, data, locators); // pass the data and locators to teh base page class
     }
 

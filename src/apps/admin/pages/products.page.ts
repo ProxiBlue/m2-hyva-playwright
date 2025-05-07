@@ -1,6 +1,5 @@
 import BasePage from "@common/pages/base.page";
-import {Page, TestInfo, test} from "@playwright/test";
-import {expect} from "@common/fixtures";
+import {Page, TestInfo, expect, test} from "@playwright/test";
 import * as actions from "@utils/base/web/actions";
 import * as locators from "@admin/locators/products.locator";
 
@@ -17,7 +16,7 @@ if (fs.existsSync(__dirname + '/../../' + process.env.APP_NAME + '/data/products
         data = dynamicData;
     });
 }
-export default class ProductsPage extends BasePage {
+export default class AdminProductsPage extends BasePage {
     constructor(public page: Page, public workerInfo: TestInfo) {
         super(page, workerInfo, data, locators); // pass the data and locators to teh base page class
     }
