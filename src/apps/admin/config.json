@@ -1,12 +1,9 @@
 {
   "env": {
-    "dev": { "url": "https://luma.ddev.site/" },
-    "test": { "url": "https://luma.ddev.site/" },
-    "live": { "url": "https://luma.hyva.io/" }
+    "dev": { "url": "https://pps-mageos110.ddev.site/" }
   },
   "mailcatcher": "",
   "skipBaseTests": [
-
   ],
   "faker_locale": "en_US"
 }

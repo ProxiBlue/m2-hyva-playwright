@@ -164,7 +164,6 @@ Out the box we will tests: Chromium, webkit and firefox. Ref in playwright confi
 * You need to end up in a folder ```tests/m2-hyva-playwright```
 * Run `npm install` to install dependencies
 * Run `yarn run playwright install --with-deps` to install playwright and browser dependencies
-* create a folder for allure test results: ```mkdir -p ./src/apps/hyva/reports/allure/allure-result```
 ## Running tests
 
 At this point, you will be ready to run the base Hyva tests, against the Hyva example website.

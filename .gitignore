@@ -42,8 +42,6 @@ playwright-report
 screenshots
 test-results
 *-snapshots
-allure-report
-allure-results
 html-report
 html-report.zip
 reports

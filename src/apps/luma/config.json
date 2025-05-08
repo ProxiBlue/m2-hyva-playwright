@@ -1,8 +1,6 @@
 {
   "env": {
     "dev": { "url": "https://luma.ddev.site/" },
-    "uat": { "url": "https://luma.ddev.site/" },
-    "live": { "url": "https://luma.ddev.site/" }
   },
   "mailcatcher": "",
   "skipBaseTests": [
