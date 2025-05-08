@@ -212,6 +212,7 @@ export const select = async (
         async () => await page.locator(locator).type(option)
     );
 
+// @ts-ignore
 export const getTextFromElements = async (
     page: Page,
     locator: string,

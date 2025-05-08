@@ -6,7 +6,8 @@
   "scripts": {
     "test": "APP_NAME=admin NODE_ENV=dev npx playwright test",
     "test:ui": "APP_NAME=admin NODE_ENV=dev npx playwright test --ui",
+    "test:display": "APP_NAME=admin NODE_ENV=dev npx playwright test --headed",
     "test:debug": "APP_NAME=admin NODE_ENV=dev PWDEBUG=1 npx playwright test",
-    "report": "npx playwright show-report reports/playwright-report"
+    "report": "PLAYWRIGHT_HTML_HOST=pps-mageos110.ddev.site npx playwright show-report reports/playwright-report"
   }
 }
