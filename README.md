@@ -67,9 +67,9 @@ Stolen from https://github.com/elgentos/magento2-cypress-testing-suite/
 
 | Spec file               | Group                           | Test                                                                                                                                                 |
 |-------------------------|---------------------------------|------------------------------------------------------------------------------------------------------------------------------------------------------|
-|                         | Account test creation           | :heavy_check_mark: it can create an account to log in with                                                                                        |
-|                         | Account activities              | :heavy_check_mark: it creates an account to log in with and use for further testing                                                               |
-|                         |                                 | :heavy_check_mark: it can log out                                                                                                                 |
+|                         | Account test creation           | :heavy_check_mark: it can create an account to log in with                                                                                           |
+|                         | Account activities              | :heavy_check_mark: it creates an account to log in with and use for further testing                                                                  |
+|                         |                                 | :heavy_check_mark: it can log out                                                                                                                    |
 |                         |                                 | :black_square_button: it can show the account information page and display the name of the customer                                                  |
 |                         |                                 | :black_square_button: it can change the password                                                                                                     |
 |                         |                                 | :black_square_button: it can change the name of the customer on the account information page                                                         |
@@ -94,13 +94,13 @@ Stolen from https://github.com/elgentos/magento2-cypress-testing-suite/
 |                         |                                 | :heavy_check_mark: it can sort the products on price from highest to lowest                                                                          |
 |                         |                                 | :heavy_check_mark: it can sort the products by name (a-z)                                                                                            |
 |                         |                                 | :heavy_check_mark: it can sort the products by name (z-a)                                                                                            |
-|                         |                                 | :heavy_check_mark: it can change the number of products to be displayed                                                                           |
+|                         |                                 | :heavy_check_mark: it can change the number of products to be displayed                                                                              |
 |                         |                                 | :heavy_check_mark: it checks if the breadcrumb is displayed correctly                                                                                |
 |                         |                                 | :heavy_check_mark: it checks if the pagination is working                                                                                            |
 |                         |                                 | :heavy_check_mark: it can change the number of displayed products (limiter)                                                                          |
 |                         |                                 | :heavy_check_mark: it can switch from list to grid view                                                                                              |
 |                         |                                 | :heavy_check_mark: it can add multiple products to compare, and compare count indicators work.                                                       |
-|                         |                                 | :heavy_check_mark: it can add a simple product directly to the cart.                                                                              |
+|                         |                                 | :heavy_check_mark: it can add a simple product directly to the cart.                                                                                 |
 |                         |                                 | :black_square_button: it can add a configurable product with swatches directly to the cart.                                                          |
 |                         |                                 | :black_square_button: it can add a complex product to the cart. ref: https://demo.hyva.io/set-of-sprite-yoga-straps.html                             |
 | home.pec.ts             | Home page tests                 | :heavy_check_mark: it can navigate to the homepage                                                                                                   |
@@ -120,10 +120,10 @@ Stolen from https://github.com/elgentos/magento2-cypress-testing-suite/
 |                         |                                 | :black_square_button: it cannot add a non existing coupon                                                                                            |
 |                         |                                 | :black_square_button: it displays the correct product prices and totals                                                                              |
 |                         |                                 | :black_square_button: it merges an already existing cart when a customer logs in                                                                     |
-|                         | Minicart tests                  | :heavy_check_mark: it can open the cart slider by clicking on the cart icon in the header                                                         |
+|                         | Minicart tests                  | :heavy_check_mark: it can open the cart slider by clicking on the cart icon in the header                                                            |
 | sidecart_prices.spec.ts |                                 | :heavy_check_mark: it checks if the prices in the slider are displayed correctly                                                                     |
 |                         |                                 | :black_square_button: it checks if the items in the slider are displayed correctly                                                                   |
-|                         |                                 | :heavy_check_mark: it can delete an item in the cart slider                                                                                       |
+|                         |                                 | :heavy_check_mark: it can delete an item in the cart slider                                                                                          |
 |                         |                                 | :black_square_button: it can change the quantity of an item in the cart slider                                                                       |
 |                         |                                 | :black_square_button: it can navigate to the cart with a link in the slider                                                                          |
 |                         |                                 | :black_square_button: it can navigate to the checkout with a link in the slider                                                                      |
@@ -148,9 +148,11 @@ Stolen from https://github.com/elgentos/magento2-cypress-testing-suite/
 |                         | Contact form tests              | :black_square_button: it shows the contact form correctly                                                                                            |
 |                         |                                 | :black_square_button: it cannot submit a form when no valid email address is entered                                                                 |
 |                         |                                 | :black_square_button: it can submit the form when all validation passes                                                                              |
-|                         | Back-end tests                  | :heavy_check_mark: it can login on the administration panel of the magento environment                                                            |
+|                         | Back-end tests                  | :heavy_check_mark: it can login on the administration panel of the magento environment                                                               |
 |                         |                                 | :black_square_button: it can show customer data                                                                                                      |
-|                         |                                 | :black_square_button: it processes orders and invoices correctly                                                                                     |
+|                         |                                 | :heavy_check_mark: it can perform checkout using  Check / Money Order                                                                                |
+|                         |                                 | :heavy_check_mark: it can perform checkout using  Cash on Delivery                                                                                   |
+|                         |                                 | :heavy_check_mark: it can perform checkout using  Purchase Order                                                                                     |
 |                         |                                 | :black_square_button: it can edit an order                                                                                                           |
 
 
@@ -168,26 +170,26 @@ Out the box we will tests: Chromium, webkit and firefox. Ref in playwright confi
 
 At this point, you will be ready to run the base Hyva tests, against the Hyva example website.
 Check the config file https://github.com/ProxiBlue/m2-hyva-playwright/blob/main/src/apps/hyva/config.json where you can
-see the site urls defined. In this cas, they are all the same. (you will make edits to this later when you setup your own app)
+see the site url defined. (you will make edits to this later when you setup your own app)
 
-You can run tests against multiple hosts (live/uat/dev)
-You can run: `yarn workspace hyva test-{environment}` in the root folder to run the tests. eg `yarn workspace hyva test-dev`
+You can run in the root folder: 
+
+* ```yarn workspace hyva test``` to run tests
+* ```yarn workspace hyva test:ui``` to run tests in interactive GUI
+* ```yarn workspace hyva test:display``` to run tests with display
+
 
 OR you can run it from the app base folder
 
-* run `cd src/apps/hyva`
-* run `yarn test-{environment}` where site corresponds to the site defined in the config file. eg `yarn test-dev`
+* run ```cd src/apps/hyva```
+* run ```yarn test | test:ui | test:display``` 
+* run ```yarn test:debug``` to start with the playwright debugger.
 
-You will see the actual command run is: `APP_NAME=hyva NODE_ENV=dev playwright test`, so you can run it in the UI as well.
-`APP_NAME=hyva NODE_ENV=dev npx playwright test --ui`
-OR remove headless
-`APP_NAME=hyva NODE_ENV=dev npx playwright test --headed`
-OR use ```yarn test:ui``` to run with UI (from within app folder,
-OR use ```yarn test:debug``` to start with the playwright debugger.
+you can see the commands are in the package.json scripts section for each app. 
 
-you can see the commands are in the package.json scripts section for each app. Example: https://github.com/ProxiBlue/m2-hyva-playwright/blob/main/src/apps/hyva/package.json
+Example: https://github.com/ProxiBlue/m2-hyva-playwright/blob/main/src/apps/hyva/package.json
 
-ref: ref: https://youtu.be/R6wQaD1cP2Q
+ref: https://youtu.be/R6wQaD1cP2Q
 
 ## Adding your own tests for your app
 
@@ -201,7 +203,7 @@ The test in your apps will extend the tests in the Hyva base, for those that nee
 
 You can also set base Hyva tests to be skipped, for anything you don't want, or had completely replaced (more on that below)
 
-There is a bash script that will bootsrap your app structure under src/apps/{yourappname} and add the needed files.
+There is a bash script that will bootstrap your app structure under src/apps/{yourappname} and add the needed files.
 You can run it from the root folder with `./bootstrapNewApp.sh {yourappname}` (no spaces in app name)
 This will initialise a blank git repo allowing you to add and commit your tests to your own (private) repo.
 You will need to add in your own remote to push commits to. (I am assuming you know how to do all that using GIT)
@@ -209,6 +211,7 @@ You will need to add in your own remote to push commits to. (I am assuming you k
 Files of interest that you must edit: (all files are in the src/apps/{yourappname} folder)
 
 * config.json - this is where you define your site urls, and any other config you need. (see the example in the pps app noted below)
+* config.private.json - if exists, must be excluded in gitignore. Holds sensitiv data, like api keys / admin credential etc.
 * playwright.config.js - this is where you can set the playwright oiptions for your app. For example, adding in more projects (browsers / devices) to test on.
 
 I have an example here: https://github.com/ProxiBlue/pps-example-tests
@@ -244,13 +247,15 @@ This is achieved by the adjusted command: `APP_NAME=pps NODE_ENV=live TEST_BASE=
 
 You can also run the tests from the app folder, as noted above.
 
-* run `cd src/apps/pps`
-* run `npx yarn test-live`
+* run ```cd src/apps/pps```
+* run ```npx yarn test-live```
 
 ![2023-11-11_19-41](https://github.com/ProxiBlue/m2-hyva-playwright/assets/4994260/e396b920-332e-40af-9d97-b47795938210)
   
 
 ## Things of interest
+
+Admin tests must only use 1 worker, as each login will logout the prior tests. If you have enough retries, it will resolve itself, but will take longer.
 
 ### App fixtures file
 
@@ -303,12 +308,14 @@ This allows for extensibility
 
 In your app, this is not really needed, unless you will have apps extending apps, and so on.
 
-### Using the bootstrapped frameowrk actions
+### Using the bootstrapped framework actions
 
 You will see the framework I based this work on has some utility actions and resources.
 I use them in some places, and in others not.
 I kind of moved away from using them, as I wanted to learn more on how to use playwright functionality natively, and using the actions did not teach me that.
 I am at times swapping between the two. Depens on how I feel in that moment really. Is not important to me
+
+** UPDATE: I plan to systematically strip away the actions. I prefer to stick with vanilla playwright syntax. **
 
 You can watch this as it gives some more info on working: https://youtu.be/mz2zec4I18Q
 You can also see a run of the current tests here: https://asciinema.org/a/KWSqlCqKqU4XXDP25K0f17WWT
@@ -331,6 +338,7 @@ example: https://github.com/ProxiBlue/m2-checkout-tests-example/blob/main/tests/
 
 I also added a customer data object which uses faker to easily populate forms in checkout with example data in tests.
 see: https://github.com/ProxiBlue/m2-checkout-tests-example/blob/main/fixtures/index.ts#L26 and https://github.com/ProxiBlue/m2-checkout-tests-example/blob/main/pages/checkout.page.ts#L43 for examples on usage
+
 ## Example output
 
 ```$ APP_NAME=hyva NODE_ENV=dev playwright test

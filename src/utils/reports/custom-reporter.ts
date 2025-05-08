@@ -102,7 +102,7 @@ export default class CustomReporter implements Reporter {
       : console.log(chunk.toString().gray);
 
   onStepBegin = (test: TestCase, result: TestResult, step: TestStep): void =>
-    step.category === "test.step" &&
+      step.category === "test.step" &&
     console.log(
       `${getFormattedTime()}:`.bgCyan.black,
       ` Started step: ${step.title}`.magenta

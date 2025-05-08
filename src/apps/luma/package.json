@@ -7,6 +7,7 @@
     "test": "APP_NAME=luma NODE_ENV=dev npx playwright test",
     "test:ui": "APP_NAME=luma NODE_ENV=dev npx playwright test --ui",
     "test:debug": "APP_NAME=luma NODE_ENV=dev PWDEBUG=1 playwright test",
-    "report": "npx playwright show-report reports/playwright-report"
+    "report": "npx playwright show-report reports/playwright-report",
+    "test:display": "APP_NAME=luma NODE_ENV=dev npx playwright test --headed"
   }
 }
