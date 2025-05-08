@@ -2,24 +2,18 @@
   "name": "m2-hyva-playwright",
   "version": "1.0.0",
   "private": true,
-  "description": "",
+  "description": "dynamic layered magento 2 test environment",
   "workspaces": [
     "src/apps/*"
   ],
   "scripts": {
-    "test-dev:hyva": "yarn workspace hyva test-dev",
-    "test-live:hyva": "yarn workspace hyva test-live",
-    "test-uat:hyva": "yarn workspace hyva test-uat",
-    "test:debug:hyva": "yarn workspace hyva test:debug",
-    "report:hyva": "yarn workspace hyva report"
+    "test": "bash ./run.sh"
   },
   "author": "Lucas van Staden",
   "license": "MIT",
   "devDependencies": {
     "@faker-js/faker": "*",
     "@playwright/test": "^1.44.1",
-    "allure-commandline": "^2.18.1",
-    "allure-playwright": "^2.0.0-beta.19",
     "colors": "^1.4.0",
     "playwright": "^1.40.1",
     "ts-node": "^10.9.1",

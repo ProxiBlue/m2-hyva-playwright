@@ -38,14 +38,7 @@ const config: PlaywrightTestConfig = {
                 outputFolder: "reports/playwright-report/",
                 open: "never",
             },
-        ],
-        [
-            "allure-playwright",
-            {
-                outputFolder: "reports/allure/allure-result/",
-                open: "never",
-            },
-        ],
+        ]
     ],
     projects: [
         {

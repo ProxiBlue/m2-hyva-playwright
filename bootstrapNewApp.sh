@@ -21,15 +21,13 @@ mkdir data &&
 mkdir fixtures &&
 mkdir locators &&
 mkdir pages &&
-mkdir -p ./reports/allure/allure-result &&
-touch ./reports/allure/allure-result/.gitkeep &&
-git add -f ./reports/allure/allure-result/.gitkeep &&
 mkdir tests &&
 printf "reports\ntest-results\nconfig.private.json" > .gitignore &&
 cp ../../../bootstrap_files/config.json ./ &&
 cp ../../../bootstrap_files/config.private.json ./ &&
 cp ../hyva/playwright.config.ts ./ &&
 cp ../../../bootstrap_files/package.json ./ &&
+cp ../../../bootstrap_files/run.sh ./ &&
 cp ../../../bootstrap_files/fixtures_index.ts ./fixtures/index.ts &&
 sed -i "s/NEW_APP_NAME/$1/g" package.json
 

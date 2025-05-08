@@ -4,11 +4,8 @@
   "private": true,
   "license": "MIT",
   "scripts": {
-    "test-dev": "APP_NAME=NEW_APP_NAME NODE_ENV=dev TEST_BASE=hyva playwright test && APP_NAME=NEW_APP_NAME NODE_ENV=dev TEST_BASE=NEW_APP_NAME playwright test",
-    "test-uat": "APP_NAME=NEW_APP_NAME NODE_ENV=uat TEST_BASE=hyva playwright test && APP_NAME=NEW_APP_NAME NODE_ENV=uat TEST_BASE=NEW_APP_NAME playwright test",
-    "test-live": "APP_NAME=NEW_APP_NAME NODE_ENV=live playwright test",
+    "test": "bash ./run.sh",
     "test:debug": "APP_NAME=NEW_APP_NAME NODE_ENV=dev PWDEBUG=1 playwright test",
     "report": "npx playwright show-report reports/playwright-report",
-    "allure": "npx allure generate reports/allure/allure-result -o reports/allure/allure-report --clean && npx allure open reports/allure/allure-report"
   }
 }
