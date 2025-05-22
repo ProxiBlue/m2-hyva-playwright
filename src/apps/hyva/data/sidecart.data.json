@@ -1,8 +1,10 @@
 {
-  "header_title": "My Cart",
-  "subtotal_label" : "Subtotal",
-  "cart_is_empty" : "Cart is empty",
-  "product_was_updated": "was updated",
-  "view_and_edit_cart_link": "View and Edit Cart",
-  "checkout_link" : "Checkout"
+  "default": {
+    "header_title": "My Cart",
+    "subtotal_label" : "Subtotal",
+    "cart_is_empty" : "Cart is empty",
+    "product_was_updated": "was updated",
+    "view_and_edit_cart_link": "View and Edit Cart",
+    "checkout_link" : "Checkout"
+  }
 }

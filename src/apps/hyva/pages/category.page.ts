@@ -3,23 +3,76 @@ import {Page, TestInfo, expect, test} from "@playwright/test";
 import * as locators from "@hyva/locators/category.locator";
 import * as productLocators from "@hyva/locators/product.locator";
 import * as pageLocators from "@hyva/locators/page.locator";
-import * as pageData from "@hyva/data/page.data.json";
+import * as pageDataImport from "@hyva/data/page.data.json";
+const pageData = pageDataImport as unknown as PageData;
+
+// Define the interface for the page data structure
+interface PageData {
+  default: {
+    compare_products_title: string;
+  };
+}
+
+// Define the interface for the category data structure
+interface CategoryData {
+  default: {
+    url?: string;
+    header_title?: string;
+    page_title_text?: string;
+    filter_heading?: string;
+    sorter_price?: string;
+    sorter_position?: string;
+    sorter_name?: string;
+    ascending?: string;
+    filters?: Record<string, Record<string, number>>;
+    limiter?: string[];
+    breadcrumbs?: string[];
+    grid_mode?: string;
+    list_mode?: string;
+  };
+}
 
 // dynamically import the test JSON data based on the APP_NAME env variable
 // and if the file exixts in APP path, and if not default to teh base data
-let data = {};
+let data: CategoryData = {
+  default: {
+    url: "",
+    header_title: "",
+    page_title_text: "",
+    filter_heading: "",
+    sorter_price: "",
+    sorter_position: "",
+    sorter_name: "",
+    ascending: "",
+    filters: {},
+    limiter: [],
+    breadcrumbs: [],
+    grid_mode: "",
+    list_mode: ""
+  }
+};
+// Load data synchronously to ensure it's available when needed
 const fs = require("fs");
-if (fs.existsSync(__dirname + '/../../' + process.env.APP_NAME + '/data/category.data.json')) {
-    import('../../' + process.env.APP_NAME + '/data/category.data.json', {assert: {type: "json"}}).then((dynamicData) => {
-        data = dynamicData;
-    });
-} else {
-    import(__dirname + '/../data/category.data.json', {assert: {type: "json"}}).then((dynamicData) => {
-        data = dynamicData;
-    });
+try {
+    let dataPath;
+    if (fs.existsSync(__dirname + '/../../' + process.env.APP_NAME + '/data/category.data.json')) {
+        dataPath = __dirname + '/../../' + process.env.APP_NAME + '/data/category.data.json';
+    } else {
+        dataPath = __dirname + '/../data/category.data.json';
+    }
+    const jsonData = fs.readFileSync(dataPath, 'utf8');
+    let parsedData = JSON.parse(jsonData);
+    // Ensure data has a default property
+    if (!parsedData.default) {
+        data = { default: parsedData };
+    } else {
+        data = parsedData;
+    }
+} catch (error) {
+    console.error(`Error loading category data: ${error}`);
 }
 
-export default class CategoryPage extends BasePage {
+export default class CategoryPage extends BasePage<CategoryData> {
     constructor(public page: Page, public workerInfo: TestInfo) {
         super(page, workerInfo, data, locators);
     }
@@ -28,14 +81,13 @@ export default class CategoryPage extends BasePage {
         await test.step(
             this.workerInfo.project.name + ": Testing filters ",
             async () => {
-                // @ts-ignore
-                const filters = data.filters;
+                const filters = data.default.filters;
                 let filter = '';
                 let option = '';
                 for (filter in filters) {
                     await this.checkFilterExists(filter);
-                    for (option in filters[filter]) {
-                        await this.checkFilterResults(filter, option, filters[filter][option]);
+                    for (option in (filters?.[filter] ?? {})) {
+                        await this.checkFilterResults(filter, option, filters?.[filter]?.[option] ?? 0);
                     }
                 }
             });
@@ -53,7 +105,6 @@ export default class CategoryPage extends BasePage {
         await test.step(
             this.workerInfo.project.name + ": Check filter results ",
             async () => {
-                //console.log('checking results:' + filter + ' : ' + option);
                 const filterButton = await this.page.getByRole('button', {name: filter + ' filter'});
                 const filterContainer = await this.page.locator('.filter-option', {has: filterButton});
                 await filterButton.click();
@@ -86,8 +137,7 @@ export default class CategoryPage extends BasePage {
             this.workerInfo.project.name + ": Sort products ",
             async () => {
                 await this.sortProductsByPriceHighToLow(); // ensure we flip first, else this test is not valid
-                // @ts-ignore
-                await this.page.selectOption(locators.toolbar_sorter, {label: data.sorter_price});
+                await this.page.selectOption(locators.toolbar_sorter, {label: data.default.sorter_price});
                 await this.page.waitForSelector(locators.toolbar_amount);
                 await this.page.getByRole('link', {name: locators.toolbar_sorter_action_asc}).first().click();
                 const productPrices = await this.page.locator(locators.product_price).allTextContents();
@@ -102,8 +152,7 @@ export default class CategoryPage extends BasePage {
         await test.step(
             this.workerInfo.project.name + ": Sort products ",
             async () => {
-                // @ts-ignore
-                await this.page.selectOption(locators.toolbar_sorter, {label: data.sorter_price});
+                await this.page.selectOption(locators.toolbar_sorter, {label: data.default.sorter_price});
                 await this.page.waitForSelector(locators.toolbar_amount);
                 await this.page.getByRole('link', {name: locators.toolbar_sorter_action_desc}).first().click();
                 await this.page.waitForLoadState('domcontentloaded');
@@ -120,8 +169,7 @@ export default class CategoryPage extends BasePage {
         await test.step(
             this.workerInfo.project.name + ": Sort products ",
             async () => {
-                // @ts-ignore
-                await this.page.selectOption(locators.toolbar_sorter, {label: data.sorter_name});
+                await this.page.selectOption(locators.toolbar_sorter, {label: data.default.sorter_name});
                 await this.page.waitForSelector(locators.toolbar_amount);
                 const products = await this.page.locator(locators.product_name).allTextContents();
                 const productsSorted = products.sort();
@@ -133,11 +181,9 @@ export default class CategoryPage extends BasePage {
         await test.step(
             this.workerInfo.project.name + ": Sort products ",
             async () => {
-                // @ts-ignore
-                await this.page.selectOption(locators.toolbar_sorter, {label: data.sorter_name});
+                await this.page.selectOption(locators.toolbar_sorter, {label: data.default.sorter_name});
                 await this.page.waitForSelector(locators.toolbar_amount);
-                // @ts-ignore
-                await this.page.getByRole('link', {name: locators.toolbar_sorter_action}).click();
+                await this.page.getByRole('link', {name: locators.toolbar_sorter_action_asc}).click();
                 await this.page.waitForLoadState('domcontentloaded');
                 await this.page.waitForSelector(locators.toolbar_amount);
                 const products = await this.page.locator(locators.product_name).allTextContents();
@@ -158,24 +204,20 @@ export default class CategoryPage extends BasePage {
         await test.step(
             this.workerInfo.project.name + ": Limit products ",
             async () => {
-                // @ts-ignore
-                for (let limitId in data.limiter) {
-                    // @ts-ignore
-                    let limit = data.limiter[limitId]
+                for (let limitId in data.default.limiter) {
+                    let limit = data.default.limiter[limitId as keyof typeof data.default.limiter];
                     await this.page.waitForSelector(pageLocators.footer);
                     await this.page.locator(locators.limiter).first().scrollIntoViewIfNeeded();
-                    await this.page.selectOption(locators.limiter, {value: limit});
+                    await this.page.selectOption(locators.limiter, {value: String(limit)});
                     await this.page.waitForLoadState('domcontentloaded');
                     await this.page.waitForLoadState('networkidle');
                     await this.page.waitForTimeout(1000);
                     const totalProducts = await this.page.locator(locators.toolbar_amount).last().textContent();
-                    // @ts-ignore
-                    if (parseInt(totalProducts) < parseInt(limit)) {
-                        // @ts-ignore
-                        expect(await this.page.locator(locators.product_name).count()).toBe(parseInt(totalProducts));
+                    if (totalProducts && parseInt(totalProducts as string) < parseInt(String(limit))) {
+                        expect(await this.page.locator(locators.product_name).count()).toBe(parseInt(totalProducts || "0"));
                         await expect(await this.page.getByLabel(locators.pager).first()).not.toBeVisible();
                     } else {
-                        expect(await this.page.locator(locators.product_name).count()).toBe(parseInt(limit));
+                        expect(await this.page.locator(locators.product_name).count()).toBe(parseInt(String(limit)));
                         await expect(await this.page.getByLabel(locators.pager).first()).toBeVisible();
                     }
                 }
@@ -184,26 +226,31 @@ export default class CategoryPage extends BasePage {
 
     async checkBreadcrumbs() {
         await test.step(
-            this.workerInfo.project.name + ": Check breadcrumbs ",
+            `${this.workerInfo.project.name}: Check breadcrumbs`,
             async () => {
-                const breadcrumbs = await this.page.getByLabel(pageLocators.breadcrumbs).allTextContents();
-                let crumb = '';
-                // @ts-ignore
-                for (crumb in data.breadcrumbs) {
-                    expect(breadcrumbs).toContain(crumb);
-                }
-            });
-
+                const breadcrumbs = (await this.page.getByLabel(pageLocators.breadcrumbs).allTextContents()) ?? [];
+                const expectedBreadcrumbs = data.default.breadcrumbs ?? [];
+                this.assertBreadcrumbExists(breadcrumbs, expectedBreadcrumbs);
+            }
+        );
     }
+    private assertBreadcrumbExists(actualBreadcrumbs: string[], expectedBreadcrumbs: string[]): void {
+        for (const expectedBreadcrumb of expectedBreadcrumbs) {
+            const isBreadcrumbFound = actualBreadcrumbs.some(breadcrumb => breadcrumb.includes(expectedBreadcrumb));
+            expect(isBreadcrumbFound).toBeTruthy();
+        }
+    }
+
+
 
     async ListAndGrid() {
         await test.step(
             this.workerInfo.project.name + ": Product list view mode ",
             async () => {
-                const currentVieMode = await this.page.locator(locators.product_grid).getAttribute('class');
-                expect(currentVieMode).not.toBe(null)
-                // @ts-ignore
-                if (currentVieMode.includes(data.default.grid_mode, 0)) {
+                const currentVieMode = (await this.page.locator(locators.product_grid).getAttribute('class')) ?? '';
+                expect(currentVieMode).not.toBe('');
+                const expectedMode = data.default.grid_mode ?? 'mode-grid';
+                if (currentVieMode.includes(expectedMode)) {
                     await this.page.getByLabel(locators.products_list_button).click();
                     await this.page.waitForLoadState('domcontentloaded');
                     await this.page.waitForSelector(locators.list_mode);
@@ -262,8 +309,8 @@ export default class CategoryPage extends BasePage {
                 await this.page.waitForLoadState('domcontentloaded');
                 //await this.page.waitForSelector(pageLocators.message_success);
                 const successMessage1 = await this.page.locator(pageLocators.message_success);
-                // @ts-ignore
-                expect(await successMessage1.textContent()).toContain(firstProductName.trim());
+                const successMessage1Text = await successMessage1.textContent();
+                expect(successMessage1Text).toContain(firstProductName ? firstProductName.trim() : "");
                 await successMessage1.getByLabel(pageLocators.messageClose).click({force: true});
                 await this.page.waitForLoadState('networkidle');
                 await this.page.waitForLoadState('domcontentloaded');
@@ -274,8 +321,8 @@ export default class CategoryPage extends BasePage {
                 await this.page.waitForLoadState('domcontentloaded');
                 await this.page.waitForSelector(pageLocators.message_success);
                 const successMessage2 = await this.page.locator(pageLocators.message_success);
-                // @ts-ignore
-                expect(await successMessage2.textContent()).toContain(lastProductName.trim());
+                const successMessage2Text = await successMessage2.textContent();
+                expect(successMessage2Text).toContain(lastProductName ? lastProductName.trim() : "");
                 await successMessage2.getByLabel(pageLocators.messageClose).click();
                 expect(await this.page.locator(productLocators.compareLink).textContent()).toContain("2");
                 await expect(this.page.locator(productLocators.compareLink)).toBeVisible();
@@ -283,12 +330,11 @@ export default class CategoryPage extends BasePage {
                 await this.page.waitForLoadState('networkidle');
                 await this.page.waitForLoadState('domcontentloaded');
                 await this.page.waitForSelector(pageLocators.comapre_page_title);
-                expect(await this.page.locator(pageLocators.comapre_page_title).textContent()).toContain(pageData.compare_products_title);
+                expect(await this.page.locator(pageLocators.comapre_page_title).textContent()).toContain(pageData.default.compare_products_title);
                 await expect(this.page.locator(pageLocators.compare_table)).toBeVisible();
-                // @ts-ignore
-                expect(await this.page.locator(pageLocators.compare_table).textContent()).toContain(firstProductName.trim());
-                // @ts-ignore
-                expect(await this.page.locator(pageLocators.compare_table).textContent()).toContain(lastProductName.trim());
+                const compareTableText = await this.page.locator(pageLocators.compare_table).textContent();
+                expect(compareTableText).toContain(firstProductName ? firstProductName.trim() : "");
+                expect(compareTableText).toContain(lastProductName ? lastProductName.trim() : "");
             });
     }
 }

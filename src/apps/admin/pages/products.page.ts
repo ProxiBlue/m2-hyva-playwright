@@ -6,15 +6,19 @@ import * as locators from "@admin/locators/products.locator";
 // dynamically import the test JSON data based on the APP_NAME env variable
 // and if the file exixts in APP path, and if not default to teh base data
 let data = {"default": {}};
+// Load data synchronously to ensure it's available when needed
 const fs = require("fs");
-if (fs.existsSync(__dirname + '/../../' + process.env.APP_NAME + '/data/products.data.json')) {
-    import('../../' + process.env.APP_NAME + '/data/products.data.json', {assert: {type: "json"}}).then((dynamicData) => {
-        data = dynamicData;
-    });
-} else {
-    import(__dirname + '/../data/products.data.json', {assert: {type: "json"}}).then((dynamicData) => {
-        data = dynamicData;
-    });
+try {
+    let dataPath;
+    if (fs.existsSync(__dirname + '/../../' + process.env.APP_NAME + '/data/products.data.json')) {
+        dataPath = __dirname + '/../../' + process.env.APP_NAME + '/data/products.data.json';
+    } else {
+        dataPath = __dirname + '/../data/products.data.json';
+    }
+    const jsonData = fs.readFileSync(dataPath, 'utf8');
+    data = JSON.parse(jsonData);
+} catch (error) {
+    console.error(`Error loading products data: ${error}`);
 }
 export default class AdminProductsPage extends BasePage {
     constructor(public page: Page, public workerInfo: TestInfo) {

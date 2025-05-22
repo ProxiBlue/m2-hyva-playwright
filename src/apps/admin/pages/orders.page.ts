@@ -8,15 +8,19 @@ import * as CustomerFormLocators from "../locators/orderCustomerForm.locator"
 // dynamically import the test JSON data based on the APP_NAME env variable
 // and if the file exits in APP path, and if not default to teh base data
 let data = {"default": {}};
+// Load data synchronously to ensure it's available when needed
 const fs = require("fs");
-if (fs.existsSync(__dirname + '/../../' + process.env.APP_NAME + '/data/orders.data.json')) {
-    import('../../' + process.env.APP_NAME + '/data/orders.data.json', {assert: {type: "json"}}).then((dynamicData) => {
-        data = dynamicData;
-    });
-} else {
-    import(__dirname + '/../data/orders.data.json', {assert: {type: "json"}}).then((dynamicData) => {
-        data = dynamicData;
-    });
+try {
+    let dataPath;
+    if (fs.existsSync(__dirname + '/../../' + process.env.APP_NAME + '/data/orders.data.json')) {
+        dataPath = __dirname + '/../../' + process.env.APP_NAME + '/data/orders.data.json';
+    } else {
+        dataPath = __dirname + '/../data/orders.data.json';
+    }
+    const jsonData = fs.readFileSync(dataPath, 'utf8');
+    data = JSON.parse(jsonData);
+} catch (error) {
+    console.error(`Error loading orders data: ${error}`);
 }
 export default class AdminOrdersPage extends BasePage {
     constructor(public page: Page, public workerInfo: TestInfo) {
@@ -49,10 +53,10 @@ export default class AdminOrdersPage extends BasePage {
                 if (isVisible) {
                     await this.page.click(locators.remove_filter_button);
                 }
-                await this.page.locator(locators.filter_button_expand).waitFor({state: 'visible'});
-                await this.page.click(locators.filter_button_expand);
-                await this.page.locator(locators.filter_increment_id).waitFor({state: 'visible'});
-                await this.page.locator(locators.filter_increment_id).fill(incrementId);
+                await this.page.locator(locators.filter_button_expand).first().waitFor({state: 'visible'});
+                await this.page.locator(locators.filter_button_expand).first().click();
+                await this.page.locator(locators.filter_increment_id).first().waitFor({state: 'visible'});
+                await this.page.locator(locators.filter_increment_id).first().fill(incrementId);
                 await this.page.click(locators.filter_apply);
                 await this.page.waitForLoadState("networkidle")
                 await this.page.waitForLoadState("domcontentloaded")

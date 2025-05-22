@@ -21,8 +21,9 @@ export default class LumaCheckoutPage extends CheckoutPage {
         await this.page.waitForLoadState("networkidle");
         await this.page.waitForLoadState("domcontentloaded");
         await this.page.waitForSelector(pageLocators.pageTitle);
-        //@ts-ignore
-        expect(this.page.locator(pageLocators.pageTitle)).toHaveText(this.data.default.success_page_heading);
+        // Handle both data structures: with and without 'default' property
+        const successPageHeading = this.data.default?.success_page_heading || this.data.success_page_heading;
+        expect(this.page.locator(pageLocators.pageTitle)).toHaveText(successPageHeading);
         const orderId = await this.page.locator(locators.success_order_id).first().textContent();
         //@ts-ignore
         return orderId;

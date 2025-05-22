@@ -1,7 +1,9 @@
 {
-  "url": "checkout/cart",
-  "header_title": "Shopping Cart",
-  "page_title_text" : "Shopping Cart",
-  "subtotal_label" : "Subtotal",
-  "grandtotal_label" : "Grand Total"
+  "default": {
+    "url": "checkout/cart",
+    "header_title": "Shopping Cart",
+    "page_title_text" : "Shopping Cart",
+    "subtotal_label" : "Subtotal",
+    "grandtotal_label" : "Grand Total"
+  }
 }

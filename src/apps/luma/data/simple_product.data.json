@@ -1,5 +1,7 @@
 {
-  "url": "joust-duffle-bag.html",
-  "name" : "Joust Duffle Bag",
-  "sku" : "24-MB01"
+  "default": {
+    "url": "joust-duffle-bag.html",
+    "name" : "Joust Duffle Bag",
+    "sku" : "24-MB01"
+  }
 }

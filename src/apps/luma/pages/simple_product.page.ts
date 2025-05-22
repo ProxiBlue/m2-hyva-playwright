@@ -6,15 +6,25 @@ import * as pageLocators from "@luma/locators/page.locator";
 
 // dynamically import the test JSON data based on the APP_NAME env variable
 // and if the file exixts in APP path, and if not default to teh base data
-let data = {};
+let data: { default: { name?: string } } = { default: {} };
 const fs = require("fs");
 if (fs.existsSync(__dirname + '/../../' + process.env.APP_NAME + '/data/simple_product.data.json')) {
     import('../../' + process.env.APP_NAME + '/data/simple_product.data.json', { assert: { type: "json" } }).then((dynamicData) => {
-        data = dynamicData;
+        // Ensure data has a default property
+        if (!dynamicData.default) {
+            data = { default: dynamicData };
+        } else {
+            data = dynamicData;
+        }
     });
 } else {
     import(__dirname + '/../data/simple_product.data.json', { assert: { type: "json" } }).then((dynamicData) => {
-        data = dynamicData;
+        // Ensure data has a default property
+        if (!dynamicData.default) {
+            data = { default: dynamicData };
+        } else {
+            data = dynamicData;
+        }
     });
 }
 
@@ -30,13 +40,13 @@ export default class SimpleProductPage extends BasePage {
             this.locators.title,
             this.workerInfo
         );
-        // @ts-ignore
-        await expect(titleText).toEqual(data.default.name);
+        const productName = data.default.name;
+        await expect(titleText).toEqual(productName);
     }
 
     async verifyDomTitle() {
-        // @ts-ignore
-        await actions.verifyPageTitle(this.page, data.default.name, this.workerInfo);
+        const productName = data.default.name || "Default Product Name";
+        await actions.verifyPageTitle(this.page, productName, this.workerInfo);
     }
 
     async addToCart(qty : string = '1'): Promise<void> {
@@ -48,8 +58,8 @@ export default class SimpleProductPage extends BasePage {
                 await this.page.waitForSelector('.message.success')
                 await this.page.waitForLoadState('domcontentloaded');
                 await actions.verifyElementIsVisible(this.page, pageLocators.message_success, this.workerInfo);
-                // @ts-ignore
-                expect(await this.page.locator(pageLocators.message_success).textContent()).toContain(data.default.name);
+                const productName = data.default.name;
+                expect(await this.page.locator(pageLocators.message_success).textContent()).toContain(productName);
             });
     }
 

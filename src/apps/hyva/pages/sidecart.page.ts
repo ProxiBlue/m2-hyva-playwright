@@ -5,16 +5,26 @@ import * as locators from "@hyva/locators/sidecart.locator";
 
 // dynamically import the test JSON data based on the APP_NAME env variable
 // and if the file exixts in APP path, and if not default to teh base data
-let data = {};
+let data: { default: { cart_is_empty?: string } } = { default: {} };
+// Load data synchronously to ensure it's available when needed
 const fs = require("fs");
-if (fs.existsSync(__dirname + '/../../' + process.env.APP_NAME + '/data/sidecart.data.json')) {
-    import('../../' + process.env.APP_NAME + '/data/sidecart.data.json', {assert: {type: "json"}}).then((dynamicData) => {
-        data = dynamicData;
-    });
-} else {
-    import(__dirname + '/../data/sidecart.data.json', {assert: {type: "json"}}).then((dynamicData) => {
-        data = dynamicData;
-    });
+try {
+    let dataPath;
+    if (fs.existsSync(__dirname + '/../../' + process.env.APP_NAME + '/data/sidecart.data.json')) {
+        dataPath = __dirname + '/../../' + process.env.APP_NAME + '/data/sidecart.data.json';
+    } else {
+        dataPath = __dirname + '/../data/sidecart.data.json';
+    }
+    const jsonData = fs.readFileSync(dataPath, 'utf8');
+    let parsedData = JSON.parse(jsonData);
+    // Ensure data has a default property
+    if (!parsedData.default) {
+        data = { default: parsedData };
+    } else {
+        data = parsedData;
+    }
+} catch (error) {
+    console.error(`Error loading sidecart data: ${error}`);
 }
 
 export default class SideCartPage extends BasePage {
