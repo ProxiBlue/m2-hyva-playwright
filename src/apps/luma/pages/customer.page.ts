@@ -6,16 +6,26 @@ import { CustomerData } from '@common/interfaces/CustomerData';
 
 // dynamically import the test JSON data based on the APP_NAME env variable
 // and if the file exixts in APP path, and if not default to teh base data
-let data = {};
+let data: { default: { my_account_title?: string } } = { default: {} };
 
 const fs = require("fs");
 if (fs.existsSync(__dirname + '/../../' + process.env.APP_NAME + '/data/customer.data.json')) {
     import('../../' + process.env.APP_NAME + '/data/customer.data.json', { assert: { type: "json" } }).then((dynamicData) => {
-        data = dynamicData;
+        // Ensure data has a default property
+        if (!dynamicData.default) {
+            data = { default: dynamicData };
+        } else {
+            data = dynamicData;
+        }
     });
 } else {
     import(__dirname + '/../data/customer.data.json', { assert: { type: "json" } }).then((dynamicData) => {
-        data = dynamicData;
+        // Ensure data has a default property
+        if (!dynamicData.default) {
+            data = { default: dynamicData };
+        } else {
+            data = dynamicData;
+        }
     });
 }
 
@@ -51,8 +61,8 @@ export default class CustomerPage extends BasePage {
                 await this.page.waitForLoadState('domcontentloaded');
                 await this.page.waitForLoadState('networkidle');
                 await expect(this.page.locator(pageLocators.pageTitle)).toBeVisible();
-                // @ts-ignore
-                await expect(this.page.locator(pageLocators.pageTitle)).toContainText(data.default.my_account_title);
+                const myAccountTitle = data.default.my_account_title || '';
+                await expect(this.page.locator(pageLocators.pageTitle)).toContainText(myAccountTitle);
             });
     }
 

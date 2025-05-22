@@ -4,22 +4,55 @@ import * as locators from "@hyva/locators/customer.locator";
 import * as pageLocators from "@hyva/locators/page.locator";
 import { CustomerData } from '@common/interfaces/CustomerData';
 
-// dynamically import the test JSON data based on the APP_NAME env variable
-// and if the file exixts in APP path, and if not default to teh base data
-let data = {};
-
-const fs = require("fs");
-if (fs.existsSync(__dirname + '/../../' + process.env.APP_NAME + '/data/customer.data.json')) {
-    import('../../' + process.env.APP_NAME + '/data/customer.data.json', { assert: { type: "json" } }).then((dynamicData) => {
-        data = dynamicData;
-    });
-} else {
-    import(__dirname + '/../data/customer.data.json', { assert: { type: "json" } }).then((dynamicData) => {
-        data = dynamicData;
-    });
+// Define the interface for the customer page data structure
+interface CustomerPageData {
+  default: {
+    url?: string;
+    header_title?: string;
+    page_title_text?: string;
+    create_an_account_title?: string;
+    register_success_message?: string;
+    my_account_title?: string;
+    logged_out?: string;
+  };
 }
 
-export default class CustomerPage extends BasePage {
+// dynamically import the test JSON data based on the APP_NAME env variable
+// and if the file exixts in APP path, and if not default to teh base data
+let data: CustomerPageData = {
+  default: {
+    url: "",
+    header_title: "",
+    page_title_text: "",
+    create_an_account_title: "",
+    register_success_message: "",
+    my_account_title: "",
+    logged_out: ""
+  }
+};
+
+// Load data synchronously to ensure it's available when needed
+const fs = require("fs");
+try {
+    let dataPath;
+    if (fs.existsSync(__dirname + '/../../' + process.env.APP_NAME + '/data/customer.data.json')) {
+        dataPath = __dirname + '/../../' + process.env.APP_NAME + '/data/customer.data.json';
+    } else {
+        dataPath = __dirname + '/../data/customer.data.json';
+    }
+    const jsonData = fs.readFileSync(dataPath, 'utf8');
+    let parsedData = JSON.parse(jsonData);
+    // Ensure data has a default property
+    if (!parsedData.default) {
+        data = { default: parsedData };
+    } else {
+        data = parsedData;
+    }
+} catch (error) {
+    console.error(`Error loading customer data: ${error}`);
+}
+
+export default class CustomerPage extends BasePage<CustomerPageData> {
     constructor(public page: Page, public workerInfo: TestInfo) {
         super(page, workerInfo, data, locators);
     }
@@ -51,8 +84,8 @@ export default class CustomerPage extends BasePage {
                 await this.page.waitForLoadState('domcontentloaded');
                 await this.page.waitForLoadState('networkidle');
                 await expect(this.page.locator(pageLocators.pageTitle)).toBeVisible();
-                // @ts-ignore
-                await expect(this.page.locator(pageLocators.pageTitle)).toContainText(data.default.my_account_title);
+                const myAccountTitle = data.default.my_account_title;
+                await expect(this.page.locator(pageLocators.pageTitle)).toContainText(myAccountTitle);
             });
     }
 

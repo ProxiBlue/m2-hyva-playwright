@@ -1,4 +1,6 @@
 {
-  "header_title": "Magento Admin",
-  "page_title_text" : "Dashboard"
+  "default": {
+    "header_title": "Magento Admin",
+    "page_title_text" : "Dashboard"
+  }
 }

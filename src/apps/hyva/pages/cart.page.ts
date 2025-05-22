@@ -3,21 +3,50 @@ import {Page, TestInfo, expect, test} from "@playwright/test";
 import * as actions from "@utils/base/web/actions";
 import * as cartLocators from "@hyva/locators/cart.locator";
 
-// dynamically import the test JSON data based on the APP_NAME env variable
-// and if the file exixts in APP path, and if not default to teh base data
-let data = {};
-const fs = require("fs");
-if (fs.existsSync(__dirname + '/../../' + process.env.APP_NAME + '/data/cart.data.json')) {
-    import('../../' + process.env.APP_NAME + '/data/cart.data.json', {assert: {type: "json"}}).then((dynamicData) => {
-        data = dynamicData;
-    });
-} else {
-    import(__dirname + '/../data/cart.data.json', {assert: {type: "json"}}).then((dynamicData) => {
-        data = dynamicData;
-    });
+// Define the interface for the cart data structure
+interface CartData {
+  default: {
+    url?: string;
+    header_title?: string;
+    page_title_text?: string;
+    subtotal_label?: string;
+    grandtotal_label?: string;
+  };
 }
 
-export default class CartPage extends BasePage {
+// dynamically load the test JSON data based on the APP_NAME env variable
+// and if the file exists in APP path, and if not default to the base data
+let data: CartData = {
+    default: {
+        url: "",
+        header_title: "",
+        page_title_text: "",
+        subtotal_label: "",
+        grandtotal_label: ""
+    }
+};
+// Load data synchronously to ensure it's available when needed
+const fs = require("fs");
+try {
+    let dataPath;
+    if (fs.existsSync(__dirname + '/../../' + process.env.APP_NAME + '/data/cart.data.json')) {
+        dataPath = __dirname + '/../../' + process.env.APP_NAME + '/data/cart.data.json';
+    } else {
+        dataPath = __dirname + '/../data/cart.data.json';
+    }
+    const jsonData = fs.readFileSync(dataPath, 'utf8');
+    let parsedData = JSON.parse(jsonData);
+    // Ensure data has a default property
+    if (!parsedData.default) {
+        data = { default: parsedData };
+    } else {
+        data = parsedData;
+    }
+} catch (error) {
+    console.error(`Error loading cart data: ${error}`);
+}
+
+export default class CartPage extends BasePage<CartData> {
     constructor(public page: Page, public workerInfo: TestInfo) {
         super(page, workerInfo, data, cartLocators);
     }
@@ -60,7 +89,6 @@ export default class CartPage extends BasePage {
         const itemCount = await this.page.locator(cartLocators.cart_row_item_info).count();
         for (let i = 0; i < itemCount; i++) {
             const priceText = await this.getItemSubTotal(i);
-            //@ts-ignore
             total += actions.parsePrice(priceText);
         }
         return total;
@@ -90,14 +118,11 @@ export default class CartPage extends BasePage {
         let subTotal = await actions.getInnerText(this.page, itemRow + '>>' + cartLocators.cart_row_subtotal, this.workerInfo);
         // mobiles (and seems safari) get the label string included, so strip it if it exists
         // I am sure there is s smarter regex way, but i am not feeling smart right now ;)
-        // @ts-ignore
-        subTotal = subTotal.replace(data.default.subtotal_label + ': ', '');
-        // @ts-ignore
-        subTotal = subTotal.replace(data.default.subtotal_label + ':', '');
-        // @ts-ignore
-        subTotal = subTotal.replace(data.default.subtotal_label + ' ', '');
-        // @ts-ignore
-        subTotal = subTotal.replace(data.default.subtotal_label, '');
+        const subtotalLabel = data.default.subtotal_label || "";
+        subTotal = subTotal.replace(subtotalLabel + ': ', '');
+        subTotal = subTotal.replace(subtotalLabel + ':', '');
+        subTotal = subTotal.replace(subtotalLabel + ' ', '');
+        subTotal = subTotal.replace(subtotalLabel, '');
         return subTotal;
     }
 
@@ -108,15 +133,14 @@ export default class CartPage extends BasePage {
                 await this.page.locator(cartLocators.cart_subtotal).textContent().then((value) => {
                     // mobiles (and seems safari) get the label string included, so strip it if it exists
                     // i am sure there is s smarter regex way, but i am not feeling smart right now ;)
-                    // @ts-ignore
-                    value = value.replace(data.default.subtotal_label + ': ', '');
-                    // @ts-ignore
-                    value = value.replace(data.default.subtotal_label + ':', '');
-                    // @ts-ignore
-                    value = value.replace(data.default.subtotal_label + ' ', '');
-                    // @ts-ignore
-                    value = value.replace(data.default.subtotal_label, '');
-                    expect(actions.parsePrice(value)).toEqual(actions.parsePrice(total));
+                    const subtotalLabel = data.default.subtotal_label || "";
+                    if(value) {
+                        value = value.replace(subtotalLabel + ': ', '');
+                        value = value.replace(subtotalLabel + ':', '');
+                        value = value.replace(subtotalLabel + ' ', '');
+                        value = value.replace(subtotalLabel, '');
+                        expect(actions.parsePrice(value)).toEqual(actions.parsePrice(total));
+                    }
                 });
             });
     }
@@ -153,14 +177,11 @@ export default class CartPage extends BasePage {
                     // ditto!
                     expect(value).not.toBe(null);
                     if (value) {
-                        // @ts-ignore
-                        value = value.replace(data.default.grandtotal_label + ': ', '');
-                        // @ts-ignore
-                        value = value.replace(data.default.grandtotal_label + ':', '');
-                        // @ts-ignore
-                        value = value.replace(data.default.grandtotal_label + ' ', '');
-                        // @ts-ignore
-                        value = value.replace(data.default.grandtotal_label, '');
+                        const grandtotalLabel = data.default.grandtotal_label || '';
+                        value = value.replace(grandtotalLabel + ': ', '');
+                        value = value.replace(grandtotalLabel + ':', '');
+                        value = value.replace(grandtotalLabel + ' ', '');
+                        value = value.replace(grandtotalLabel, '');
                         expect(actions.parsePrice(value)).toEqual(actions.parsePrice(total));
                     }
                 });

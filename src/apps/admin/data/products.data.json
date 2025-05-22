@@ -1,4 +1,6 @@
 {
-  "header_title": "Orders / Operations / Sales / Magento Admin",
-  "page_title_text" : "Orders"
+  "default": {
+    "header_title": "Orders / Operations / Sales / Magento Admin",
+    "page_title_text" : "Orders"
+  }
 }
