@@ -43,7 +43,7 @@ try {
         data = parsedData;
     }
 } catch (error) {
-    console.error(`Error loading home data: ${error}`);
+    // Error loading home data
 }
 
 

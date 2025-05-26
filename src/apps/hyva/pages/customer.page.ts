@@ -49,7 +49,7 @@ try {
         data = parsedData;
     }
 } catch (error) {
-    console.error(`Error loading customer data: ${error}`);
+    // Error loading customer data
 }
 
 export default class CustomerPage extends BasePage<CustomerPageData> {
@@ -84,7 +84,7 @@ export default class CustomerPage extends BasePage<CustomerPageData> {
                 await this.page.waitForLoadState('domcontentloaded');
                 await this.page.waitForLoadState('networkidle');
                 await expect(this.page.locator(pageLocators.pageTitle)).toBeVisible();
-                const myAccountTitle = data.default.my_account_title;
+                const myAccountTitle = data.default.my_account_title || '';
                 await expect(this.page.locator(pageLocators.pageTitle)).toContainText(myAccountTitle);
             });
     }

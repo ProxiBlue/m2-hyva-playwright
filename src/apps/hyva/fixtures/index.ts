@@ -6,6 +6,10 @@ import CategoryPage from "@hyva/pages/category.page";
 import SideCartPage from "@hyva/pages/sidecart.page";
 import CustomerPage from "@hyva/pages/customer.page";
 import AdminPage from '@admin/pages/admin.page';
+import CMSPage from "@home/src/apps/pps/pages/cms.page";
+import SearchPage from "@hyva/pages/search.page";
+import ProductPage from "@hyva/pages/product.page";
+import ConfigurableProductPage from "@hyva/pages/configurable_product.page";
 
 type pages = {
     homePage: HomePage;
@@ -15,14 +19,15 @@ type pages = {
     sideCartPage: SideCartPage;
     customerPage: CustomerPage;
     adminPage: AdminPage;
+    cmsPage: CMSPage;
+    searchPage: SearchPage;
+    productPage: ProductPage;
+    configurableProductPage: ConfigurableProductPage;
 };
 
 const testPages = baseTest.extend<pages>({
     homePage: async ({ page }, use, workerInfo) => {
         await use(new HomePage(page, workerInfo));
-    },
-    simpleProductPage: async ({ page }, use, workerInfo) => {
-        await use(new SimpleProductPage(page, workerInfo));
     },
     cartPage: async ({ page }, use, workerInfo) => {
         await use(new CartPage(page, workerInfo));
@@ -38,7 +43,19 @@ const testPages = baseTest.extend<pages>({
     },
     adminPage: async ({ page }, use, workerInfo) => {
         await use(new AdminPage(page, workerInfo));
-    }
+    },
+    cmsPage: async ({ page }, use, workerInfo) => {
+        await use(new CMSPage(page, workerInfo));
+    },
+    searchPage: async ({ page }, use, workerInfo) => {
+        await use(new SearchPage(page, workerInfo));
+    },
+    configurableProductPage: async ({ page }, use, workerInfo) => {
+        await use(new ConfigurableProductPage(page, workerInfo));
+    },
+    simpleProductPage: async ({ page }, use, workerInfo) => {
+        await use(new SimpleProductPage(page, workerInfo));
+    },
 });
 
 baseTest.use({ ignoreHTTPSErrors: true})

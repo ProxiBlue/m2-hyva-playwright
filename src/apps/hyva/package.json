@@ -5,10 +5,10 @@
   "author": "Lucas van Staden",
   "license": "MIT",
   "scripts": {
-    "test": "APP_NAME=hyva NODE_ENV=dev npx playwright test",
-    "test:ui": "APP_NAME=hyva NODE_ENV=dev mpx playwright test --ui",
-    "test:debug": "APP_NAME=hyva NODE_ENV=dev PWDEBUG=1 npx playwright test",
+    "test": "APP_NAME=hyva NODE_ENV=dev TEST_BASE=hyva npx playwright test",
+    "test:ui": "APP_NAME=hyva NODE_ENV=dev TEST_BASE=hyva npx playwright test --ui",
+    "test:debug": "APP_NAME=hyva NODE_ENV=dev TEST_BASE=hyva PWDEBUG=1 npx playwright test",
     "report": "npx playwright show-report reports/playwright-report",
-    "test:display": "APP_NAME=hyva NODE_ENV=dev npx playwright test --headed"
+    "test:display": "APP_NAME=hyva NODE_ENV=dev TEST_BASE=hyva npx playwright test --headed"
   }
 }

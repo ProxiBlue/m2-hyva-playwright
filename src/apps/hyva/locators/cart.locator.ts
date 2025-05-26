@@ -18,3 +18,6 @@ export const cart_subtotal  = '[x-text="hyva.formatPrice(totalsData.subtotal)"]'
 export const cart_shipping  = '[x-text="hyva.formatPrice(segment.value)"]';
 
 export const checkout_button = "#checkout-link-button"
+export const cart_item_options = ".item-options";
+export const cart_item_option_label = ".item-options dt";
+export const cart_item_option_value = ".item-options dd";

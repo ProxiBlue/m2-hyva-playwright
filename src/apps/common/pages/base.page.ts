@@ -2,10 +2,10 @@ import { Page, TestInfo, test, expect } from "@playwright/test";
 import * as actions from "@utils/base/web/actions";
 
 export default class BasePage<T extends { default: { url?: string; header_title?: string; page_title_text?: string } } = any> {
-    constructor(public page: Page, public workerInfo: TestInfo, public data: T, public locators: any) {}
+    constructor(public page: Page, public workerInfo: TestInfo, public data: any, public locators: any) {}
 
-    async navigateTo() {
-        const url = this.data.default.url || '';
+    async navigateTo(urlOverride:boolean|string = false) {
+        const url = urlOverride || this.data.default.url || '';
         const headerTitle = this.data.default.header_title || '';
         const pageTitleText = this.data.default.page_title_text || '';
 

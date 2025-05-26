@@ -1,6 +1,6 @@
 {
   "env": {
-    "dev": { "url": "https://hyva.ddev.site/" }
+    "dev": { "url": "https://demo.hyva.io/" }
   },
   "faker_locale": "en_US"
 }
