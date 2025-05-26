@@ -24,7 +24,7 @@ try {
         data = parsedData;
     }
 } catch (error) {
-    console.error(`Error loading sidecart data: ${error}`);
+    // Error loading sidecart data
 }
 
 export default class SideCartPage extends BasePage {

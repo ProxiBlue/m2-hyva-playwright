@@ -43,7 +43,7 @@ try {
         data = parsedData;
     }
 } catch (error) {
-    console.error(`Error loading cart data: ${error}`);
+    // Error loading cart data
 }
 
 export default class CartPage extends BasePage<CartData> {

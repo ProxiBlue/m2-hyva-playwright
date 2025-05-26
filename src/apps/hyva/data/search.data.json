@@ -1,0 +1,12 @@
+{
+  "default": {
+    "header_title": "Search",
+    "page_title_text": "Search",
+    "product_category": "Pullover",
+    "single_product": "Mona Pullover Hoodlie",
+    "single_product_name": "Mona Pullover Hoodlie",
+    "no_results": "xyzabc123",
+    "get_hint": "p",
+    "hint_result": "pipe"
+  }
+}

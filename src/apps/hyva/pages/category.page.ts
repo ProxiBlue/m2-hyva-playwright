@@ -69,7 +69,7 @@ try {
         data = parsedData;
     }
 } catch (error) {
-    console.error(`Error loading category data: ${error}`);
+    // Error loading category data
 }
 
 export default class CategoryPage extends BasePage<CategoryData> {
