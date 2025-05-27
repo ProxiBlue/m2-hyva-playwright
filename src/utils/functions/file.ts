@@ -11,8 +11,10 @@ import path from "path";
  */
 export const loadJsonData = <T>(filename: string, appDir: string, defaultData: T): T => {
   try {
-    const dirname = path.dirname(require.main?.filename || '') || __dirname;
-    const appsBasePath = path.resolve(dirname, '../../apps');
+    // Use a more reliable way to resolve the path to the apps directory
+    // First try to resolve from the current file's location
+    const srcDir = path.resolve(__dirname, '../..');
+    const appsBasePath = path.join(srcDir, 'apps');
 
     let dataPath;
     // Check if file exists in APP_NAME directory
