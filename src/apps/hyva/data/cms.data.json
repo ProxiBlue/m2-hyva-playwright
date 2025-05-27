@@ -1,0 +1,9 @@
+{
+  "default": {
+    "header_title": "CMS Pages",
+    "page_title_text": "CMS Pages",
+    "wrong_page_url": "/404",
+    "error_page_title": "Whoops, our bad",
+    "cms_titles": ["Customer Login","Order Information", "Popular Search Terms", "Contact Us"]
+  }
+}
