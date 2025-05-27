@@ -5,12 +5,11 @@ import * as locators from "@hyva/locators/product.locator";
 import * as pageLocators from "@hyva/locators/page.locator";
 import * as productLocators from "@hyva/locators/product.locator";
 import * as cartLocators from "@hyva/locators/cart.locator";
+import { ProductData } from "@hyva/interfaces/ProductData";
 
 // dynamically import the test JSON data based on the APP_NAME env variable
 // and if the file exists in APP path, and if not default to the base data
-let data: { default: {
-    url?: string;
-    name?: string; } } = { default: {} };
+let data: ProductData = { default: {} };
 
 export default class ProductPage extends BasePage {
     constructor(public page: Page, public workerInfo: TestInfo, public data: any, public locators: any) {

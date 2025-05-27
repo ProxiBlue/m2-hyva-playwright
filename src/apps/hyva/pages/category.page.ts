@@ -4,37 +4,14 @@ import * as locators from "@hyva/locators/category.locator";
 import * as productLocators from "@hyva/locators/product.locator";
 import * as pageLocators from "@hyva/locators/page.locator";
 import * as pageDataImport from "@hyva/data/page.data.json";
+import { PageData } from "@hyva/interfaces/PageData";
+import { CategoryData } from "@hyva/interfaces/CategoryData";
+import { loadJsonData } from "@utils/functions/file";
+
 const pageData = pageDataImport as unknown as PageData;
 
-// Define the interface for the page data structure
-interface PageData {
-  default: {
-    compare_products_title: string;
-  };
-}
-
-// Define the interface for the category data structure
-interface CategoryData {
-  default: {
-    url?: string;
-    header_title?: string;
-    page_title_text?: string;
-    filter_heading?: string;
-    sorter_price?: string;
-    sorter_position?: string;
-    sorter_name?: string;
-    ascending?: string;
-    filters?: Record<string, Record<string, number>>;
-    limiter?: string[];
-    breadcrumbs?: string[];
-    grid_mode?: string;
-    list_mode?: string;
-  };
-}
-
-// dynamically import the test JSON data based on the APP_NAME env variable
-// and if the file exixts in APP path, and if not default to teh base data
-let data: CategoryData = {
+// Default category data structure
+const defaultData: CategoryData = {
   default: {
     url: "",
     header_title: "",
@@ -51,25 +28,13 @@ let data: CategoryData = {
     list_mode: ""
   }
 };
-// Load data synchronously to ensure it's available when needed
-const fs = require("fs");
-try {
-    let dataPath;
-    if (fs.existsSync(__dirname + '/../../' + process.env.APP_NAME + '/data/category.data.json')) {
-        dataPath = __dirname + '/../../' + process.env.APP_NAME + '/data/category.data.json';
-    } else {
-        dataPath = __dirname + '/../data/category.data.json';
-    }
-    const jsonData = fs.readFileSync(dataPath, 'utf8');
-    let parsedData = JSON.parse(jsonData);
-    // Ensure data has a default property
-    if (!parsedData.default) {
-        data = { default: parsedData };
-    } else {
-        data = parsedData;
-    }
-} catch (error) {
-    // Error loading category data
+
+// Load the category data using the utility function
+let data = loadJsonData<CategoryData>('category.data.json', 'hyva', defaultData);
+
+// Ensure data has a default property
+if (data && !data.default) {
+  data = { default: data as any };
 }
 
 export default class CategoryPage extends BasePage<CategoryData> {

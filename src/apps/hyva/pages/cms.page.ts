@@ -2,22 +2,11 @@ import BasePage from "@common/pages/base.page";
 import {Page, TestInfo, expect} from "@playwright/test";
 import * as actions from "@utils/base/web/actions";
 import * as locators from "../locators/cms.locator";
+import { CMSData } from "@hyva/interfaces/CMSData";
+import { loadJsonData } from "@utils/functions/file";
 
-// Define the interface for the CMS data structure
-interface CMSData {
-  default: {
-    url?: string;
-    header_title?: string;
-    page_title_text?: string;
-    wrong_page_url?: string;
-    error_page_title?: string;
-    cms_titles?: string[];
-  };
-}
-
-// dynamically import the test JSON data based on the APP_NAME env variable
-// and if the file exists in APP path, and if not default to the base data
-let data: CMSData = {
+// Default CMS data structure
+const defaultData: CMSData = {
   default: {
     header_title: "",
     page_title_text: "",
@@ -26,25 +15,13 @@ let data: CMSData = {
     cms_titles: []
   }
 };
-// Load data synchronously to ensure it's available when needed
-const fs = require("fs");
-try {
-    let dataPath;
-    if (fs.existsSync(__dirname + '/../../' + process.env.APP_NAME + '/data/cms.data.json')) {
-        dataPath = __dirname + '/../../' + process.env.APP_NAME + '/data/cms.data.json';
-    } else {
-        dataPath = __dirname + '/../data/cms.data.json';
-    }
-    const jsonData = fs.readFileSync(dataPath, 'utf8');
-    let parsedData = JSON.parse(jsonData);
-    // Ensure data has a default property
-    if (!parsedData.default) {
-        data = { default: parsedData };
-    } else {
-        data = parsedData;
-    }
-} catch (error) {
-    console.error(`Error loading CMS data: ${error}`);
+
+// Load the CMS data using the utility function
+let data = loadJsonData<CMSData>('cms.data.json', 'hyva', defaultData);
+
+// Ensure data has a default property
+if (data && !data.default) {
+    data = { default: data as any };
 }
 
 export default class CMSPage extends BasePage<CMSData> {

@@ -2,20 +2,21 @@ import BasePage from "@common/pages/base.page";
 import {Page, TestInfo, expect, test} from "@playwright/test";
 import * as actions from "@utils/base/web/actions";
 import * as cartLocators from "@luma/locators/cart.locator";
+import { loadJsonData } from "@utils/functions/file";
 
-// dynamically import the test JSON data based on the APP_NAME env variable
-// and if the file exixts in APP path, and if not default to teh base data
-let data = {};
-const fs = require("fs");
-if (fs.existsSync(__dirname + '/../../' + process.env.APP_NAME + '/data/cart.data.json')) {
-    import('../../' + process.env.APP_NAME + '/data/cart.data.json', {assert: {type: "json"}}).then((dynamicData) => {
-        data = dynamicData;
-    });
-} else {
-    import(__dirname + '/../data/cart.data.json', {assert: {type: "json"}}).then((dynamicData) => {
-        data = dynamicData;
-    });
+// Define the interface for the cart data structure
+interface CartData {
+  default: {
+    subtotal_label?: string;
+    grandtotal_label?: string;
+  };
 }
+
+// Default cart data structure
+const defaultData: CartData = { default: {} };
+
+// Load the cart data using the utility function
+const data = loadJsonData<CartData>('cart.data.json', 'luma', defaultData);
 
 export default class CartPage extends BasePage {
     constructor(public page: Page, public workerInfo: TestInfo) {

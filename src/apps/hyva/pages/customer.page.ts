@@ -3,6 +3,7 @@ import {Page, TestInfo, expect, test} from "@playwright/test";
 import * as locators from "@hyva/locators/customer.locator";
 import * as pageLocators from "@hyva/locators/page.locator";
 import { CustomerData } from '@common/interfaces/CustomerData';
+import { loadJsonData } from "@utils/functions/file";
 
 // Define the interface for the customer page data structure
 interface CustomerPageData {
@@ -17,9 +18,8 @@ interface CustomerPageData {
   };
 }
 
-// dynamically import the test JSON data based on the APP_NAME env variable
-// and if the file exixts in APP path, and if not default to teh base data
-let data: CustomerPageData = {
+// Default customer page data structure
+const defaultData: CustomerPageData = {
   default: {
     url: "",
     header_title: "",
@@ -31,25 +31,12 @@ let data: CustomerPageData = {
   }
 };
 
-// Load data synchronously to ensure it's available when needed
-const fs = require("fs");
-try {
-    let dataPath;
-    if (fs.existsSync(__dirname + '/../../' + process.env.APP_NAME + '/data/customer.data.json')) {
-        dataPath = __dirname + '/../../' + process.env.APP_NAME + '/data/customer.data.json';
-    } else {
-        dataPath = __dirname + '/../data/customer.data.json';
-    }
-    const jsonData = fs.readFileSync(dataPath, 'utf8');
-    let parsedData = JSON.parse(jsonData);
-    // Ensure data has a default property
-    if (!parsedData.default) {
-        data = { default: parsedData };
-    } else {
-        data = parsedData;
-    }
-} catch (error) {
-    // Error loading customer data
+// Load the customer data using the utility function
+let data = loadJsonData<CustomerPageData>('customer.data.json', 'hyva', defaultData);
+
+// Ensure data has a default property
+if (data && !data.default) {
+    data = { default: data as any };
 }
 
 export default class CustomerPage extends BasePage<CustomerPageData> {

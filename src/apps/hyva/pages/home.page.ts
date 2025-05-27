@@ -5,6 +5,7 @@ import * as searchSelectors from "@hyva/locators/search.locator";
 import * as product from "@hyva/locators/product.locator";
 import * as pageLocators from "@hyva/locators/page.locator";
 import * as locators from "../locators/home.locator";
+import { loadJsonData } from "@utils/functions/file";
 
 // Define the interface for the home data structure
 interface HomeData {
@@ -16,34 +17,21 @@ interface HomeData {
   };
 }
 
-// dynamically import the test JSON data based on the APP_NAME env variable
-// and if the file exixts in APP path, and if not default to teh base data
-let data: HomeData = {
+// Default home data structure
+const defaultData: HomeData = {
   default: {
     header_title: "",
     page_title_text: "",
     search_term: ""
   }
 };
-// Load data synchronously to ensure it's available when needed
-const fs = require("fs");
-try {
-    let dataPath;
-    if (fs.existsSync(__dirname + '/../../' + process.env.APP_NAME + '/data/home.data.json')) {
-        dataPath = __dirname + '/../../' + process.env.APP_NAME + '/data/home.data.json';
-    } else {
-        dataPath = __dirname + '/../data/home.data.json';
-    }
-    const jsonData = fs.readFileSync(dataPath, 'utf8');
-    let parsedData = JSON.parse(jsonData);
-    // Ensure data has a default property
-    if (!parsedData.default) {
-        data = { default: parsedData };
-    } else {
-        data = parsedData;
-    }
-} catch (error) {
-    // Error loading home data
+
+// Load the home data using the utility function
+let data = loadJsonData<HomeData>('home.data.json', 'hyva', defaultData);
+
+// Ensure data has a default property
+if (data && !data.default) {
+    data = { default: data as any };
 }
 
 

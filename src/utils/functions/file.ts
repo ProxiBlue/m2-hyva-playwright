@@ -2,6 +2,38 @@ import fs, { PathLike } from "fs";
 import * as fsPromises from "fs/promises";
 import path from "path";
 
+/**
+ * Load JSON data from a file, checking first in the APP_NAME directory and falling back to a default path
+ * @param filename The name of the JSON file to load (e.g., 'orders.data.json')
+ * @param appDir The directory name within apps where the file might be located (e.g., 'admin', 'hyva')
+ * @param defaultData Default data to use if the file cannot be loaded
+ * @returns The loaded JSON data or the default data if the file cannot be loaded
+ */
+export const loadJsonData = <T>(filename: string, appDir: string, defaultData: T): T => {
+  try {
+    const dirname = path.dirname(require.main?.filename || '') || __dirname;
+    const appsBasePath = path.resolve(dirname, '../../apps');
+
+    let dataPath;
+    // Check if file exists in APP_NAME directory
+    if (process.env.APP_NAME && fs.existsSync(path.join(appsBasePath, process.env.APP_NAME, 'data', filename))) {
+      dataPath = path.join(appsBasePath, process.env.APP_NAME, 'data', filename);
+    } else {
+      // Fall back to the provided app directory
+      dataPath = path.join(appsBasePath, appDir, 'data', filename);
+    }
+
+    // Read and parse the JSON file
+    const jsonData = fs.readFileSync(dataPath, 'utf8');
+    const parsedData = JSON.parse(jsonData);
+
+    return parsedData;
+  } catch (error) {
+    console.error(`Error loading ${filename}: ${error}`);
+    return defaultData;
+  }
+};
+
 export const holdBeforeFileExists = async (filePath: any, timeout: number) => {
   timeout = timeout < 1000 ? 1000 : timeout;
   try {

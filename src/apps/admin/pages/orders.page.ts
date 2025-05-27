@@ -3,25 +3,11 @@ import {Page, TestInfo, expect, test} from "@playwright/test";
 import * as actions from "@utils/base/web/actions";
 import * as locators from "@admin/locators/orders.locator";
 import {CustomerData} from '@common/interfaces/CustomerData';
-import * as CustomerFormLocators from "../locators/orderCustomerForm.locator"
+import * as CustomerFormLocators from "../locators/orderCustomerForm.locator";
+import { loadJsonData } from "@utils/functions/file";
 
-// dynamically import the test JSON data based on the APP_NAME env variable
-// and if the file exits in APP path, and if not default to teh base data
-let data = {"default": {}};
-// Load data synchronously to ensure it's available when needed
-const fs = require("fs");
-try {
-    let dataPath;
-    if (fs.existsSync(__dirname + '/../../' + process.env.APP_NAME + '/data/orders.data.json')) {
-        dataPath = __dirname + '/../../' + process.env.APP_NAME + '/data/orders.data.json';
-    } else {
-        dataPath = __dirname + '/../data/orders.data.json';
-    }
-    const jsonData = fs.readFileSync(dataPath, 'utf8');
-    data = JSON.parse(jsonData);
-} catch (error) {
-    console.error(`Error loading orders data: ${error}`);
-}
+// Load the orders data using the utility function
+const data = loadJsonData('orders.data.json', 'admin', {"default": {}});
 export default class AdminOrdersPage extends BasePage {
     constructor(public page: Page, public workerInfo: TestInfo) {
         super(page, workerInfo, data, locators); // pass the data and locators to teh base page class

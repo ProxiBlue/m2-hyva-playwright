@@ -2,29 +2,24 @@ import BasePage from "@common/pages/base.page";
 import {Page, TestInfo, expect, test} from "@playwright/test";
 import * as actions from "@utils/base/web/actions";
 import * as locators from "@hyva/locators/sidecart.locator";
+import { loadJsonData } from "@utils/functions/file";
 
-// dynamically import the test JSON data based on the APP_NAME env variable
-// and if the file exixts in APP path, and if not default to teh base data
-let data: { default: { cart_is_empty?: string } } = { default: {} };
-// Load data synchronously to ensure it's available when needed
-const fs = require("fs");
-try {
-    let dataPath;
-    if (fs.existsSync(__dirname + '/../../' + process.env.APP_NAME + '/data/sidecart.data.json')) {
-        dataPath = __dirname + '/../../' + process.env.APP_NAME + '/data/sidecart.data.json';
-    } else {
-        dataPath = __dirname + '/../data/sidecart.data.json';
-    }
-    const jsonData = fs.readFileSync(dataPath, 'utf8');
-    let parsedData = JSON.parse(jsonData);
-    // Ensure data has a default property
-    if (!parsedData.default) {
-        data = { default: parsedData };
-    } else {
-        data = parsedData;
-    }
-} catch (error) {
-    // Error loading sidecart data
+// Define the interface for the sidecart data structure
+interface SidecartData {
+  default: {
+    cart_is_empty?: string;
+  };
+}
+
+// Default sidecart data structure
+const defaultData: SidecartData = { default: {} };
+
+// Load the sidecart data using the utility function
+let data = loadJsonData<SidecartData>('sidecart.data.json', 'hyva', defaultData);
+
+// Ensure data has a default property
+if (data && !data.default) {
+    data = { default: data as any };
 }
 
 export default class SideCartPage extends BasePage {
