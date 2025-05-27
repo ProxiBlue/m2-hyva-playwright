@@ -250,8 +250,6 @@ export default class ConfigurableProductPage extends ProductPage {
                 // Log a warning if we didn't select any options
                 if (Object.keys(selectedOptions).length === 0) {
                     console.warn('No swatch options were selected. This might cause issues later in the test.');
-                } else {
-                    console.log(`Successfully selected ${Object.keys(selectedOptions).length} swatch options:`, selectedOptions);
                 }
             }
         );
