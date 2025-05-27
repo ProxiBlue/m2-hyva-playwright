@@ -3,29 +3,24 @@ import {Page, TestInfo, expect, test} from "@playwright/test";
 import * as actions from "@utils/base/web/actions";
 import * as locators from "@luma/locators/product.locator";
 import * as pageLocators from "@luma/locators/page.locator";
+import { loadJsonData } from "@utils/functions/file";
 
-// dynamically import the test JSON data based on the APP_NAME env variable
-// and if the file exixts in APP path, and if not default to teh base data
-let data: { default: { name?: string } } = { default: {} };
-const fs = require("fs");
-if (fs.existsSync(__dirname + '/../../' + process.env.APP_NAME + '/data/simple_product.data.json')) {
-    import('../../' + process.env.APP_NAME + '/data/simple_product.data.json', { assert: { type: "json" } }).then((dynamicData) => {
-        // Ensure data has a default property
-        if (!dynamicData.default) {
-            data = { default: dynamicData };
-        } else {
-            data = dynamicData;
-        }
-    });
-} else {
-    import(__dirname + '/../data/simple_product.data.json', { assert: { type: "json" } }).then((dynamicData) => {
-        // Ensure data has a default property
-        if (!dynamicData.default) {
-            data = { default: dynamicData };
-        } else {
-            data = dynamicData;
-        }
-    });
+// Define the interface for the simple product data structure
+interface SimpleProductData {
+  default: {
+    name?: string;
+  };
+}
+
+// Default simple product data structure
+const defaultData: SimpleProductData = { default: {} };
+
+// Load the simple product data using the utility function
+let data = loadJsonData<SimpleProductData>('simple_product.data.json', 'luma', defaultData);
+
+// Ensure data has a default property
+if (data && !data.default) {
+    data = { default: data as any };
 }
 
 export default class SimpleProductPage extends BasePage {

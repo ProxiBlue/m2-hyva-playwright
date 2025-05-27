@@ -4,25 +4,11 @@ import * as actions from "@utils/base/web/actions";
 import * as locators from "@hyva/locators/search.locator";
 import * as pageLocators from "@hyva/locators/page.locator";
 import * as productLocators from "@hyva/locators/product.locator";
+import { SearchData } from "@hyva/interfaces/SearchData";
+import { loadJsonData } from "@utils/functions/file";
 
-// Define the interface for the search data structure
-interface SearchData {
-  default: {
-    url?: string;
-    header_title?: string;
-    page_title_text?: string;
-    product_category?: string;
-    single_product?: string;
-    single_product_name?: string;
-    no_results?: string;
-    get_hint?: string;
-    hint_result?: string;
-  };
-}
-
-// dynamically import the test JSON data based on the APP_NAME env variable
-// and if the file exists in APP path, and if not default to the base data
-let data: SearchData = {
+// Default search data structure
+const defaultData: SearchData = {
   default: {
     header_title: "",
     page_title_text: "",
@@ -32,25 +18,13 @@ let data: SearchData = {
     hint_result: ""
   }
 };
-// Load data synchronously to ensure it's available when needed
-const fs = require("fs");
-try {
-    let dataPath;
-    if (fs.existsSync(__dirname + '/../../' + process.env.APP_NAME + '/data/search.data.json')) {
-        dataPath = __dirname + '/../../' + process.env.APP_NAME + '/data/search.data.json';
-    } else {
-        dataPath = __dirname + '/../data/search.data.json';
-    }
-    const jsonData = fs.readFileSync(dataPath, 'utf8');
-    let parsedData = JSON.parse(jsonData);
-    // Ensure data has a default property
-    if (!parsedData.default) {
-        data = { default: parsedData };
-    } else {
-        data = parsedData;
-    }
-} catch (error) {
-    // Error loading search data
+
+// Load the search data using the utility function
+let data = loadJsonData<SearchData>('search.data.json', 'hyva', defaultData);
+
+// Ensure data has a default property
+if (data && !data.default) {
+    data = { default: data as any };
 }
 
 export default class SearchPage extends BasePage<SearchData> {

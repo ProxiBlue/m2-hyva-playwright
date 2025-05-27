@@ -2,17 +2,7 @@ import BasePage from "@common/pages/base.page";
 import {Page, TestInfo, expect, test} from "@playwright/test";
 import * as actions from "@utils/base/web/actions";
 import * as cartLocators from "@hyva/locators/cart.locator";
-
-// Define the interface for the cart data structure
-interface CartData {
-  default: {
-    url?: string;
-    header_title?: string;
-    page_title_text?: string;
-    subtotal_label?: string;
-    grandtotal_label?: string;
-  };
-}
+import { CartData } from "@hyva/interfaces/CartData";
 
 // dynamically load the test JSON data based on the APP_NAME env variable
 // and if the file exists in APP path, and if not default to the base data

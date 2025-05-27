@@ -3,30 +3,24 @@ import {Page, TestInfo, expect, test} from "@playwright/test";
 import * as locators from "@luma/locators/customer.locator";
 import * as pageLocators from "@luma/locators/page.locator";
 import { CustomerData } from '@common/interfaces/CustomerData';
+import { loadJsonData } from "@utils/functions/file";
 
-// dynamically import the test JSON data based on the APP_NAME env variable
-// and if the file exixts in APP path, and if not default to teh base data
-let data: { default: { my_account_title?: string } } = { default: {} };
+// Define the interface for the customer data structure
+interface LumaCustomerData {
+  default: {
+    my_account_title?: string;
+  };
+}
 
-const fs = require("fs");
-if (fs.existsSync(__dirname + '/../../' + process.env.APP_NAME + '/data/customer.data.json')) {
-    import('../../' + process.env.APP_NAME + '/data/customer.data.json', { assert: { type: "json" } }).then((dynamicData) => {
-        // Ensure data has a default property
-        if (!dynamicData.default) {
-            data = { default: dynamicData };
-        } else {
-            data = dynamicData;
-        }
-    });
-} else {
-    import(__dirname + '/../data/customer.data.json', { assert: { type: "json" } }).then((dynamicData) => {
-        // Ensure data has a default property
-        if (!dynamicData.default) {
-            data = { default: dynamicData };
-        } else {
-            data = dynamicData;
-        }
-    });
+// Default customer data structure
+const defaultData: LumaCustomerData = { default: {} };
+
+// Load the customer data using the utility function
+let data = loadJsonData<LumaCustomerData>('customer.data.json', 'luma', defaultData);
+
+// Ensure data has a default property
+if (data && !data.default) {
+    data = { default: data as any };
 }
 
 export default class CustomerPage extends BasePage {

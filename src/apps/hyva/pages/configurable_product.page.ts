@@ -4,29 +4,19 @@ import * as actions from "@utils/base/web/actions";
 import * as locators from "@hyva/locators/product.locator";
 import * as cartLocators from "@hyva/locators/cart.locator";
 import * as configLocators from "@hyva/locators/configurable_product.locator";
+import { ConfigurableProductData } from "@hyva/interfaces/ConfigurableProductData";
+import { loadJsonData } from "@utils/functions/file";
 
+// Default configurable product data structure
+const defaultData: ConfigurableProductData = { default: {} };
 
-// dynamically import the test JSON data based on the APP_NAME env variable
-// and if the file exists in APP path, and if not default to the base data
-let data: { default: { configurable_url?: string; name?: string } } = { default: {} };
-// Load data synchronously to ensure it's available when needed
-const fs = require("fs");
-try {
-    let dataPath;
-    if (fs.existsSync(__dirname + '/../../' + process.env.APP_NAME + '/data/configurable_product.data.json')) {
-        dataPath = __dirname + '/../../' + process.env.APP_NAME + '/data/configurable_product.data.json';
-    } else {
-        dataPath = __dirname + '/../data/configurable_product.data.json';
-    }
-    const jsonData = fs.readFileSync(dataPath, 'utf8');
-    data = JSON.parse(jsonData);
-    // Ensure data has a default property
-    if (!data.default) {
-        // @ts-ignore
-        data = { default: data };
-    }
-} catch (error) {
-    // Error loading configurable product data
+// Load the configurable product data using the utility function
+let data = loadJsonData<ConfigurableProductData>('configurable_product.data.json', 'hyva', defaultData);
+
+// Ensure data has a default property
+if (data && !data.default) {
+    // @ts-ignore
+    data = { default: data };
 }
 
 export default class ConfigurableProductPage extends ProductPage {
