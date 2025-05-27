@@ -1,5 +1,4 @@
 import {test, describe, expect} from "@hyva/fixtures";
-import * as productLocators from "@hyva/locators/product.locator";
 import * as pageLocators from "@hyva/locators/page.locator";
 import * as locators from "@hyva/locators/customer.locator";
 

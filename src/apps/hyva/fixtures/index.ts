@@ -6,7 +6,7 @@ import CategoryPage from "@hyva/pages/category.page";
 import SideCartPage from "@hyva/pages/sidecart.page";
 import CustomerPage from "@hyva/pages/customer.page";
 import AdminPage from '@admin/pages/admin.page';
-import CMSPage from "@home/src/apps/pps/pages/cms.page";
+import CMSPage from "@hyva/pages/cms.page";
 import SearchPage from "@hyva/pages/search.page";
 import ProductPage from "@hyva/pages/product.page";
 import ConfigurableProductPage from "@hyva/pages/configurable_product.page";

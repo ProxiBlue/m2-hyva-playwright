@@ -107,6 +107,7 @@ export default class CategoryPage extends BasePage<CategoryData> {
             async () => {
                 const filterButton = await this.page.getByRole('button', {name: filter + ' filter'});
                 const filterContainer = await this.page.locator('.filter-option', {has: filterButton});
+                await filterButton.scrollIntoViewIfNeeded();
                 await filterButton.click();
                 await this.page.waitForLoadState('domcontentloaded');
                 await expect(await filterContainer.getByRole('link', {name: option})).toBeVisible();
@@ -166,6 +167,7 @@ export default class CategoryPage extends BasePage<CategoryData> {
     }
 
     async sortProductsByNameAscending() {
+        await this.sortProductsByNameDescending();
         await test.step(
             this.workerInfo.project.name + ": Sort products ",
             async () => {
@@ -330,7 +332,7 @@ export default class CategoryPage extends BasePage<CategoryData> {
                 await this.page.waitForLoadState('networkidle');
                 await this.page.waitForLoadState('domcontentloaded');
                 await this.page.waitForSelector(pageLocators.comapre_page_title);
-                expect(await this.page.locator(pageLocators.comapre_page_title).textContent()).toContain(pageData.default.compare_products_title);
+                expect(await this.page.locator(pageLocators.comapre_page_title).textContent()).toContain(pageData?.default?.compare_products_title || "Compare Products");
                 await expect(this.page.locator(pageLocators.compare_table)).toBeVisible();
                 const compareTableText = await this.page.locator(pageLocators.compare_table).textContent();
                 expect(compareTableText).toContain(firstProductName ? firstProductName.trim() : "");

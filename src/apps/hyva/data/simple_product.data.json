@@ -4,6 +4,9 @@
     "name": "Joust Duffle Bag",
     "header_title": "Joust Duffle Bag",
     "page_title_text": "Joust Duffle Bag",
-    "sku" : "24-MB01"
+    "sku" : "24-MB01",
+    "currency_symbol": "€",
+    "wishlist_error": "You must login or register to add items to your wishlist",
+    "wishlist_success": "has been added to your Wish List"
   }
 }

@@ -154,14 +154,119 @@ export default class ConfigurableProductPage extends ProductPage {
                 // Store the selected options for later verification
                 this.selectedOptions = selectedOptions;
 
-                // Click the add to cart button
-                await this.page.locator(locators.product_add_to_cart_button).click();
-
-                // Wait for the page to navigate to the cart or show a success message
-                await this.page.waitForLoadState('networkidle');
             }
         );
     }
+
+    async selectProductSwatch() {
+        await test.step(
+            this.workerInfo.project.name + ": Select product swatch",
+            async () => {
+                // Add a timeout for the entire operation
+                const MAX_EXECUTION_TIME = 20000; // 20 seconds
+                const startTime = Date.now();
+                // Find all swatch attribute containers
+                const swatchContainers = this.page.locator(configLocators.swatch_attribute_container);
+                const containerCount = await swatchContainers.count();
+
+                // Store selected options for verification in cart
+                const selectedOptions: { [key: string]: string } = {};
+                // Store attribute labels for later verification
+                const attributeLabels: { [key: string]: string } = {};
+
+                // Loop through each swatch attribute container
+                for (let i = 0; i < containerCount; i++) {
+                    // Check if we've exceeded the maximum execution time
+                    if (Date.now() - startTime > MAX_EXECUTION_TIME) {
+                        console.warn(`selectProductSwatch exceeded maximum execution time of ${MAX_EXECUTION_TIME}ms. Stopping after processing ${i} of ${containerCount} containers.`);
+                        break;
+                    }
+
+                    const container = swatchContainers.nth(i);
+
+                    // Get the attribute label from the container's class
+                    let attributeLabel = '';
+                    const containerClass = await container.getAttribute('class') || '';
+                    const classMatch = containerClass.match(/swatch-attribute\s+[\w-]*\s+([\w-]+)/);
+                    if (classMatch && classMatch[1]) {
+                        attributeLabel = classMatch[1].charAt(0).toUpperCase() + classMatch[1].slice(1);
+                    } else {
+                        // If all else fails, use a generic label
+                        attributeLabel = `Option ${i+1}`;
+                        console.log(`Using generic attribute label: ${attributeLabel}`);
+                    }
+
+                    // Get all enabled and active swatch options (labels containing radio inputs)
+                    const swatchOptions = container.locator(configLocators.swatch_option_label);
+                    const optionsCount = await swatchOptions.count();
+
+                    if (optionsCount > 0) {
+                        // Choose a random option index
+                        const randomIndex = Math.floor(Math.random() * optionsCount);
+                        // Get the option label at the random index
+                        const optionLabel = swatchOptions.nth(randomIndex);
+
+                        // Get the input element inside the label
+                        const option = optionLabel.locator('input[type="radio"]');
+
+                        // Get the option text and ID
+                        const optionText = await option.getAttribute('aria-label') || `Option ${randomIndex + 1}`;
+                        const optionId = await option.getAttribute('id') || `option-${i}-${randomIndex}`;
+
+                        // Store the selected option with attribute label as key for verification
+                        selectedOptions[attributeLabel] = optionText;
+                        // Store the attribute label with option ID as key
+                        attributeLabels[optionId] = attributeLabel;
+
+                        // Check if we've exceeded the maximum execution time before attempting to click
+                        if (Date.now() - startTime > MAX_EXECUTION_TIME) {
+                            console.warn(`selectProductSwatch exceeded maximum execution time of ${MAX_EXECUTION_TIME}ms before clicking option for ${attributeLabel}. Skipping click.`);
+                            continue;
+                        }
+
+                        // Get the option ID to create a valid selector
+                        const optionIdForSelector = await option.getAttribute('id');
+
+                        if (optionIdForSelector) {
+                            // Click the option using JavaScript with a valid ID selector
+                            await this.page.evaluate((selector) => {
+                                const element = document.querySelector(selector);
+                                if (element) {
+                                    element.dispatchEvent(new MouseEvent('click', {
+                                        bubbles: true,
+                                        cancelable: true,
+                                        view: window
+                                    }));
+                                }
+                            }, `#${optionIdForSelector}`);
+                        } else {
+                            // Fallback to direct click if we can't get the ID
+                            try {
+                                await optionLabel.click({ force: true, timeout: 5000 });
+                            } catch (error: any) {
+                                console.warn(`Failed to click swatch option: ${error.message}`);
+                            }
+                        }
+
+                        // Wait a short time after clicking to allow the UI to update
+                        await this.page.waitForTimeout(100);
+                    }
+                }
+
+                // Store the selected options and attribute labels for later verification
+                this.selectedOptions = selectedOptions;
+                this.attributeLabels = attributeLabels;
+
+                // Log a warning if we didn't select any options
+                if (Object.keys(selectedOptions).length === 0) {
+                    console.warn('No swatch options were selected. This might cause issues later in the test.');
+                } else {
+                    console.log(`Successfully selected ${Object.keys(selectedOptions).length} swatch options:`, selectedOptions);
+                }
+            }
+        );
+    }
+
 
     // Properties to store selected options and attribute labels
     private selectedOptions: { [key: string]: string } = {};
@@ -300,4 +405,5 @@ export default class ConfigurableProductPage extends ProductPage {
             }
         );
     }
+
 }

@@ -1,8 +1,11 @@
 {
   "default": {
-    "configurable_url": "/3-8-mpt-paddlewheel-flow-meter-with-molded-in-line-body-375-gpm.html",
-    "name": "3/8\" MPT Paddlewheel Flow Meter with Molded In-Line Body, 375-GPM",
-    "header_title": "3/8\" MPT Paddlewheel Flow Meter with Molded In-Line Body, 375-GPM",
-    "page_title_text": "3/8\" MPT Paddlewheel Flow Meter with Molded In-Line Body, 375-GPM"
+    "configurable_url": "default/hera-pullover-hoodie.html",
+    "name": "Hera Pullover Hoodie",
+    "header_title": "Hera Pullover Hoodie",
+    "page_title_text": "Hera Pullover Hoodie",
+    "currency_symbol": "€",
+    "wishlist_error": "You must login or register to add items to your wishlist",
+    "wishlist_success": "has been added to your Wish List"
   }
 }
