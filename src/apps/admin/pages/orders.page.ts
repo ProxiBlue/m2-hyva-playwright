@@ -1,6 +1,5 @@
 import BasePage from "@common/pages/base.page";
 import {Page, TestInfo, expect, test} from "@playwright/test";
-import * as actions from "@utils/base/web/actions";
 import * as locators from "@admin/locators/orders.locator";
 import {CustomerData} from '@common/interfaces/CustomerData';
 import * as CustomerFormLocators from "../locators/orderCustomerForm.locator";
@@ -14,13 +13,15 @@ export default class AdminOrdersPage extends BasePage {
     }
 
     async navigateTo() {
-        // @ts-ignore
         // get the orders url from admin dashboard (need the key value)
         const orderListItem = this.page.locator(locators.orders_list_item);
         const orderLink = orderListItem.locator('a');
         const hrefValue = await orderLink.getAttribute('href');
-        // @ts-ignore
-        await actions.navigateTo(this.page, hrefValue, this.workerInfo);
+
+        await test.step(
+            this.workerInfo.project.name + ": Go to " + hrefValue,
+            async () => await this.page.goto(hrefValue, { ignoreHTTPSErrors: true })
+        );
         await this.page.waitForLoadState("networkidle")
         await this.page.waitForLoadState("domcontentloaded")
         await this.page.waitForSelector(locators.adminOrdersGrid + ' >> tr')

@@ -1,6 +1,5 @@
 import BasePage from "@common/pages/base.page";
 import {Page, TestInfo, expect, test} from "@playwright/test";
-import * as actions from "@utils/base/web/actions";
 import * as locators from "@admin/locators/products.locator";
 import { loadJsonData } from "@utils/functions/file";
 
@@ -12,13 +11,15 @@ export default class AdminProductsPage extends BasePage {
     }
 
     async navigateTo() {
-        // @ts-ignore
         // get the products url from admin dashboard (need the key value)
         const productListItem = this.page.locator(locators.product_list_item);
         const productLink = productListItem.locator('a');
         const hrefValue = await productLink.getAttribute('href');
-        // @ts-ignore
-        await actions.navigateTo(this.page, hrefValue, this.workerInfo);
+
+        await test.step(
+            this.workerInfo.project.name + ": Go to " + hrefValue,
+            async () => await this.page.goto(hrefValue, { ignoreHTTPSErrors: true })
+        );
         await this.page.waitForLoadState("networkidle")
         await this.page.waitForLoadState("domcontentloaded")
         await this.page.waitForSelector(locators.adminProductGrid + ' >> tr')

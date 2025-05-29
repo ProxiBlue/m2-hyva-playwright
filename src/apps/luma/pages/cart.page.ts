@@ -1,8 +1,8 @@
 import BasePage from "@common/pages/base.page";
 import {Page, TestInfo, expect, test} from "@playwright/test";
-import * as actions from "@utils/base/web/actions";
 import * as cartLocators from "@luma/locators/cart.locator";
 import { loadJsonData } from "@utils/functions/file";
+import { parsePrice } from "@utils/functions/price";
 
 // Define the interface for the cart data structure
 interface CartData {
@@ -28,12 +28,22 @@ export default class CartPage extends BasePage {
             this.workerInfo.project.name + ": Check Quantity of row " + itemRowNum + ' has expected qty of ' + expectedQuantity,
             async () => {
                 const itemRow = cartLocators.cart_table + '>>' + cartLocators.cart_table_body + ">>nth=" + itemRowNum + '>>' + cartLocators.cart_row_item_info
-                await actions.verifyElementExists(this.page, itemRow, this.workerInfo);
-                await actions.getInnerText(this.page, itemRow + '>>' + cartLocators.cart_row_subtotal, this.workerInfo).then(async (beforeSubTotal) => {
-                    const qtyInput = itemRow + '>>' + cartLocators.cart_row_qty_input;
-                    const qtyValue = await actions.getElementValue(this.page, qtyInput, this.workerInfo);
-                    expect(qtyValue).toEqual(expectedQuantity.toString());
-                });
+                await test.step(
+                    this.workerInfo.project.name + ": Verify element exists " + itemRow,
+                    async () => await expect(this.page.locator(itemRow)).toHaveCount(1)
+                );
+                await test.step(
+                    this.workerInfo.project.name + ": Get innertext from " + (itemRow + '>>' + cartLocators.cart_row_subtotal),
+                    async () => {
+                        const beforeSubTotal = await this.page.innerText(itemRow + '>>' + cartLocators.cart_row_subtotal);
+                        const qtyInput = itemRow + '>>' + cartLocators.cart_row_qty_input;
+                        const qtyValue = await test.step(
+                            this.workerInfo.project.name + ": Get value from " + qtyInput,
+                            async () => await this.page.$eval(qtyInput, (element: HTMLInputElement) => element.value)
+                        );
+                        expect(qtyValue).toEqual(expectedQuantity.toString());
+                    }
+                );
             });
 
     }
@@ -43,15 +53,25 @@ export default class CartPage extends BasePage {
             this.workerInfo.project.name + ": Change itemrow " + itemRowNum + " quantity to " + newQuantity,
             async () => {
                 const itemRow = cartLocators.cart_table + '>>' + cartLocators.cart_table_body + ">>nth=" + itemRowNum + '>>' + cartLocators.cart_row_item_info
-                await actions.verifyElementExists(this.page, itemRow, this.workerInfo);
-                await actions.getInnerText(this.page, itemRow + '>>' + cartLocators.cart_row_subtotal, this.workerInfo).then(async (beforeSubTotal) => {
-                    const qtyInput = itemRow + '>>' + cartLocators.cart_row_qty_input;
-                    await actions.fill(this.page, qtyInput, '2', this.workerInfo);
-                    await this.page.locator('.action.update').click();
-                    await this.page.waitForURL("**/checkout/cart");
-                    await this.page.waitForLoadState('domcontentloaded');
-                    await this.checkQuantity(itemRowNum, newQuantity);
-                });
+                await test.step(
+                    this.workerInfo.project.name + ": Verify element exists " + itemRow,
+                    async () => await expect(this.page.locator(itemRow)).toHaveCount(1)
+                );
+                await test.step(
+                    this.workerInfo.project.name + ": Get innertext from " + (itemRow + '>>' + cartLocators.cart_row_subtotal),
+                    async () => {
+                        const beforeSubTotal = await this.page.innerText(itemRow + '>>' + cartLocators.cart_row_subtotal);
+                        const qtyInput = itemRow + '>>' + cartLocators.cart_row_qty_input;
+                        await test.step(
+                            this.workerInfo.project.name + ": Enter text: 2",
+                            async () => await this.page.fill(qtyInput, '2')
+                        );
+                        await this.page.locator('.action.update').click();
+                        await this.page.waitForURL("**/checkout/cart");
+                        await this.page.waitForLoadState('domcontentloaded');
+                        await this.checkQuantity(itemRowNum, newQuantity);
+                    }
+                );
             })
     }
 
@@ -71,24 +91,43 @@ export default class CartPage extends BasePage {
             this.workerInfo.project.name + ": Delete Item ",
             async () => {
                 const itemRow = cartLocators.cart_table + '>>' + cartLocators.cart_table_body + ">>nth=" + itemRowNum;
-                await actions.verifyElementExists(this.page, itemRow, this.workerInfo);
+                await test.step(
+                    this.workerInfo.project.name + ": Verify element exists " + itemRow,
+                    async () => await expect(this.page.locator(itemRow)).toHaveCount(1)
+                );
                 const deleteButton = itemRow + '>>' + cartLocators.cart_item_row_delete;
-                await actions.verifyElementExists(this.page, deleteButton, this.workerInfo);
-                await actions.clickElement(this.page, deleteButton, this.workerInfo).then(async () => {
-                    await this.page.waitForLoadState('networkidle');
-                    await this.page.waitForLoadState('domcontentloaded');
-                    await actions.verifyElementIsVisible(this.page, cartLocators.cart_empty, this.workerInfo);
-                });
+                await test.step(
+                    this.workerInfo.project.name + ": Verify element exists " + deleteButton,
+                    async () => await expect(this.page.locator(deleteButton)).toHaveCount(1)
+                );
+                await test.step(
+                    this.workerInfo.project.name + ": Click element " + deleteButton,
+                    async () => {
+                        await this.page.locator(deleteButton).click();
+                        await this.page.waitForLoadState('networkidle');
+                        await this.page.waitForLoadState('domcontentloaded');
+                        await test.step(
+                            this.workerInfo.project.name + ": Verify element is visible " + cartLocators.cart_empty,
+                            async () => expect(await this.page.locator(cartLocators.cart_empty).isVisible()).toBe(true)
+                        );
+                    }
+                );
             })
     }
 
     async getItemSubTotal(itemRowNum: number) {
         await this.page.waitForLoadState('domcontentloaded')
         const itemRow = cartLocators.cart_table + '>>' + cartLocators.cart_table_body + ">>nth=" + itemRowNum;
-        await actions.verifyElementExists(this.page, itemRow, this.workerInfo);
-        let subTotal = await actions.getInnerText(this.page, itemRow + '>>' + cartLocators.cart_row_subtotal, this.workerInfo);
+        await test.step(
+            this.workerInfo.project.name + ": Verify element exists " + itemRow,
+            async () => await expect(this.page.locator(itemRow)).toHaveCount(1)
+        );
+        let subTotal = await test.step(
+            this.workerInfo.project.name + ": Get innertext from " + (itemRow + '>>' + cartLocators.cart_row_subtotal),
+            async () => await this.page.innerText(itemRow + '>>' + cartLocators.cart_row_subtotal)
+        );
         expect(subTotal).not.toBeNull();
-        return actions.parsePrice(subTotal);
+        return parsePrice(subTotal);
     }
 
     async checkSubtotalMatches(total: string) {
@@ -106,7 +145,7 @@ export default class CartPage extends BasePage {
                     value = value.replace(data.default.subtotal_label + ' ', '');
                     // @ts-ignore
                     value = value.replace(data.default.subtotal_label, '');
-                    expect(actions.parsePrice(value)).toEqual(actions.parsePrice(total));
+                    expect(parsePrice(value)).toEqual(parsePrice(total));
                 });
             });
     }
@@ -124,7 +163,7 @@ export default class CartPage extends BasePage {
                         value = value.replace(label + ':', '');
                         value = value.replace(label + ' ', '');
                         value = value.replace(label, '');
-                        expect(actions.parsePrice(value)).toEqual(actions.parsePrice(total));
+                        expect(parsePrice(value)).toEqual(parsePrice(total));
                     }
                 });
             });
@@ -151,7 +190,7 @@ export default class CartPage extends BasePage {
                         value = value.replace(data.default.grandtotal_label + ' ', '');
                         // @ts-ignore
                         value = value.replace(data.default.grandtotal_label, '');
-                        expect(actions.parsePrice(value)).toEqual(actions.parsePrice(total));
+                        expect(parsePrice(value)).toEqual(parsePrice(total));
                     }
                 });
             })
@@ -161,15 +200,28 @@ export default class CartPage extends BasePage {
         await test.step(
             this.workerInfo.project.name + ": Clear the cart ",
             async () => {
-                await actions.verifyElementExists(this.page, cartLocators.cart_clear, this.workerInfo);
-                await actions.clickElement(this.page, cartLocators.cart_clear, this.workerInfo).then(async () => {
-                    await this.page.waitForLoadState('networkidle');
-                    await this.page.waitForLoadState('domcontentloaded');
-                    await actions.verifyElementIsVisible(this.page, "[aria-label='Are you sure?']", this.workerInfo);
-                    await actions.clickElement(this.page, "[aria-label='Are you sure?']>>.btn-primary", this.workerInfo)
-                    await this.page.waitForLoadState('networkidle');
-                    await this.page.waitForLoadState('domcontentloaded');
-                });
+                await test.step(
+                    this.workerInfo.project.name + ": Verify element exists " + cartLocators.cart_clear,
+                    async () => await expect(this.page.locator(cartLocators.cart_clear)).toHaveCount(1)
+                );
+                await test.step(
+                    this.workerInfo.project.name + ": Click element " + cartLocators.cart_clear,
+                    async () => {
+                        await this.page.locator(cartLocators.cart_clear).click();
+                        await this.page.waitForLoadState('networkidle');
+                        await this.page.waitForLoadState('domcontentloaded');
+                        await test.step(
+                            this.workerInfo.project.name + ": Verify element is visible [aria-label='Are you sure?']",
+                            async () => expect(await this.page.locator("[aria-label='Are you sure?']").isVisible()).toBe(true)
+                        );
+                        await test.step(
+                            this.workerInfo.project.name + ": Click element [aria-label='Are you sure?']>>.btn-primary",
+                            async () => await this.page.locator("[aria-label='Are you sure?']>>.btn-primary").click()
+                        );
+                        await this.page.waitForLoadState('networkidle');
+                        await this.page.waitForLoadState('domcontentloaded');
+                    }
+                );
             });
     }
 
@@ -177,15 +229,28 @@ export default class CartPage extends BasePage {
         await test.step(
             this.workerInfo.project.name + ": Cancel Clear cart ",
             async () => {
-                await actions.verifyElementExists(this.page, cartLocators.cart_clear, this.workerInfo);
-                await actions.clickElement(this.page, cartLocators.cart_clear, this.workerInfo).then(async () => {
-                    await this.page.waitForLoadState('networkidle');
-                    await this.page.waitForLoadState('domcontentloaded');
-                    await actions.verifyElementIsVisible(this.page, "[aria-label='Are you sure?']", this.workerInfo);
-                    await actions.clickElement(this.page, "[aria-label='Are you sure?']>>.btn>>nth=0", this.workerInfo)
-                    await this.page.waitForLoadState('networkidle');
-                    await this.page.waitForLoadState('domcontentloaded');
-                });
+                await test.step(
+                    this.workerInfo.project.name + ": Verify element exists " + cartLocators.cart_clear,
+                    async () => await expect(this.page.locator(cartLocators.cart_clear)).toHaveCount(1)
+                );
+                await test.step(
+                    this.workerInfo.project.name + ": Click element " + cartLocators.cart_clear,
+                    async () => {
+                        await this.page.locator(cartLocators.cart_clear).click();
+                        await this.page.waitForLoadState('networkidle');
+                        await this.page.waitForLoadState('domcontentloaded');
+                        await test.step(
+                            this.workerInfo.project.name + ": Verify element is visible [aria-label='Are you sure?']",
+                            async () => expect(await this.page.locator("[aria-label='Are you sure?']").isVisible()).toBe(true)
+                        );
+                        await test.step(
+                            this.workerInfo.project.name + ": Click element [aria-label='Are you sure?']>>.btn>>nth=0",
+                            async () => await this.page.locator("[aria-label='Are you sure?']>>.btn>>nth=0").click()
+                        );
+                        await this.page.waitForLoadState('networkidle');
+                        await this.page.waitForLoadState('domcontentloaded');
+                    }
+                );
             });
     }
 

@@ -1,5 +1,5 @@
 import { test, describe, expect } from "@hyva/fixtures";
-import * as actions from "@utils/base/web/actions";
+import { parsePrice } from "@utils/functions/price";
 
 describe("Side cart price check", () => {
 
@@ -20,8 +20,8 @@ describe("Side cart price check", () => {
         let miniCartSubtotalText = await sideCartPage.getMiniCartSubtotal();
         expect(miniCartSubtotalText).not.toBeNull()
         // @ts-ignore
-        let total = actions.parsePrice(miniCartSubtotalText);
-        let cleanItemPrice = actions.parsePrice(itemPrice);
+        let total = parsePrice(miniCartSubtotalText);
+        let cleanItemPrice = parsePrice(itemPrice);
         expect(total).toEqual(cleanItemPrice);
         // let's add in another item, and confirm price is increased correctly
         await simpleProductPage.navigateTo();
@@ -35,8 +35,8 @@ describe("Side cart price check", () => {
         miniCartSubtotalText = await sideCartPage.getMiniCartSubtotal();
         expect(miniCartSubtotalText).not.toBeNull()
         // @ts-ignore
-        total = actions.parsePrice(miniCartSubtotalText);
-        cleanItemPrice = actions.parsePrice(itemPrice) * 2;
+        total = parsePrice(miniCartSubtotalText);
+        cleanItemPrice = parsePrice(itemPrice) * 2;
         expect(total).toEqual(cleanItemPrice);
     });
 

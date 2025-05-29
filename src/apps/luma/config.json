@@ -1,10 +1,7 @@
 {
-  "env": {
-    "dev": { "url": "https://luma.ddev.site/" },
-  },
+  "url": "https://luma.ddev.site/",
   "mailcatcher": "",
   "skipBaseTests": [
-
   ],
   "faker_locale": "en_US"
 }

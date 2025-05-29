@@ -1,5 +1,4 @@
 import { Page, TestInfo, test, expect } from "@playwright/test";
-import * as actions from "@utils/base/web/actions";
 
 export default class BasePage<T extends { default: { url?: string; header_title?: string; page_title_text?: string } } = any> {
     constructor(public page: Page, public workerInfo: TestInfo, public data: any, public locators: any) {}
@@ -9,7 +8,10 @@ export default class BasePage<T extends { default: { url?: string; header_title?
         const headerTitle = this.data.default.header_title || '';
         const pageTitleText = this.data.default.page_title_text || '';
 
-        await actions.navigateTo(this.page, process.env.URL + url, this.workerInfo);
+        await test.step(
+            this.workerInfo.project.name + ": Go to " + process.env.url + url,
+            async () => await this.page.goto(process.env.url + url, { ignoreHTTPSErrors: true })
+        );
         await this.page.waitForLoadState('domcontentloaded');
         const pageUrl = this.page.url();
 
@@ -30,10 +32,9 @@ export default class BasePage<T extends { default: { url?: string; header_title?
 
     async verifyPageTitle() {
         await this.page.waitForLoadState('domcontentloaded');
-        const titleText = await actions.getInnerText(
-            this.page,
-            this.locators.title,
-            this.workerInfo
+        const titleText = await test.step(
+            this.workerInfo.project.name + ": Get innertext from " + this.locators.title,
+            async () => await this.page.innerText(this.locators.title)
         );
         let match = this.data.default.page_title_text || '';
         expect(titleText.toString().toLowerCase()).toEqual(match.toString().toLowerCase());
@@ -42,7 +43,10 @@ export default class BasePage<T extends { default: { url?: string; header_title?
     async verifyDomTitle() {
         await this.page.waitForLoadState('domcontentloaded');
         const headerTitle = this.data.default.header_title || '';
-        await actions.verifyPageTitle(this.page, headerTitle, this.workerInfo);
+        await test.step(
+            this.workerInfo.project.name + ": Verify page title is '" + headerTitle + "'",
+            async () => await expect(this.page).toHaveTitle(headerTitle)
+        );
     }
 
     get pageData() {

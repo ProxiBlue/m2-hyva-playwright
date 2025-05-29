@@ -1,6 +1,5 @@
 import BasePage from "@common/pages/base.page";
 import { Page, TestInfo, expect, test } from "@playwright/test";
-import * as actions from "@utils/base/web/actions";
 import * as locators from "@hyva/locators/product.locator";
 import * as pageLocators from "@hyva/locators/page.locator";
 import * as productLocators from "@hyva/locators/product.locator";
@@ -14,6 +13,71 @@ let data: ProductData = { default: {} };
 export default class ProductPage extends BasePage {
     constructor(public page: Page, public workerInfo: TestInfo, public data: any, public locators: any) {
         super(page, workerInfo, data, locators);
+    }
+
+    /**
+     * Helper method to trigger the compare functionality for a product
+     * @param element The element handle for the compare button
+     * @returns Promise<void>
+     */
+    async triggerCompareButton(element: any): Promise<void> {
+        await this.page.evaluate((element) => {
+            if (!element) {
+                console.error('Compare button not found');
+                return;
+            }
+
+            // Get the product ID from the passed element or its closest ancestor
+            // First try to extract it from the click handler which is the most reliable on PDP pages
+            let productId = null;
+            const clickHandler = element.getAttribute('@click.prevent') || element.getAttribute('@click');
+            if (clickHandler && clickHandler.includes('addToCompare')) {
+                // Extract the product ID from the click handler
+                // Example: addToCompare(1796) -> 1796
+                const match = clickHandler.match(/addToCompare\((\d+)\)/);
+                if (match && match[1]) {
+                    productId = match[1];
+                }
+            }
+
+            // If we couldn't extract from click handler, try other methods
+            if (!productId) {
+                productId = element.getAttribute('data-product-id') ||
+                           element.closest('form')?.querySelector('input[name="product"]')?.value ||
+                           element.closest('[data-product-id]')?.getAttribute('data-product-id');
+            }
+
+            if (!productId) {
+                console.error('Product ID not found');
+                return;
+            }
+
+            // Approach 2: Find the Alpine.js component by x-data attribute pattern
+            // This is a fallback if the click handler approach doesn't work
+            const xDataAttr = element.getAttribute('x-data');
+            if (xDataAttr && (xDataAttr.includes('initCompare') || xDataAttr.includes('initCompareOnProductList') || xDataAttr.includes('initCompareOnProductView'))) {
+                // Extract the function name from x-data attribute
+                const functionName = xDataAttr.replace('()', '');
+
+                // Try to call the function directly
+                try {
+                    const initFunction = window[functionName];
+                    if (typeof initFunction === 'function') {
+                        const instance = initFunction();
+                        if (instance && typeof instance.addToCompare === 'function') {
+                            // Use the product ID we extracted earlier
+                            instance.addToCompare(parseInt(productId));
+                            return;
+                        }
+                    }
+                } catch (e) {
+                    console.error('Error calling Alpine.js function:', e);
+                }
+            }
+
+            // Fallback: Simple click as last resort
+            element.click();
+        }, element);
     }
 
     async verifyTitleAndImage() {
@@ -38,7 +102,7 @@ export default class ProductPage extends BasePage {
                 await this.page.waitForSelector(locators.productItemPrice);
 
                 const priceText: string = await this.page.locator(locators.productItemPrice).first().textContent() || '';
-                const currencySymbol = this.data.default.currency_symbol || '$';
+                const currencySymbol = process.env.currency_symbol || '$';
                 expect(priceText).toContain(currencySymbol);
 
                 const priceRegexp = new RegExp(currencySymbol.replace('$', '\\$') + '\\d+\\.\\d{2}');
@@ -285,7 +349,7 @@ export default class ProductPage extends BasePage {
                 await this.addToCart('2');
 
                 // Navigate to the cart page
-                await this.page.goto(process.env.URL + '/checkout/cart');
+                await this.page.goto(process.env.url + '/checkout/cart', { ignoreHTTPSErrors: true });
                 await this.page.waitForLoadState('domcontentloaded');
 
                 // Verify the cart quantity is also 2
@@ -301,13 +365,67 @@ export default class ProductPage extends BasePage {
         await test.step(
             this.workerInfo.project.name + ": Add product to cart ",
             async () => {
-                await actions.fill(this.page, locators.product_qty_input, qty, this.workerInfo);
-                await actions.clickElement(this.page, locators.product_add_to_cart_button, this.workerInfo);
+                await this.page.fill(locators.product_qty_input, qty);
+                await this.page.locator(locators.product_add_to_cart_button).click();
                 await this.page.waitForSelector(pageLocators.message_success)
                 await this.page.waitForLoadState('domcontentloaded');
-                await actions.verifyElementIsVisible(this.page, pageLocators.message_success, this.workerInfo);
+                expect(await this.page.locator(pageLocators.message_success).isVisible(), "Verify element is visible " + pageLocators.message_success).toBe(true);
                 const productName = this.data.default.name;
                 expect(await this.page.locator(pageLocators.message_success).textContent()).toContain(productName);
+            });
+    }
+
+    /**
+     * Add the current product to the compare list and verify it appears in the compare page
+     */
+    async addToCompare(): Promise<void> {
+        await test.step(
+            this.workerInfo.project.name + ": Add to compare ",
+            async () => {
+                // Get the product name for verification
+                const productName = await this.page.locator(locators.title).textContent();
+
+                // Find the add to compare button with a more specific selector
+                // Use the product-info-main container to target only the button on the product page
+                const addToCompareButton = this.page.getByRole('button', { name: 'Add to Compare', exact: true }).first();
+
+                // Get the element handle for JavaScript evaluation
+                const addToCompareElement = await addToCompareButton.elementHandle();
+
+                // Use the helper method to trigger the compare functionality
+                await this.triggerCompareButton(addToCompareElement);
+
+                // Wait for the page to update
+                await this.page.waitForLoadState('networkidle');
+                await this.page.waitForLoadState('domcontentloaded');
+
+                // Verify success message
+                const successMessage = await this.page.locator(pageLocators.message_success);
+                const successMessageText = await successMessage.textContent();
+                expect(successMessageText).toContain(productName ? productName.trim() : "Product name not populated");
+
+                // Close the success message
+                await successMessage.getByLabel(pageLocators.messageClose).click({force: true});
+                await this.page.waitForLoadState('networkidle');
+                await this.page.waitForLoadState('domcontentloaded');
+
+                // Verify the compare link shows "1"
+                expect(await this.page.locator(productLocators.compareLink).textContent()).toContain("1");
+                await expect(this.page.locator(productLocators.compareLink)).toBeVisible();
+
+                // Click on the compare link to navigate to the compare page
+                await this.page.locator(productLocators.compareLink).click();
+                await this.page.waitForLoadState('networkidle');
+                await this.page.waitForLoadState('domcontentloaded');
+
+                // Verify we're on the compare page
+                await this.page.waitForSelector(pageLocators.comapre_page_title);
+                expect(await this.page.locator(pageLocators.comapre_page_title).textContent()).toContain(this.data?.default?.compare_products_title || "Compare Products");
+
+                // Verify the compare table is visible and contains the product
+                await expect(this.page.locator(pageLocators.compare_table)).toBeVisible();
+                const compareTableText = await this.page.locator(pageLocators.compare_table).textContent();
+                expect(compareTableText).toContain(productName ? productName.trim() : "Product name not populated");
             });
     }
 

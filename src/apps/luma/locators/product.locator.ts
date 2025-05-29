@@ -15,6 +15,6 @@ export const productItemPriceNew = ".new-price>>.price";
 export const product_qty_input = "[name='qty']";
 export const product_add_to_cart_button = "#product-addtocart-button"
 
-export const addToCompare = "Add to Compare";
+export const addToCompare = "button[aria-label*='Add to Compare']";
 
 export const compareLink = "#compare-link";

@@ -56,7 +56,7 @@ export const navigateTo = async (
 ) =>
     await test.step(
         workerInfo.project.name + ": Go to " + url,
-        async () => await page.goto(url)
+        async () => await page.goto(url, { ignoreHTTPSErrors: true })
     );
 
 export const verifyPageTitle = async (
@@ -329,4 +329,3 @@ export const waitForLoadState = async (
 export const parsePrice = function (price: string): number {
     return parseFloat(price.replace(/[^0-9-.]+/g, ""));
 }
-

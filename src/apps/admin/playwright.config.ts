@@ -22,6 +22,7 @@ const config: PlaywrightTestConfig = {
         colorScheme: "dark",
         launchOptions: {
             slowMo: 500,
+            ignoreHTTPSErrors: true,
         },
     },
     reporter: [
@@ -46,6 +47,7 @@ const config: PlaywrightTestConfig = {
             use: {
                 ...devices["Desktop Chrome"],
                 viewport: { width: 1280, height: 720 },
+                ignoreHTTPSErrors: true,
             },
         },
         {
@@ -53,6 +55,7 @@ const config: PlaywrightTestConfig = {
             use: {
                 ...devices["Desktop Firefox"],
                 viewport: { width: 1280, height: 720 },
+                ignoreHTTPSErrors: true,
             },
         },
         {
@@ -60,6 +63,7 @@ const config: PlaywrightTestConfig = {
             use: {
                 ...devices["Desktop Safari"],
                 viewport: { width: 1280, height: 720 },
+                ignoreHTTPSErrors: true,
             },
         }
     ],

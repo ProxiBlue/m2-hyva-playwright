@@ -1,8 +1,9 @@
 import BasePage from "@common/pages/base.page";
-import {Page, TestInfo, expect, test} from "@playwright/test";
-import * as actions from "@utils/base/web/actions";
+import {Page, TestInfo, test} from "@playwright/test";
+import { expect } from "../../../../playwright.config";
 import * as cartLocators from "@hyva/locators/cart.locator";
 import { CartData } from "@hyva/interfaces/CartData";
+import { parsePrice } from "@utils/functions/price";
 
 // dynamically load the test JSON data based on the APP_NAME env variable
 // and if the file exists in APP path, and if not default to the base data
@@ -46,12 +47,11 @@ export default class CartPage extends BasePage<CartData> {
             this.workerInfo.project.name + ": Check Quantity of row " + itemRowNum + ' has expected qty of ' + expectedQuantity,
             async () => {
                 const itemRow = cartLocators.cart_table + '>>' + cartLocators.cart_table_body + ">>nth=" + itemRowNum + '>>' + cartLocators.cart_row_item_info
-                await actions.verifyElementExists(this.page, itemRow, this.workerInfo);
-                await actions.getInnerText(this.page, itemRow + '>>' + cartLocators.cart_row_subtotal, this.workerInfo).then(async (beforeSubTotal) => {
-                    const qtyInput = itemRow + '>>' + cartLocators.cart_row_qty_input;
-                    const qtyValue = await actions.getElementValue(this.page, qtyInput, this.workerInfo);
-                    expect(qtyValue).toEqual(expectedQuantity.toString());
-                });
+                await expect(this.page.locator(itemRow), "Verify element exists " + itemRow).toHaveCount(1);
+                const beforeSubTotal = await this.page.innerText(itemRow + '>>' + cartLocators.cart_row_subtotal);
+                const qtyInput = itemRow + '>>' + cartLocators.cart_row_qty_input;
+                const qtyValue = await this.page.$eval(qtyInput, (element: HTMLInputElement) => element.value);
+                expect(qtyValue, "Check quantity value matches expected").toEqual(expectedQuantity.toString());
             });
 
     }
@@ -61,15 +61,14 @@ export default class CartPage extends BasePage<CartData> {
             this.workerInfo.project.name + ": Change itemrow " + itemRowNum + " quantity to " + newQuantity,
             async () => {
                 const itemRow = cartLocators.cart_table + '>>' + cartLocators.cart_table_body + ">>nth=" + itemRowNum + '>>' + cartLocators.cart_row_item_info
-                await actions.verifyElementExists(this.page, itemRow, this.workerInfo);
-                await actions.getInnerText(this.page, itemRow + '>>' + cartLocators.cart_row_subtotal, this.workerInfo).then(async (beforeSubTotal) => {
-                    const qtyInput = itemRow + '>>' + cartLocators.cart_row_qty_input;
-                    await actions.fill(this.page, qtyInput, '2', this.workerInfo);
-                    await this.page.locator('.action.update').click();
-                    await this.page.waitForURL("**/checkout/cart");
-                    await this.page.waitForLoadState('domcontentloaded');
-                    await this.checkQuantity(itemRowNum, newQuantity);
-                });
+                await expect(this.page.locator(itemRow), "Verify element exists " + itemRow).toHaveCount(1);
+                const beforeSubTotal = await this.page.innerText(itemRow + '>>' + cartLocators.cart_row_subtotal);
+                const qtyInput = itemRow + '>>' + cartLocators.cart_row_qty_input;
+                await this.page.fill(qtyInput, newQuantity.toString());
+                await this.page.locator('.action.update').click();
+                await this.page.waitForURL("**/checkout/cart");
+                await this.page.waitForLoadState('domcontentloaded');
+                await this.checkQuantity(itemRowNum, newQuantity);
             })
     }
 
@@ -79,7 +78,7 @@ export default class CartPage extends BasePage<CartData> {
         const itemCount = await this.page.locator(cartLocators.cart_row_item_info).count();
         for (let i = 0; i < itemCount; i++) {
             const priceText = await this.getItemSubTotal(i);
-            total += actions.parsePrice(priceText);
+            total += parsePrice(priceText);
         }
         return total;
 
@@ -90,22 +89,21 @@ export default class CartPage extends BasePage<CartData> {
             this.workerInfo.project.name + ": Delete Item ",
             async () => {
                 const itemRow = cartLocators.cart_table + '>>' + cartLocators.cart_table_body + ">>nth=" + itemRowNum;
-                await actions.verifyElementExists(this.page, itemRow, this.workerInfo);
+                await expect(this.page.locator(itemRow), "Verify element exists " + itemRow).toHaveCount(1);
                 const deleteButton = itemRow + '>>' + cartLocators.cart_item_row_delete;
-                await actions.verifyElementExists(this.page, deleteButton, this.workerInfo);
-                await actions.clickElement(this.page, deleteButton, this.workerInfo).then(async () => {
-                    await this.page.waitForLoadState('networkidle');
-                    await this.page.waitForLoadState('domcontentloaded');
-                    await actions.verifyElementIsVisible(this.page, cartLocators.cart_empty, this.workerInfo);
-                });
+                await expect(this.page.locator(deleteButton), "Verify element exists " + deleteButton).toHaveCount(1);
+                await this.page.locator(deleteButton).click();
+                await this.page.waitForLoadState('networkidle');
+                await this.page.waitForLoadState('domcontentloaded');
+                expect(await this.page.locator(cartLocators.cart_empty).isVisible(), "Verify element is visible " + cartLocators.cart_empty).toBe(true);
             })
     }
 
     async getItemSubTotal(itemRowNum: number) {
         await this.page.waitForLoadState('domcontentloaded')
         const itemRow = cartLocators.cart_table + '>>' + cartLocators.cart_table_body + ">>nth=" + itemRowNum;
-        await actions.verifyElementExists(this.page, itemRow, this.workerInfo);
-        let subTotal = await actions.getInnerText(this.page, itemRow + '>>' + cartLocators.cart_row_subtotal, this.workerInfo);
+        await expect(this.page.locator(itemRow), "Verify element exists " + itemRow).toHaveCount(1);
+        let subTotal = await this.page.innerText(itemRow + '>>' + cartLocators.cart_row_subtotal);
         // mobiles (and seems safari) get the label string included, so strip it if it exists
         // I am sure there is s smarter regex way, but i am not feeling smart right now ;)
         const subtotalLabel = data.default.subtotal_label || "";
@@ -129,7 +127,7 @@ export default class CartPage extends BasePage<CartData> {
                         value = value.replace(subtotalLabel + ':', '');
                         value = value.replace(subtotalLabel + ' ', '');
                         value = value.replace(subtotalLabel, '');
-                        expect(actions.parsePrice(value)).toEqual(actions.parsePrice(total));
+                        expect(parsePrice(value), "Check subtotal matches expected total").toEqual(parsePrice(total));
                     }
                 });
             });
@@ -140,7 +138,7 @@ export default class CartPage extends BasePage<CartData> {
             this.workerInfo.project.name + ": Check Shipping values matches ",
             async () => {
                 await this.page.locator('#cart-totals').getByText(total).first().textContent().then((value) => {
-                    expect(value).not.toBe(null);
+                    expect(value, "Check shipping value is not null").not.toBe(null);
                     if (value) {
                         // mobiles (and seems safari) get the label string included, so strip it if it exists
                         // I am sure there is s smarter regex way, but i am not feeling smart right now ;)
@@ -148,7 +146,7 @@ export default class CartPage extends BasePage<CartData> {
                         value = value.replace(label + ':', '');
                         value = value.replace(label + ' ', '');
                         value = value.replace(label, '');
-                        expect(actions.parsePrice(value)).toEqual(actions.parsePrice(total));
+                        expect(parsePrice(value), "Check shipping price matches expected total").toEqual(parsePrice(total));
                     }
                 });
             });
@@ -165,14 +163,14 @@ export default class CartPage extends BasePage<CartData> {
                 await this.page.locator('#cart-totals').getByText(total).nth(1).textContent().then((value) => {
                     // mobiles (and seems safari) get the label string included, so strip it if it exists
                     // ditto!
-                    expect(value).not.toBe(null);
+                    expect(value, "Check grand total value is not null").not.toBe(null);
                     if (value) {
                         const grandtotalLabel = data.default.grandtotal_label || '';
                         value = value.replace(grandtotalLabel + ': ', '');
                         value = value.replace(grandtotalLabel + ':', '');
                         value = value.replace(grandtotalLabel + ' ', '');
                         value = value.replace(grandtotalLabel, '');
-                        expect(actions.parsePrice(value)).toEqual(actions.parsePrice(total));
+                        expect(parsePrice(value), "Check grand total price matches expected total").toEqual(parsePrice(total));
                     }
                 });
             })
@@ -182,15 +180,14 @@ export default class CartPage extends BasePage<CartData> {
         await test.step(
             this.workerInfo.project.name + ": Clear the cart ",
             async () => {
-                await actions.verifyElementExists(this.page, cartLocators.cart_clear, this.workerInfo);
-                await actions.clickElement(this.page, cartLocators.cart_clear, this.workerInfo).then(async () => {
-                    await this.page.waitForLoadState('networkidle');
-                    await this.page.waitForLoadState('domcontentloaded');
-                    await actions.verifyElementIsVisible(this.page, "[aria-label='Are you sure?']", this.workerInfo);
-                    await actions.clickElement(this.page, "[aria-label='Are you sure?']>>.btn-primary", this.workerInfo)
-                    await this.page.waitForLoadState('networkidle');
-                    await this.page.waitForLoadState('domcontentloaded');
-                });
+                await expect(this.page.locator(cartLocators.cart_clear), "Verify element exists " + cartLocators.cart_clear).toHaveCount(1);
+                await this.page.locator(cartLocators.cart_clear).click();
+                await this.page.waitForLoadState('networkidle');
+                await this.page.waitForLoadState('domcontentloaded');
+                expect(await this.page.locator("[aria-label='Are you sure?']").isVisible(), "Verify element is visible [aria-label='Are you sure?']").toBe(true);
+                await this.page.locator("[aria-label='Are you sure?']>>.btn-primary").click();
+                await this.page.waitForLoadState('networkidle');
+                await this.page.waitForLoadState('domcontentloaded');
             });
     }
 
@@ -198,27 +195,22 @@ export default class CartPage extends BasePage<CartData> {
         await test.step(
             this.workerInfo.project.name + ": Cancel Clear cart ",
             async () => {
-                await actions.verifyElementExists(this.page, cartLocators.cart_clear, this.workerInfo);
-                await actions.clickElement(this.page, cartLocators.cart_clear, this.workerInfo).then(async () => {
-                    await this.page.waitForLoadState('networkidle');
-                    await this.page.waitForLoadState('domcontentloaded');
-                    await actions.verifyElementIsVisible(this.page, "[aria-label='Are you sure?']", this.workerInfo);
-                    await actions.clickElement(this.page, "[aria-label='Are you sure?']>>.btn>>nth=0", this.workerInfo)
-                    await this.page.waitForLoadState('networkidle');
-                    await this.page.waitForLoadState('domcontentloaded');
-                });
+                await expect(this.page.locator(cartLocators.cart_clear), "Verify element exists " + cartLocators.cart_clear).toHaveCount(1);
+                await this.page.locator(cartLocators.cart_clear).click();
+                await this.page.waitForLoadState('networkidle');
+                await this.page.waitForLoadState('domcontentloaded');
+                expect(await this.page.locator("[aria-label='Are you sure?']").isVisible(), "Verify element is visible [aria-label='Are you sure?']").toBe(true);
+                await this.page.locator("[aria-label='Are you sure?']>>.btn>>nth=0").click();
+                await this.page.waitForLoadState('networkidle');
+                await this.page.waitForLoadState('domcontentloaded');
             });
     }
 
     async clickProceedToCheckout() {
-        await test.step(
-            this.workerInfo.project.name + ": Proceed to checkout ",
-            async () => {
-                await this.page.locator(cartLocators.checkout_button).click();
-                await this.page.waitForLoadState("domcontentloaded");
-                //await this.page.waitForSelector(cartLocators.shipping_label);
-                //expect(this.page.locator(cartLocators.title)).toContainText(data.default.header_title);
-            });
+        await this.page.locator(cartLocators.checkout_button).click();
+        await this.page.waitForLoadState("domcontentloaded");
+        //await this.page.waitForSelector(cartLocators.shipping_label);
+        //expect(this.page.locator(cartLocators.title)).toContainText(data.default.header_title);
     }
 
 }

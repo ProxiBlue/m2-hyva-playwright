@@ -1,10 +1,9 @@
 {
   "default": {
-    "configurable_url": "default/hera-pullover-hoodie.html",
-    "name": "Hera Pullover Hoodie",
-    "header_title": "Hera Pullover Hoodie",
-    "page_title_text": "Hera Pullover Hoodie",
-    "currency_symbol": "€",
+    "configurable_url": "/antonia-racer-tank.html",
+    "name": "Antonia Racer Tank",
+    "header_title": "Antonia Racer Tank",
+    "page_title_text": "Antonia Racer Tank",
     "wishlist_error": "You must login or register to add items to your wishlist",
     "wishlist_success": "has been added to your Wish List"
   }

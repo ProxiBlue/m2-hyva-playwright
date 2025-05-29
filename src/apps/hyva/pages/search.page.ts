@@ -1,6 +1,5 @@
 import BasePage from "@common/pages/base.page";
-import {Page, TestInfo, expect} from "@playwright/test";
-import * as actions from "@utils/base/web/actions";
+import {Page, TestInfo, expect, test} from "@playwright/test";
 import * as locators from "@hyva/locators/search.locator";
 import * as pageLocators from "@hyva/locators/page.locator";
 import * as productLocators from "@hyva/locators/product.locator";
@@ -33,11 +32,6 @@ export default class SearchPage extends BasePage<SearchData> {
         super(page, workerInfo, data, locators); // pass the data and locators to the base page class
     }
 
-    async navigateTo() {
-        await actions.navigateTo(this.page, process.env.URL || '', this.workerInfo);
-        await this.page.click(locators.headerSearchIcon);
-    }
-
     async search(searchTerm: string, isMobile: boolean = false) {
         if (isMobile) {
             await this.page.click(locators.headerSearchIcon);
@@ -57,7 +51,10 @@ export default class SearchPage extends BasePage<SearchData> {
         await this.page.waitForSelector(pageLocators.pageTitle);
         const mainHeadingText = await this.page.locator(pageLocators.pageTitle).textContent();
         expect(mainHeadingText).toContain(`Search results for: '${this.data.default.product_category}'`);
-        await actions.verifyElementIsVisible(this.page, productLocators.productGrid, this.workerInfo);
+        await test.step(
+            this.workerInfo.project.name + ": Verify element is visible " + productLocators.productGrid,
+            async () => expect(await this.page.locator(productLocators.productGrid).isVisible()).toBe(true)
+        );
         await expect.poll(async () => this.page.locator(productLocators.productGridItem).count()).toBeGreaterThan(0);
     }
 
@@ -71,11 +68,14 @@ export default class SearchPage extends BasePage<SearchData> {
         expect(noResultsText).toContain('Your search returned no results.');
     }
 
-    async checkSearchSuggestions(isMobile: boolean = false) {
+    async checkSearchSuggestions(isMobile: boolean = false, countMatch: number = 3) {
         await this.page.waitForSelector(locators.headerSearchField);
         await this.page.fill(locators.headerSearchField, this.data.default.get_hint || '');
-        await this.page.waitForSelector(locators.searchSuggestions);
-        const suggestionText = await this.page.locator(locators.searchSuggestions).textContent();
-        expect(suggestionText).toContain(this.data.default.hint_result);
+        //put a 3s delay here
+        await this.page.waitForTimeout(3000);
+        const results = this.page.locator(locators.mini_search);
+        await expect(results).toHaveCount(countMatch);
+        const lookupText = await this.page.locator(locators.mini_search).nth(1).textContent();
+        expect(lookupText).toContain(this.data.default.hint_result);
     }
 }

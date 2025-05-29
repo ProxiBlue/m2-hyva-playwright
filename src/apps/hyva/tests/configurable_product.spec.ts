@@ -34,7 +34,7 @@ describe("Configurable products test suite", () => {
         await configurableProductPage.addToCart('2');
 
         // Navigate to the cart page
-        await configurableProductPage.page.goto(process.env.URL + '/checkout/cart');
+        await configurableProductPage.page.goto(process.env.url + '/checkout/cart', { ignoreHTTPSErrors: true });
         await configurableProductPage.page.waitForLoadState('domcontentloaded');
 
         // Verify the cart quantity is also 2
@@ -95,5 +95,14 @@ describe("Configurable products test suite", () => {
 
         // Logout after test
         await customerPage.logout();
+    });
+
+    test("Can add configurable product to compare and verify on compare page", async ({configurableProductPage}, testInfo) => {
+        // Select product attributes
+        await configurableProductPage.selectProductSwatch();
+        await configurableProductPage.page.waitForLoadState('domcontentloaded');
+
+        // Add the product to compare
+        await configurableProductPage.addToCompare();
     });
 });
