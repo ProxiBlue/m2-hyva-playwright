@@ -1,6 +1,5 @@
 import BasePage from "@common/pages/base.page";
 import {Page, TestInfo, expect, test} from "@playwright/test";
-import * as actions from "@utils/base/web/actions";
 import * as locators from "@admin/locators/admin.locator";
 import { AdminData } from "@admin/interfaces/AdminData";
 import { loadJsonData } from "@utils/functions/file";
@@ -21,8 +20,11 @@ export default class AdminPage extends BasePage {
     }
 
     async navigateTo() {
-        // @ts-ignore
-        await actions.navigateTo(this.page, process.env.URL + process.env.admin_path, this.workerInfo);
+        await test.step(
+            this.workerInfo.project.name + ": Go to " + process.env.url + process.env.admin_path,
+            async () => await this.page.goto(process.env.url + process.env.admin_path, { ignoreHTTPSErrors: true })
+        );
+        await this.page.waitForLoadState('domcontentloaded');
     }
 
     async login() {

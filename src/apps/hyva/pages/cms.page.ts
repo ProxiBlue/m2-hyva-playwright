@@ -1,6 +1,5 @@
 import BasePage from "@common/pages/base.page";
-import {Page, TestInfo, expect} from "@playwright/test";
-import * as actions from "@utils/base/web/actions";
+import {Page, TestInfo, expect, test} from "@playwright/test";
 import * as locators from "../locators/cms.locator";
 import { CMSData } from "@hyva/interfaces/CMSData";
 import { loadJsonData } from "@utils/functions/file";
@@ -30,11 +29,21 @@ export default class CMSPage extends BasePage<CMSData> {
     }
 
     async navigateTo() {
-        await actions.navigateTo(this.page, process.env.URL || '', this.workerInfo);
+        await test.step(
+            this.workerInfo.project.name + ": Go to " + (process.env.url || ''),
+            //@ts-ignore
+            async () => await this.page.goto(process.env.url || '', { ignoreHTTPSErrors: true })
+        );
+        await this.page.waitForLoadState('domcontentloaded');
     }
 
     async navigateToWrongPage() {
-        await actions.navigateTo(this.page, process.env.URL + (this.data.default.wrong_page_url || '/404'), this.workerInfo);
+        // @ts-ignore
+        await test.step(
+            this.workerInfo.project.name + ": Go to " + process.env.url + (this.data.default.wrong_page_url || '/404'),
+            //@ts-ignore
+            async () => await this.page.goto(process.env.url + (this.data.default.wrong_page_url || '/404'), { ignoreHTTPSErrors: true })
+        );
         await this.page.waitForLoadState('domcontentloaded');
     }
 

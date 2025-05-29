@@ -1,6 +1,5 @@
 import ProductPage from "@hyva/pages/product.page";
 import { Page, TestInfo, expect, test } from "@playwright/test";
-import * as actions from "@utils/base/web/actions";
 import * as locators from "@hyva/locators/product.locator";
 import * as cartLocators from "@hyva/locators/cart.locator";
 import * as configLocators from "@hyva/locators/configurable_product.locator";
@@ -51,7 +50,10 @@ export default class ConfigurableProductPage extends ProductPage {
 
     async navigateTo() {
         const url = data.default.configurable_url || '';
-        await actions.navigateTo(this.page, process.env.URL + url, this.workerInfo);
+        await test.step(
+            this.workerInfo.project.name + ": Go to " + process.env.url + url,
+            async () => await this.page.goto(process.env.url + url, { ignoreHTTPSErrors: true })
+        );
         await this.page.waitForLoadState('domcontentloaded');
     }
 
@@ -276,7 +278,7 @@ export default class ConfigurableProductPage extends ProductPage {
             this.workerInfo.project.name + ": Verify selected options in cart",
             async () => {
                 // Navigate to the cart page
-                await this.page.goto(process.env.URL + '/checkout/cart');
+                await this.page.goto(process.env.url + '/checkout/cart', { ignoreHTTPSErrors: true });
                 await this.page.waitForLoadState('domcontentloaded');
 
                 // Get the item info element

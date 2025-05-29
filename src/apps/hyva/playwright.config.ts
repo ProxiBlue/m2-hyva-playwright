@@ -21,7 +21,7 @@ const config: PlaywrightTestConfig = {
         acceptDownloads: true,
         colorScheme: "dark",
         launchOptions: {
-            slowMo: 500,
+            slowMo: 500
         },
     },
     reporter: [
@@ -45,21 +45,24 @@ const config: PlaywrightTestConfig = {
             name: "chromium",
             use: {
                 ...devices["Desktop Chrome"],
-                viewport: { width: 1280, height: 720 },
+                viewport: { width: 1280, height: 1400 },
+                ignoreHTTPSErrors: true,
             },
         },
         {
             name: "firefox",
             use: {
                 ...devices["Desktop Firefox"],
-                viewport: { width: 1280, height: 720 },
+                viewport: { width: 1280, height: 1400 },
+                ignoreHTTPSErrors: true,
             },
         },
         {
             name: "webkit",
             use: {
                 ...devices["Desktop Safari"],
-                viewport: { width: 1280, height: 720 },
+                viewport: { width: 1280, height: 1400 },
+                ignoreHTTPSErrors: true,
             },
         }
     ],

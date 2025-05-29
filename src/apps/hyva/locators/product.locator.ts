@@ -19,7 +19,7 @@ export const product_add_to_cart_button = "#product-addtocart-button";
 export const product_gallery_image = "#gallery img";
 export const breadcrumbs_items = ".breadcrumbs ol li";
 
-export const addToCompare = "Add to Compare";
+export const addToCompare = "button[aria-label*='Add to Compare']";
 
 export const compareLink = "#compare-link";
 

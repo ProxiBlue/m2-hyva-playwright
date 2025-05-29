@@ -1,4 +1,4 @@
-import { FullConfig } from "@playwright/test";
+import { FullConfig, chromium } from "@playwright/test";
 import { removeFilesInDirectory } from "@utils/functions/file";
 import fs from "fs";
 import path from "path";
@@ -9,6 +9,12 @@ export const projects = async (config: any) => {
 };
 
 const globalSetup = async (config: FullConfig) => {
+  // Set up browser with ignoreHTTPSErrors
+  const browser = await chromium.launch({
+    ignoreHTTPSErrors: true
+  });
+  await browser.close();
+
   const reportPath = path.join(
     __dirname,
     "src",

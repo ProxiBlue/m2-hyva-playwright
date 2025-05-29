@@ -1,6 +1,5 @@
 import BasePage from "@common/pages/base.page";
 import {Page, TestInfo, expect, test} from "@playwright/test";
-import * as actions from "@utils/base/web/actions";
 import * as locators from "@luma/locators/product.locator";
 import * as pageLocators from "@luma/locators/page.locator";
 import { loadJsonData } from "@utils/functions/file";
@@ -30,10 +29,9 @@ export default class SimpleProductPage extends BasePage {
     }
 
     async verifyPageTitle() {
-        const titleText = await actions.getInnerText(
-            this.page,
-            this.locators.title,
-            this.workerInfo
+        const titleText = await test.step(
+            this.workerInfo.project.name + ": Get innertext from " + this.locators.title,
+            async () => await this.page.innerText(this.locators.title)
         );
         const productName = data.default.name;
         await expect(titleText).toEqual(productName);
@@ -41,28 +39,43 @@ export default class SimpleProductPage extends BasePage {
 
     async verifyDomTitle() {
         const productName = data.default.name || "Default Product Name";
-        await actions.verifyPageTitle(this.page, productName, this.workerInfo);
+        await test.step(
+            this.workerInfo.project.name + ": Verify page title is '" + productName + "'",
+            async () => await expect(this.page).toHaveTitle(productName)
+        );
     }
 
     async addToCart(qty : string = '1'): Promise<void> {
         await test.step(
             this.workerInfo.project.name + ": Add product to cart ",
             async () => {
-                await actions.fill(this.page, locators.product_qty_input, qty, this.workerInfo);
-                await actions.clickElement(this.page, locators.product_add_to_cart_button, this.workerInfo);
+                await test.step(
+                    this.workerInfo.project.name + ": Enter text: " + qty,
+                    async () => await this.page.fill(locators.product_qty_input, qty)
+                );
+                await test.step(
+                    this.workerInfo.project.name + ": Click element " + locators.product_add_to_cart_button,
+                    async () => await this.page.locator(locators.product_add_to_cart_button).click()
+                );
                 await this.page.waitForSelector('.message.success')
                 await this.page.waitForLoadState('domcontentloaded');
-                await actions.verifyElementIsVisible(this.page, pageLocators.message_success, this.workerInfo);
+                await test.step(
+                    this.workerInfo.project.name + ": Verify element is visible " + pageLocators.message_success,
+                    async () => expect(await this.page.locator(pageLocators.message_success).isVisible()).toBe(true)
+                );
                 const productName = data.default.name;
                 expect(await this.page.locator(pageLocators.message_success).textContent()).toContain(productName);
             });
     }
 
     async getProductPrice() {
-        await test.step(
+        return await test.step(
             this.workerInfo.project.name + ": Get product price ",
             async () => {
-                const productPrice = await actions.getInnerText(this.page, locators.productItemPriceRegular, this.workerInfo);
+                const productPrice = await test.step(
+                    this.workerInfo.project.name + ": Get innertext from " + locators.productItemPriceRegular,
+                    async () => await this.page.innerText(locators.productItemPriceRegular)
+                );
                 return productPrice;
             });
     }

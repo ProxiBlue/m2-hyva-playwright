@@ -49,4 +49,9 @@ describe("Simple Product test suite", () => {
     test("Can increment the product quantity on the pdp", async ({ simpleProductPage }, testInfo) => {
         await simpleProductPage.incrementProductQuantity();
     });
+
+    test("Can add simple product to compare and verify on compare page", async ({ simpleProductPage }, testInfo) => {
+        // Add the product to compare
+        await simpleProductPage.addToCompare();
+    });
 });

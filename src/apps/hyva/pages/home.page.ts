@@ -1,6 +1,5 @@
 import BasePage from "@common/pages/base.page";
 import {Page, test, TestInfo, expect} from "@playwright/test";
-import * as actions from "@utils/base/web/actions";
 import * as searchSelectors from "@hyva/locators/search.locator";
 import * as product from "@hyva/locators/product.locator";
 import * as pageLocators from "@hyva/locators/page.locator";
@@ -41,7 +40,10 @@ export default class HomePage extends BasePage<HomeData> {
     }
 
     async navigateTo() {
-        await actions.navigateTo(this.page, process.env.URL || '', this.workerInfo);
+        //@ts-ignore
+        await this.page.goto(process.env.url || '', { ignoreHTTPSErrors: true });
+        await this.page.waitForLoadState('domcontentloaded');
+        await this.page.waitForLoadState('networkidle');
         const url = this.page.url();
     }
 
@@ -63,7 +65,7 @@ export default class HomePage extends BasePage<HomeData> {
                 await this.page.waitForSelector(pageLocators.pageTitle);
                 const mainHeadingText = await this.page.$eval(pageLocators.pageTitle, (el) => el.textContent);
                 expect(mainHeadingText).toContain(this.data.default.search_term);
-                await actions.verifyElementIsVisible(this.page, product.productGrid, this.workerInfo);
+                expect(await this.page.locator(product.productGrid).isVisible(), "Verify element is visible " + product.productGrid).toBe(true);
                 await expect.poll(async () => this.page.locator(product.productGridItem).count()).toBeGreaterThan(0);
             });
     }

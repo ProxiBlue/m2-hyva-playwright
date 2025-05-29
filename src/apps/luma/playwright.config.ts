@@ -22,6 +22,7 @@ const config: PlaywrightTestConfig = {
         colorScheme: "dark",
         launchOptions: {
             slowMo: 500,
+            ignoreHTTPSErrors: true,
         },
     },
     reporter: [
@@ -43,15 +44,15 @@ const config: PlaywrightTestConfig = {
     projects: [
         {
             name: "chromium",
-            use: {...devices["Desktop Chrome"] },
+            use: {...devices["Desktop Chrome"], ignoreHTTPSErrors: true },
         },
         {
             name: "firefox",
-            use: { ...devices["Desktop Firefox"] },
+            use: { ...devices["Desktop Firefox"], ignoreHTTPSErrors: true },
         },
         {
             name: "webkit",
-            use: { ...devices["Desktop Safari"] },
+            use: { ...devices["Desktop Safari"], ignoreHTTPSErrors: true },
         }
     ],
 };

@@ -1,6 +1,5 @@
 {
-  "env": {
-    "dev": { "url": "https://demo.hyva.io/" }
-  },
-  "faker_locale": "en_US"
+  "url": "https://hyva.ddev.site/",
+  "faker_locale": "en_US",
+  "currency_symbol": "₹"
 }

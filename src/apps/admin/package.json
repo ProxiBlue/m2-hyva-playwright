@@ -4,10 +4,10 @@
   "private": true,
   "license": "MIT",
   "scripts": {
-    "test": "APP_NAME=admin NODE_ENV=dev npx playwright test",
-    "test:ui": "APP_NAME=admin NODE_ENV=dev npx playwright test --ui",
-    "test:display": "APP_NAME=admin NODE_ENV=dev npx playwright test --headed --workers=1",
-    "test:debug": "APP_NAME=admin NODE_ENV=dev PWDEBUG=1 npx playwright test",
+    "test": "NODE_TLS_REJECT_UNAUTHORIZED=0 APP_NAME=admin NODE_ENV=dev npx playwright test",
+    "test:ui": "NODE_TLS_REJECT_UNAUTHORIZED=0 APP_NAME=admin NODE_ENV=dev npx playwright test --ui",
+    "test:display": "NODE_TLS_REJECT_UNAUTHORIZED=0 APP_NAME=admin NODE_ENV=dev npx playwright test --headed --workers=1",
+    "test:debug": "NODE_TLS_REJECT_UNAUTHORIZED=0 APP_NAME=admin NODE_ENV=dev PWDEBUG=1 npx playwright test",
     "report": "PLAYWRIGHT_HTML_HOST=pps-mageos110.ddev.site npx playwright show-report reports/playwright-report"
   }
 }

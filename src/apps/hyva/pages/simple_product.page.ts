@@ -1,6 +1,5 @@
 import ProductPage from "@hyva/pages/product.page";
 import {Page, TestInfo, expect, test} from "@playwright/test";
-import * as actions from "@utils/base/web/actions";
 import * as locators from "@hyva/locators/product.locator";
 import { SimpleProductData } from "@hyva/interfaces/SimpleProductData";
 import { loadJsonData } from "@utils/functions/file";
@@ -24,7 +23,10 @@ export default class SimpleProductPage extends ProductPage {
     }
 
     async getProductPrice() {
-        const productPrice = await actions.getInnerText(this.page, locators.productItemPriceRegular, this.workerInfo);
+        const productPrice = await test.step(
+            this.workerInfo.project.name + ": Get innertext from " + locators.productItemPriceRegular,
+            async () => await this.page.innerText(locators.productItemPriceRegular)
+        );
         return productPrice;
     }
 

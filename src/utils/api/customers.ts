@@ -6,7 +6,7 @@ export class customers {
 
     constructor(request: object) {
         this.request = request;
-        this.baseUrl = process.env.URL
+        this.baseUrl = process.env.url
     }
 
     async checkEmailCanRegister(email: string) {

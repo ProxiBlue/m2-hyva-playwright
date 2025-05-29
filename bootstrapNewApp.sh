@@ -22,6 +22,7 @@ mkdir fixtures &&
 mkdir locators &&
 mkdir pages &&
 mkdir tests &&
+mkdir interfaces &&
 printf "reports\ntest-results\nconfig.private.json" > .gitignore &&
 cp ../../../bootstrap_files/config.json ./ &&
 cp ../../../bootstrap_files/config.private.json ./ &&

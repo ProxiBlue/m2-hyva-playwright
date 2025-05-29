@@ -1,6 +1,5 @@
 import BasePage from "@common/pages/base.page";
 import {Page, TestInfo, expect, test} from "@playwright/test";
-import * as actions from "@utils/base/web/actions";
 import * as locators from "@hyva/locators/sidecart.locator";
 import { loadJsonData } from "@utils/functions/file";
 
@@ -32,7 +31,10 @@ export default class SideCartPage extends BasePage {
             this.workerInfo.project.name + ": Open Sidecart ",
             async () => {
                 this.page.waitForLoadState('domcontentloaded')
-                await actions.clickElement(this.page, locators.miniCartButton, this.workerInfo);
+                await test.step(
+                    this.workerInfo.project.name + ": Click element " + locators.miniCartButton,
+                    async () => await this.page.locator(locators.miniCartButton).click()
+                );
                 await this.page.waitForTimeout(500);
                 await this.page.waitForLoadState('domcontentloaded');
                 const sideCartTitle = this.page.locator(locators.title);
@@ -48,10 +50,15 @@ export default class SideCartPage extends BasePage {
                 this.page.reload();
                 await this.page.waitForLoadState('domcontentloaded');
                 await this.page.waitForSelector(locators.miniCartQtyIndicator);
-                await actions.verifyElementIsVisible(this.page, locators.miniCartQtyIndicator, this.workerInfo);
-                await actions.getInnerText(this.page, locators.miniCartQtyIndicator, this.workerInfo).then(async (qtyValue) => {
-                    expect(qtyValue).toEqual(qty.toString());
-                });
+                await test.step(
+                    this.workerInfo.project.name + ": Verify element is visible " + locators.miniCartQtyIndicator,
+                    async () => expect(await this.page.locator(locators.miniCartQtyIndicator).isVisible()).toBe(true)
+                );
+                const qtyValue = await test.step(
+                    this.workerInfo.project.name + ": Get innertext from " + locators.miniCartQtyIndicator,
+                    async () => await this.page.innerText(locators.miniCartQtyIndicator)
+                );
+                expect(qtyValue).toEqual(qty.toString());
             });
     }
 
@@ -95,7 +102,10 @@ export default class SideCartPage extends BasePage {
         this.page.waitForLoadState('domcontentloaded')
         const itemRow = locators.items + ">>nth=" + itemRowNum;
         const itemRowPrice = itemRow + '>>' + locators.price;
-        await actions.verifyElementExists(this.page, itemRow, this.workerInfo);
+        await test.step(
+            this.workerInfo.project.name + ": Verify element exists " + itemRow,
+            async () => await expect(this.page.locator(itemRow)).toHaveCount(1)
+        );
         // scroll the item into view
         await this.page.locator(itemRowPrice).scrollIntoViewIfNeeded();
         let itemPrice = await this.page.locator(itemRowPrice).textContent();
@@ -104,10 +114,12 @@ export default class SideCartPage extends BasePage {
 
     async getMiniCartSubtotal() {
         this.page.waitForLoadState('domcontentloaded')
-        await actions.verifyElementExists(this.page, locators.subTotal, this.workerInfo);
+        await test.step(
+            this.workerInfo.project.name + ": Verify element exists " + locators.subTotal,
+            async () => await expect(this.page.locator(locators.subTotal)).toHaveCount(1)
+        );
         let subTotal = await this.page.locator(locators.subTotal).textContent();
         return subTotal;
-
     }
 
 }

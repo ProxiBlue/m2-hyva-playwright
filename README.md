@@ -265,6 +265,33 @@ yarn workspace hyva test:ui
 yarn workspace hyva test:display
 ```
 
+### Running Tests with DDEV
+When running tests against a DDEV environment, you may encounter SSL certificate validation errors (`net::ERR_CERT_AUTHORITY_INVALID`). There are two approaches to resolve this:
+
+#### Option 1: SSH into the DDEV Web Container (Recommended)
+This approach runs the tests directly inside the DDEV web container:
+
+```bash
+# First, SSH into the DDEV web container
+ddev ssh
+
+# Then navigate to the tests directory and run the tests
+cd /var/www/html/tests/m2-hyva-playwright/
+APP_NAME=hyva NODE_ENV=dev TEST_BASE=hyva npx playwright test
+```
+
+This method is preferred as it runs the tests in the same environment where your application is running, ensuring consistent behavior.
+
+#### Option 2: Using DDEV Exec
+Alternatively, you can run the tests using ddev exec from your host machine:
+
+```bash
+# Run tests using DDEV to handle SSL certificates
+ddev exec "cd tests/m2-hyva-playwright/ && APP_NAME=hyva NODE_ENV=dev TEST_BASE=hyva npx playwright test"
+```
+
+Both approaches run the tests inside the DDEV container, which properly handles the SSL certificates for the DDEV site.
+
 ### Running Tests from the App Folder
 Alternatively, you can run tests from the app directory:
 
@@ -513,15 +540,13 @@ It's recommended to:
 
 For your app, this approach is especially valuable if you plan to have multiple apps extending your base app.
 
-### Framework Actions vs. Native Playwright
+### Native Playwright Approach
 
-The original framework this project was based on included utility actions and resources. While these are still available:
+This project uses native Playwright syntax:
 
-- The project is moving toward using native Playwright syntax
-- Native Playwright methods are preferred for new tests
+- Native Playwright methods are used throughout the tests
 - This approach provides better learning opportunities and more direct control
-
-**Note**: The plan is to systematically replace framework-specific actions with native Playwright syntax.
+- Direct use of Playwright's API ensures compatibility with future updates
 
 For more information:
 - [Video tutorial on working with the framework](https://youtu.be/mz2zec4I18Q)
@@ -612,8 +637,4 @@ This report provides detailed information about each test, including screenshots
 
 ## Acknowledgements
 
-This project was bootstrapped with [Eric Stanley's Playwright Framework](https://github.com/eric-stanley/playwright-framework).
-
-Significant modifications have been made to accommodate specific needs for Magento 2 + Hyvä testing. These changes are not upstream-compatible with the original project, so this project now stands as a separate implementation.
-
-Credit to Eric Stanley for his excellent work on the original framework.
+This project has been developed specifically for Magento 2 + Hyvä testing needs, focusing on providing a robust and maintainable testing framework for Hyvä-based storefronts.
