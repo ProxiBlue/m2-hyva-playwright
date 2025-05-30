@@ -10,7 +10,7 @@ export default class BasePage<T extends { default: { url?: string; header_title?
 
         await test.step(
             this.workerInfo.project.name + ": Go to " + process.env.url + url,
-            async () => await this.page.goto(process.env.url + url, { ignoreHTTPSErrors: true })
+            async () => await this.page.goto(process.env.url + url)
         );
         await this.page.waitForLoadState('domcontentloaded');
         const pageUrl = this.page.url();

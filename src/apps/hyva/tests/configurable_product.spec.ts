@@ -34,7 +34,7 @@ describe("Configurable products test suite", () => {
         await configurableProductPage.addToCart('2');
 
         // Navigate to the cart page
-        await configurableProductPage.page.goto(process.env.url + '/checkout/cart', { ignoreHTTPSErrors: true });
+        await configurableProductPage.page.goto(process.env.url + '/checkout/cart');
         await configurableProductPage.page.waitForLoadState('domcontentloaded');
 
         // Verify the cart quantity is also 2

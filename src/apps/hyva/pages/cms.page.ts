@@ -32,7 +32,7 @@ export default class CMSPage extends BasePage<CMSData> {
         await test.step(
             this.workerInfo.project.name + ": Go to " + (process.env.url || ''),
             //@ts-ignore
-            async () => await this.page.goto(process.env.url || '', { ignoreHTTPSErrors: true })
+            async () => await this.page.goto(process.env.url || '')
         );
         await this.page.waitForLoadState('domcontentloaded');
     }
@@ -42,7 +42,7 @@ export default class CMSPage extends BasePage<CMSData> {
         await test.step(
             this.workerInfo.project.name + ": Go to " + process.env.url + (this.data.default.wrong_page_url || '/404'),
             //@ts-ignore
-            async () => await this.page.goto(process.env.url + (this.data.default.wrong_page_url || '/404'), { ignoreHTTPSErrors: true })
+            async () => await this.page.goto(process.env.url + (this.data.default.wrong_page_url || '/404'))
         );
         await this.page.waitForLoadState('domcontentloaded');
     }

@@ -41,7 +41,7 @@ export default class HomePage extends BasePage<HomeData> {
 
     async navigateTo() {
         //@ts-ignore
-        await this.page.goto(process.env.url || '', { ignoreHTTPSErrors: true });
+        await this.page.goto(process.env.url || '');
         await this.page.waitForLoadState('domcontentloaded');
         await this.page.waitForLoadState('networkidle');
         const url = this.page.url();

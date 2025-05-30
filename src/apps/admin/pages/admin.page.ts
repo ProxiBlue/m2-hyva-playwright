@@ -22,7 +22,7 @@ export default class AdminPage extends BasePage {
     async navigateTo() {
         await test.step(
             this.workerInfo.project.name + ": Go to " + process.env.url + process.env.admin_path,
-            async () => await this.page.goto(process.env.url + process.env.admin_path, { ignoreHTTPSErrors: true })
+            async () => await this.page.goto(process.env.url + process.env.admin_path)
         );
         await this.page.waitForLoadState('domcontentloaded');
     }
