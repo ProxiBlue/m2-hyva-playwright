@@ -20,7 +20,7 @@ export default class AdminOrdersPage extends BasePage {
 
         await test.step(
             this.workerInfo.project.name + ": Go to " + hrefValue,
-            async () => await this.page.goto(hrefValue, { ignoreHTTPSErrors: true })
+            async () => await this.page.goto(hrefValue)
         );
         await this.page.waitForLoadState("networkidle")
         await this.page.waitForLoadState("domcontentloaded")

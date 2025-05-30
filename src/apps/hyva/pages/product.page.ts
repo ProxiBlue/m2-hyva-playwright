@@ -349,7 +349,7 @@ export default class ProductPage extends BasePage {
                 await this.addToCart('2');
 
                 // Navigate to the cart page
-                await this.page.goto(process.env.url + '/checkout/cart', { ignoreHTTPSErrors: true });
+                await this.page.goto(process.env.url + '/checkout/cart');
                 await this.page.waitForLoadState('domcontentloaded');
 
                 // Verify the cart quantity is also 2

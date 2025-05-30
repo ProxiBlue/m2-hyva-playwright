@@ -52,7 +52,7 @@ export default class ConfigurableProductPage extends ProductPage {
         const url = data.default.configurable_url || '';
         await test.step(
             this.workerInfo.project.name + ": Go to " + process.env.url + url,
-            async () => await this.page.goto(process.env.url + url, { ignoreHTTPSErrors: true })
+            async () => await this.page.goto(process.env.url + url)
         );
         await this.page.waitForLoadState('domcontentloaded');
     }
@@ -278,7 +278,7 @@ export default class ConfigurableProductPage extends ProductPage {
             this.workerInfo.project.name + ": Verify selected options in cart",
             async () => {
                 // Navigate to the cart page
-                await this.page.goto(process.env.url + '/checkout/cart', { ignoreHTTPSErrors: true });
+                await this.page.goto(process.env.url + '/checkout/cart');
                 await this.page.waitForLoadState('domcontentloaded');
 
                 // Get the item info element
