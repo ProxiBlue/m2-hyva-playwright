@@ -22,7 +22,6 @@ const config: PlaywrightTestConfig = {
         colorScheme: "dark",
         launchOptions: {
             slowMo: 500,
-            ignoreHTTPSErrors: true,
         },
     },
     reporter: [

@@ -4,10 +4,10 @@
   "private": true,
   "license": "MIT",
   "scripts": {
-    "test": "NODE_TLS_REJECT_UNAUTHORIZED=0 APP_NAME=luma NODE_ENV=dev npx playwright test",
-    "test:ui": "NODE_TLS_REJECT_UNAUTHORIZED=0 APP_NAME=luma NODE_ENV=dev npx playwright test --ui",
-    "test:debug": "NODE_TLS_REJECT_UNAUTHORIZED=0 APP_NAME=luma NODE_ENV=dev PWDEBUG=1 npx playwright test",
+    "test": "NODE_TLS_REJECT_UNAUTHORIZED=0 APP_NAME=luma  npx playwright test",
+    "test:ui": "NODE_TLS_REJECT_UNAUTHORIZED=0 APP_NAME=luma  npx playwright test --ui",
+    "test:debug": "NODE_TLS_REJECT_UNAUTHORIZED=0 APP_NAME=luma  PWDEBUG=1 npx playwright test",
     "report": "npx playwright show-report reports/playwright-report",
-    "test:display": "NODE_TLS_REJECT_UNAUTHORIZED=0 APP_NAME=luma NODE_ENV=dev npx playwright test --headed"
+    "test:display": "NODE_TLS_REJECT_UNAUTHORIZED=0 APP_NAME=luma  npx playwright test --headed"
   }
 }

@@ -277,7 +277,7 @@ ddev ssh
 
 # Then navigate to the tests directory and run the tests
 cd /var/www/html/tests/m2-hyva-playwright/
-APP_NAME=hyva NODE_ENV=dev TEST_BASE=hyva npx playwright test
+APP_NAME=hyva  TEST_BASE=hyva npx playwright test
 ```
 
 This method is preferred as it runs the tests in the same environment where your application is running, ensuring consistent behavior.
@@ -287,7 +287,7 @@ Alternatively, you can run the tests using ddev exec from your host machine:
 
 ```bash
 # Run tests using DDEV to handle SSL certificates
-ddev exec "cd tests/m2-hyva-playwright/ && APP_NAME=hyva NODE_ENV=dev TEST_BASE=hyva npx playwright test"
+ddev exec "cd tests/m2-hyva-playwright/ && APP_NAME=hyva  TEST_BASE=hyva npx playwright test"
 ```
 
 Both approaches run the tests inside the DDEV container, which properly handles the SSL certificates for the DDEV site.
@@ -592,7 +592,7 @@ The framework includes a customer data object that uses Faker.js to generate tes
 Below is an example of running the tests against the Hyva demo site. This shows how tests run in parallel across multiple browsers (Chromium, Firefox, and WebKit).
 
 ```bash
-$ APP_NAME=hyva NODE_ENV=dev playwright test
+$ APP_NAME=hyva  playwright test
 
 Running 48 tests using 5 workers
 

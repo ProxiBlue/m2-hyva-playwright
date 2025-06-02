@@ -5,10 +5,10 @@
   "author": "Lucas van Staden",
   "license": "MIT",
   "scripts": {
-    "test": "NODE_TLS_REJECT_UNAUTHORIZED=0 APP_NAME=hyva NODE_ENV=dev TEST_BASE=hyva npx playwright test",
-    "test:ui": "NODE_TLS_REJECT_UNAUTHORIZED=0 APP_NAME=hyva NODE_ENV=dev TEST_BASE=hyva npx playwright test --ui",
-    "test:debug": "NODE_TLS_REJECT_UNAUTHORIZED=0 APP_NAME=hyva NODE_ENV=dev TEST_BASE=hyva PWDEBUG=1 npx playwright test",
+    "test": "NODE_TLS_REJECT_UNAUTHORIZED=0 APP_NAME=hyva  TEST_BASE=hyva npx playwright test",
+    "test:ui": "NODE_TLS_REJECT_UNAUTHORIZED=0 APP_NAME=hyva  TEST_BASE=hyva npx playwright test --ui",
+    "test:debug": "NODE_TLS_REJECT_UNAUTHORIZED=0 APP_NAME=hyva  TEST_BASE=hyva PWDEBUG=1 npx playwright test",
     "report": "npx playwright show-report reports/playwright-report",
-    "test:display": "NODE_TLS_REJECT_UNAUTHORIZED=0 APP_NAME=hyva NODE_ENV=dev TEST_BASE=hyva npx playwright test --headed"
+    "test:display": "NODE_TLS_REJECT_UNAUTHORIZED=0 APP_NAME=hyva  TEST_BASE=hyva npx playwright test --headed"
   }
 }
