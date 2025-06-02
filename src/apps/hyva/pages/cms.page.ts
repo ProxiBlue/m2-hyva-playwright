@@ -55,6 +55,7 @@ export default class CMSPage extends BasePage<CMSData> {
 
     async openDefaultCMSPages() {
         await this.navigateTo();
+        console.log(locators.cmsDefaultPages);
         const allLinks = await this.page.locator(locators.cmsDefaultPages).all();
         expect(allLinks.length).toBeGreaterThan(0);
 

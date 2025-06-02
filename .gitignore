@@ -93,3 +93,6 @@ src/apps/*
 !src/apps/admin
 !src/apps/luma
 !/src/apps/common
+
+# Auth state files
+auth/*.json

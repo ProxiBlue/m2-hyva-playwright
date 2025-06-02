@@ -24,6 +24,6 @@ export const initConfig = (appName: string) => {
     let privateData = require(privateConfigFile);
     process.env.admin_user = privateData.admin_user;
     process.env.admin_password = privateData.admin_password;
-    process.env.admin_path = privateData.url;
+    process.env.admin_path = privateData.admin_path;
     process.env.url = jsonData.url;
 };
