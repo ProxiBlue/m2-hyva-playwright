@@ -114,3 +114,36 @@ export const appendFile = async (jsonFilePath: string, obj: any) => {
     console.error(err);
   }
 };
+
+/**
+ * Load locators module dynamically, checking first in the APP_NAME directory and falling back to a default path
+ * @param locatorPath The path to the locator file relative to the app directory (e.g., 'locators/cms.locator')
+ * @param appDir The directory name within apps where the file might be located (e.g., 'admin', 'hyva')
+ * @returns The loaded locators module
+ */
+export const loadLocators = (locatorPath: string, appDir: string): any => {
+  try {
+    // Use a more reliable way to resolve the path to the apps directory
+    // First try to resolve from the current file's location
+    const srcDir = path.resolve(__dirname, '../..');
+    const appsBasePath = path.join(srcDir, 'apps');
+
+    let fullLocatorPath;
+    // Check if file exists in APP_NAME directory
+    if (process.env.APP_NAME && fs.existsSync(path.join(appsBasePath, process.env.APP_NAME, locatorPath + '.ts'))) {
+      fullLocatorPath = path.join(appsBasePath, process.env.APP_NAME, locatorPath);
+    } else {
+      // Fall back to the provided app directory
+      fullLocatorPath = path.join(appsBasePath, appDir, locatorPath);
+    }
+
+    // Convert the file path to a module path
+    const modulePath = fullLocatorPath.replace(/\\/g, '/');
+
+    // Dynamically require the module
+    return require(modulePath);
+  } catch (error) {
+    console.error(`Error loading locators from ${locatorPath}: ${error}`);
+    return {};
+  }
+};

@@ -1,8 +1,7 @@
 import BasePage from "@common/pages/base.page";
 import {Page, TestInfo, expect, test} from "@playwright/test";
-import * as locators from "../locators/cms.locator";
 import { CMSData } from "@hyva/interfaces/CMSData";
-import { loadJsonData } from "@utils/functions/file";
+import { loadJsonData, loadLocators } from "@utils/functions/file";
 
 // Default CMS data structure
 const defaultData: CMSData = {
@@ -22,6 +21,9 @@ let data = loadJsonData<CMSData>('cms.data.json', 'hyva', defaultData);
 if (data && !data.default) {
     data = { default: data as any };
 }
+
+// Load the locators dynamically based on the APP_NAME environment variable
+const locators = loadLocators('locators/cms.locator', 'hyva');
 
 export default class CMSPage extends BasePage<CMSData> {
     constructor(public page: Page, public workerInfo: TestInfo) {

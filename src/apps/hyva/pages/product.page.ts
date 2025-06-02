@@ -1,14 +1,16 @@
 import BasePage from "@common/pages/base.page";
 import { Page, TestInfo, expect, test } from "@playwright/test";
-import * as locators from "@hyva/locators/product.locator";
-import * as pageLocators from "@hyva/locators/page.locator";
-import * as productLocators from "@hyva/locators/product.locator";
-import * as cartLocators from "@hyva/locators/cart.locator";
 import { ProductData } from "@hyva/interfaces/ProductData";
+import { loadLocators } from "@utils/functions/file";
 
 // dynamically import the test JSON data based on the APP_NAME env variable
 // and if the file exists in APP path, and if not default to the base data
 let data: ProductData = { default: {} };
+
+// Load the locators dynamically based on the APP_NAME environment variable
+const pageLocators = loadLocators('locators/page.locator', 'hyva');
+const productLocators = loadLocators('locators/product.locator', 'hyva');
+const cartLocators = loadLocators('locators/cart.locator', 'hyva');
 
 export default class ProductPage extends BasePage {
     constructor(public page: Page, public workerInfo: TestInfo, public data: any, public locators: any) {

@@ -1,10 +1,7 @@
 import ProductPage from "@hyva/pages/product.page";
 import { Page, TestInfo, expect, test } from "@playwright/test";
-import * as locators from "@hyva/locators/product.locator";
-import * as cartLocators from "@hyva/locators/cart.locator";
-import * as configLocators from "@hyva/locators/configurable_product.locator";
 import { ConfigurableProductData } from "@hyva/interfaces/ConfigurableProductData";
-import { loadJsonData } from "@utils/functions/file";
+import { loadJsonData, loadLocators } from "@utils/functions/file";
 
 // Default configurable product data structure
 const defaultData: ConfigurableProductData = { default: {} };
@@ -17,6 +14,11 @@ if (data && !data.default) {
     // @ts-ignore
     data = { default: data };
 }
+
+// Load the locators dynamically based on the APP_NAME environment variable
+const locators = loadLocators('locators/product.locator', 'hyva');
+const cartLocators = loadLocators('locators/cart.locator', 'hyva');
+const configLocators = loadLocators('locators/configurable_product.locator', 'hyva');
 
 export default class ConfigurableProductPage extends ProductPage {
     constructor(public page: Page, public workerInfo: TestInfo) {

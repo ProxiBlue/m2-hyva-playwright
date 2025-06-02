@@ -1,12 +1,9 @@
 import BasePage from "@common/pages/base.page";
 import {Page, TestInfo, expect, test} from "@playwright/test";
-import * as locators from "@hyva/locators/category.locator";
-import * as productLocators from "@hyva/locators/product.locator";
-import * as pageLocators from "@hyva/locators/page.locator";
 import * as pageDataImport from "@hyva/data/page.data.json";
 import { PageData } from "@hyva/interfaces/PageData";
 import { CategoryData } from "@hyva/interfaces/CategoryData";
-import { loadJsonData } from "@utils/functions/file";
+import { loadJsonData, loadLocators } from "@utils/functions/file";
 
 const pageData = pageDataImport as unknown as PageData;
 
@@ -36,6 +33,11 @@ let data = loadJsonData<CategoryData>('category.data.json', 'hyva', defaultData)
 if (data && !data.default) {
   data = { default: data as any };
 }
+
+// Load the locators dynamically based on the APP_NAME environment variable
+const locators = loadLocators('locators/category.locator', 'hyva');
+const productLocators = loadLocators('locators/product.locator', 'hyva');
+const pageLocators = loadLocators('locators/page.locator', 'hyva');
 
 export default class CategoryPage extends BasePage<CategoryData> {
     constructor(public page: Page, public workerInfo: TestInfo) {
