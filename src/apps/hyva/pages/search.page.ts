@@ -1,10 +1,7 @@
 import BasePage from "@common/pages/base.page";
 import {Page, TestInfo, expect, test} from "@playwright/test";
-import * as locators from "@hyva/locators/search.locator";
-import * as pageLocators from "@hyva/locators/page.locator";
-import * as productLocators from "@hyva/locators/product.locator";
 import { SearchData } from "@hyva/interfaces/SearchData";
-import { loadJsonData } from "@utils/functions/file";
+import { loadJsonData, loadLocators } from "@utils/functions/file";
 
 // Default search data structure
 const defaultData: SearchData = {
@@ -25,6 +22,11 @@ let data = loadJsonData<SearchData>('search.data.json', 'hyva', defaultData);
 if (data && !data.default) {
     data = { default: data as any };
 }
+
+// Load the locators dynamically based on the APP_NAME environment variable
+const locators = loadLocators('locators/search.locator', 'hyva');
+const pageLocators = loadLocators('locators/page.locator', 'hyva');
+const productLocators = loadLocators('locators/product.locator', 'hyva');
 
 export default class SearchPage extends BasePage<SearchData> {
 

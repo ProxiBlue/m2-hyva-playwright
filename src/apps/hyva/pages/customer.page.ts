@@ -1,9 +1,7 @@
 import BasePage from "@common/pages/base.page";
 import {Page, TestInfo, expect, test} from "@playwright/test";
-import * as locators from "@hyva/locators/customer.locator";
-import * as pageLocators from "@hyva/locators/page.locator";
 import { CustomerData } from '@common/interfaces/CustomerData';
-import { loadJsonData } from "@utils/functions/file";
+import { loadJsonData, loadLocators } from "@utils/functions/file";
 
 // Define the interface for the customer page data structure
 interface CustomerPageData {
@@ -38,6 +36,10 @@ let data = loadJsonData<CustomerPageData>('customer.data.json', 'hyva', defaultD
 if (data && !data.default) {
     data = { default: data as any };
 }
+
+// Load the locators dynamically based on the APP_NAME environment variable
+const locators = loadLocators('locators/customer.locator', 'hyva');
+const pageLocators = loadLocators('locators/page.locator', 'hyva');
 
 export default class CustomerPage extends BasePage<CustomerPageData> {
     constructor(public page: Page, public workerInfo: TestInfo) {

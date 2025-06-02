@@ -1,8 +1,7 @@
 import ProductPage from "@hyva/pages/product.page";
 import {Page, TestInfo, expect, test} from "@playwright/test";
-import * as locators from "@hyva/locators/product.locator";
 import { SimpleProductData } from "@hyva/interfaces/SimpleProductData";
-import { loadJsonData } from "@utils/functions/file";
+import { loadJsonData, loadLocators } from "@utils/functions/file";
 
 // Default simple product data structure
 const defaultData: SimpleProductData = { default: {} };
@@ -15,6 +14,9 @@ if (data && !data.default) {
     //@ts-ignore
     data = { default: data };
 }
+
+// Load the locators dynamically based on the APP_NAME environment variable
+const locators = loadLocators('locators/product.locator', 'hyva');
 
 export default class SimpleProductPage extends ProductPage {
 

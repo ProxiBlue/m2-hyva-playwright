@@ -1,7 +1,6 @@
 import BasePage from "@common/pages/base.page";
 import {Page, TestInfo, expect, test} from "@playwright/test";
-import * as locators from "@hyva/locators/sidecart.locator";
-import { loadJsonData } from "@utils/functions/file";
+import { loadJsonData, loadLocators } from "@utils/functions/file";
 
 // Define the interface for the sidecart data structure
 interface SidecartData {
@@ -20,6 +19,9 @@ let data = loadJsonData<SidecartData>('sidecart.data.json', 'hyva', defaultData)
 if (data && !data.default) {
     data = { default: data as any };
 }
+
+// Load the locators dynamically based on the APP_NAME environment variable
+const locators = loadLocators('locators/sidecart.locator', 'hyva');
 
 export default class SideCartPage extends BasePage {
     constructor(public page: Page, public workerInfo: TestInfo) {

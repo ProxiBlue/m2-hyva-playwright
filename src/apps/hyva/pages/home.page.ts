@@ -1,10 +1,6 @@
 import BasePage from "@common/pages/base.page";
 import {Page, test, TestInfo, expect} from "@playwright/test";
-import * as searchSelectors from "@hyva/locators/search.locator";
-import * as product from "@hyva/locators/product.locator";
-import * as pageLocators from "@hyva/locators/page.locator";
-import * as locators from "../locators/home.locator";
-import { loadJsonData } from "@utils/functions/file";
+import { loadJsonData, loadLocators } from "@utils/functions/file";
 
 // Define the interface for the home data structure
 interface HomeData {
@@ -32,6 +28,12 @@ let data = loadJsonData<HomeData>('home.data.json', 'hyva', defaultData);
 if (data && !data.default) {
     data = { default: data as any };
 }
+
+// Load the locators dynamically based on the APP_NAME environment variable
+const searchSelectors = loadLocators('locators/search.locator', 'hyva');
+const product = loadLocators('locators/product.locator', 'hyva');
+const pageLocators = loadLocators('locators/page.locator', 'hyva');
+const locators = loadLocators('locators/home.locator', 'hyva');
 
 
 export default class HomePage extends BasePage<HomeData> {
