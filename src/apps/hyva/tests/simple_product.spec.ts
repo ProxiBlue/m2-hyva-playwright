@@ -1,6 +1,9 @@
 import {test, describe, expect} from "@hyva/fixtures";
-import * as pageLocators from "@hyva/locators/page.locator";
-import * as locators from "@hyva/locators/customer.locator";
+import { loadLocators } from "@utils/functions/file";
+
+// Load the locators dynamically based on the APP_NAME environment variable
+const pageLocators = loadLocators('locators/page.locator', 'hyva');
+const locators = loadLocators('locators/customer.locator', 'hyva');
 
 describe("Simple Product test suite", () => {
     test.beforeEach(async ({ simpleProductPage }, testInfo) => {

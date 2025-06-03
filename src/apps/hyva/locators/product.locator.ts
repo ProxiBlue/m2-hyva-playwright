@@ -24,3 +24,5 @@ export const addToCompare = "button[aria-label*='Add to Compare']";
 export const compareLink = "#compare-link";
 
 export const wishlist_button = '.product-info-main [aria-label="Add to Wish List"]';
+export const product_id_input = 'input[name="product"]';
+export const product_sku_form = 'form[data-product-sku]';

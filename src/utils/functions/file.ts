@@ -116,10 +116,11 @@ export const appendFile = async (jsonFilePath: string, obj: any) => {
 };
 
 /**
- * Load locators module dynamically, checking first in the APP_NAME directory and falling back to a default path
+ * Load locators module dynamically, always loading the base app locators first,
+ * then overriding with APP_NAME locators if they exist
  * @param locatorPath The path to the locator file relative to the app directory (e.g., 'locators/cms.locator')
  * @param appDir The directory name within apps where the file might be located (e.g., 'admin', 'hyva')
- * @returns The loaded locators module
+ * @returns The loaded locators module with combined entries
  */
 export const loadLocators = (locatorPath: string, appDir: string): any => {
   try {
@@ -128,20 +129,26 @@ export const loadLocators = (locatorPath: string, appDir: string): any => {
     const srcDir = path.resolve(__dirname, '../..');
     const appsBasePath = path.join(srcDir, 'apps');
 
-    let fullLocatorPath;
-    // Check if file exists in APP_NAME directory
+    // Always load the base app locators first
+    const baseLocatorPath = path.join(appsBasePath, appDir, locatorPath);
+    const baseModulePath = baseLocatorPath.replace(/\\/g, '/');
+
+    // Load the base locators
+    const baseLocators = require(baseModulePath);
+
+    // Check if APP_NAME locators exist
     if (process.env.APP_NAME && fs.existsSync(path.join(appsBasePath, process.env.APP_NAME, locatorPath + '.ts'))) {
-      fullLocatorPath = path.join(appsBasePath, process.env.APP_NAME, locatorPath);
-    } else {
-      // Fall back to the provided app directory
-      fullLocatorPath = path.join(appsBasePath, appDir, locatorPath);
+      // Load the APP_NAME locators
+      const appLocatorPath = path.join(appsBasePath, process.env.APP_NAME, locatorPath);
+      const appModulePath = appLocatorPath.replace(/\\/g, '/');
+      const appLocators = require(appModulePath);
+
+      // Merge the locators, with APP_NAME locators overriding base locators
+      return { ...baseLocators, ...appLocators };
     }
 
-    // Convert the file path to a module path
-    const modulePath = fullLocatorPath.replace(/\\/g, '/');
-
-    // Dynamically require the module
-    return require(modulePath);
+    // If no APP_NAME locators exist, return just the base locators
+    return baseLocators;
   } catch (error) {
     console.error(`Error loading locators from ${locatorPath}: ${error}`);
     return {};

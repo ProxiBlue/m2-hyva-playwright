@@ -1,7 +1,10 @@
 import { test, describe, expect } from "@hyva/fixtures";
-import * as locators from "@hyva/locators/sidecart.locator";
-import * as productLocators from "@hyva/locators/product.locator";
-import * as pageLocators from "@hyva/locators/page.locator";
+import { loadLocators } from "@utils/functions/file";
+
+// Load the locators dynamically based on the APP_NAME environment variable
+const locators = loadLocators('locators/sidecart.locator', 'hyva');
+const productLocators = loadLocators('locators/product.locator', 'hyva');
+const pageLocators = loadLocators('locators/page.locator', 'hyva');
 
 describe("Side cart check", () => {
 

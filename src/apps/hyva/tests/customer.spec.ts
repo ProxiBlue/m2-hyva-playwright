@@ -1,6 +1,9 @@
 import {describe, expect, test} from "@hyva/fixtures";
-import * as locators from "@hyva/locators/customer.locator";
-import * as pageLocators from "@hyva/locators/page.locator";
+import { loadLocators } from "@utils/functions/file";
+
+// Load the locators dynamically based on the APP_NAME environment variable
+const locators = loadLocators('locators/customer.locator', 'hyva');
+const pageLocators = loadLocators('locators/page.locator', 'hyva');
 describe("Customer Tests", () => {
 
     test.setTimeout(60000);
@@ -24,5 +27,3 @@ describe("Customer Tests", () => {
         await customerPage.login(customerData);
     });
 });
-
-

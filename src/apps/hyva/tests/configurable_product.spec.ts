@@ -58,7 +58,7 @@ describe("Configurable products test suite", () => {
 
     test("Can add configurable product to cart and verify options in cart", async ({configurableProductPage}, testInfo) => {
         // Select random options for the configurable product and add to cart
-        await configurableProductPage.selectProductSwatch();
+        await configurableProductPage.selectProductSwatch(); // await configurableProductPage.selectProductAttributes();
 
         await configurableProductPage.addToCart('1');
 
@@ -67,7 +67,7 @@ describe("Configurable products test suite", () => {
     });
 
     test("Can't add a product to a wishlist when the user in not logged in", async ({configurableProductPage}, testInfo) => {
-        await configurableProductPage.selectProductSwatch();
+        await configurableProductPage.selectProductSwatch(); // await configurableProductPage.selectProductAttributes();
         await configurableProductPage.addToWishlistNotLoggedIn();
     });
 
@@ -92,7 +92,7 @@ describe("Configurable products test suite", () => {
         await configurableProductPage.navigateTo();
 
         // Select product attributes
-        await configurableProductPage.selectProductAttributes();
+        await configurableProductPage.selectProductSwatch();
         await configurableProductPage.page.waitForLoadState('domcontentloaded');
         await configurableProductPage.addToWishlistLoggedIn()
 

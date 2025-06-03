@@ -87,11 +87,11 @@ export default class ProductPage extends BasePage {
             this.workerInfo.project.name + ": Verify product title and image",
             async () => {
                 await this.page.waitForLoadState('domcontentloaded');
-                await this.page.waitForSelector(locators.title);
+                await this.page.waitForSelector(productLocators.title);
 
-                const title = await this.page.locator(locators.title).textContent();
+                const title = await this.page.locator(productLocators.title).textContent();
                 expect(title).toContain(this.data.default.name);
-                const imgSrc = await this.page.locator(locators.product_gallery_image).first().getAttribute('src');
+                const imgSrc = await this.page.locator(productLocators.product_gallery_image).first().getAttribute('src');
                 expect(imgSrc).toContain('media/catalog/product');
             }
         );
@@ -101,9 +101,9 @@ export default class ProductPage extends BasePage {
         await test.step(
             this.workerInfo.project.name + ": Verify product price",
             async () => {
-                await this.page.waitForSelector(locators.productItemPrice);
+                await this.page.waitForSelector(productLocators.productItemPrice);
 
-                const priceText: string = await this.page.locator(locators.productItemPrice).first().textContent() || '';
+                const priceText: string = await this.page.locator(productLocators.productItemPrice).first().textContent() || '';
                 const currencySymbol = process.env.currency_symbol || '$';
                 expect(priceText).toContain(currencySymbol);
 
@@ -117,13 +117,13 @@ export default class ProductPage extends BasePage {
         await test.step(
             this.workerInfo.project.name + ": Verify breadcrumbs",
             async () => {
-                await this.page.waitForSelector(locators.breadcrumbs_items);
+                await this.page.waitForSelector(productLocators.breadcrumbs_items);
                 await this.page.waitForLoadState('domcontentloaded');
-                const breadcrumbItems = await this.page.locator(locators.breadcrumbs_items).count();
+                const breadcrumbItems = await this.page.locator(productLocators.breadcrumbs_items).count();
                 expect(breadcrumbItems).toBeGreaterThan(0);
 
                 // Get the text of the last breadcrumb item and verify it contains the product name
-                const lastBreadcrumbText = await this.page.locator(locators.breadcrumbs_items).nth(breadcrumbItems - 1).textContent();
+                const lastBreadcrumbText = await this.page.locator(productLocators.breadcrumbs_items).nth(breadcrumbItems - 1).textContent();
                 expect(lastBreadcrumbText).toContain(this.data.default.name);
             }
         );
@@ -240,9 +240,9 @@ export default class ProductPage extends BasePage {
             this.workerInfo.project.name + ": Add to wishlist logged in",
             async () => {
                 // Use JavaScript evaluation with multiple approaches to trigger the wishlist functionality
-                await this.page.evaluate(() => {
+                await this.page.evaluate((selectors) => {
                     // Find the button element
-                    const element = document.querySelector('.product-info-main [aria-label="Add to Wish List"]');
+                    const element = document.querySelector(selectors.wishlist_button);
                     if (!element) {
                         console.error('Wishlist button not found');
                         return;
@@ -250,8 +250,8 @@ export default class ProductPage extends BasePage {
 
                     // Get the product ID from various possible sources
                     const productId = element.getAttribute('data-product-id') ||
-                                     document.querySelector('input[name="product"]')?.value ||
-                                     document.querySelector('form[data-product-sku]')?.getAttribute('data-product-sku');
+                                     document.querySelector(selectors.product_id_input)?.value ||
+                                     document.querySelector(selectors.product_sku_form)?.getAttribute('data-product-sku');
 
                     if (!productId) {
                         console.error('Product ID not found');
@@ -328,7 +328,7 @@ export default class ProductPage extends BasePage {
                     } catch (e) {
                         console.error('Error dispatching click event:', e);
                     }
-                });
+                }, productLocators);
 
                 // Wait for success message
                 await this.page.waitForSelector(pageLocators.message_success, { timeout: 7000 });
@@ -342,9 +342,9 @@ export default class ProductPage extends BasePage {
         await test.step(
             this.workerInfo.project.name + ": Increment product quantity",
             async () => {
-                await this.page.locator(locators.product_qty_input_selector).press('ArrowUp');
+                await this.page.locator(productLocators.product_qty_input_selector).press('ArrowUp');
                 await this.page.waitForLoadState('domcontentloaded');
-                const qtyValue = await this.page.locator(locators.product_qty_input_selector).inputValue();
+                const qtyValue = await this.page.locator(productLocators.product_qty_input_selector).inputValue();
                 expect(qtyValue).toBe('2');
 
                 // Add the item to the cart
@@ -367,8 +367,8 @@ export default class ProductPage extends BasePage {
         await test.step(
             this.workerInfo.project.name + ": Add product to cart ",
             async () => {
-                await this.page.fill(locators.product_qty_input, qty);
-                await this.page.locator(locators.product_add_to_cart_button).click();
+                await this.page.fill(productLocators.product_qty_input, qty);
+                await this.page.locator(productLocators.product_add_to_cart_button).click();
                 await this.page.waitForSelector(pageLocators.message_success)
                 await this.page.waitForLoadState('domcontentloaded');
                 expect(await this.page.locator(pageLocators.message_success).isVisible(), "Verify element is visible " + pageLocators.message_success).toBe(true);
@@ -385,7 +385,7 @@ export default class ProductPage extends BasePage {
             this.workerInfo.project.name + ": Add to compare ",
             async () => {
                 // Get the product name for verification
-                const productName = await this.page.locator(locators.title).textContent();
+                const productName = await this.page.locator(productLocators.title).textContent();
 
                 // Find the add to compare button with a more specific selector
                 // Use the product-info-main container to target only the button on the product page
