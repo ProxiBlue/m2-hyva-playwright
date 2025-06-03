@@ -1,5 +1,8 @@
 import {describe, test} from "@hyva/fixtures";
-import * as locators from "@hyva/locators/search.locator";
+import { loadLocators } from "@utils/functions/file";
+
+// Load the locators dynamically based on the APP_NAME environment variable
+const locators = loadLocators('locators/search.locator', 'hyva');
 
 describe("Search Functionality", () => {
 
