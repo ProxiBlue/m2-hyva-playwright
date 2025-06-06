@@ -27,7 +27,7 @@ describe("Simple Product test suite", () => {
         await simpleProductPage.verifyBreadcrumbs();
     });
 
-    test("Can't add a product to a wishlist when the user in not logged in", async ({ simpleProductPage }, testInfo) => {
+    test("Can not add a product to a wishlist when the user in not logged in", async ({ simpleProductPage }, testInfo) => {
         await simpleProductPage.addToWishlistNotLoggedIn();
     });
 

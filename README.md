@@ -36,7 +36,8 @@ example:
 ```
 {
   "admin_user": "admin",
-  "admin_password": "2sdddfdfLYI%"
+  "admin_password": "2RDMUjuGO7ojLYI%",
+  "admin_path": "admin-uptactics"
 }
 ```
 

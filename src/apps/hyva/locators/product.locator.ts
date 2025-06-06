@@ -6,7 +6,7 @@ export const productItemLink = ".product-item-link";
 
 export const productItemName = ".product-item-link";
 
-export const productItemPrice = ".price";
+export const productItemPrice = ".product-info-main .final-price .price";
 export const productItemPriceRegular = ".price-wrapper>>.price";
 export const productItemPriceSpecial = ".special-price>>.price";
 export const productItemPriceOld = ".old-price>>.price";
