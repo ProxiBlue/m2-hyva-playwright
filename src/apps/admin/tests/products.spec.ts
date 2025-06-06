@@ -1,11 +1,14 @@
 import {describe, test, expect} from "@admin/fixtures";
 import * as locators from "@admin/locators/products.locator";
+import { shouldSkipTest } from "@utils/functions/test-skip";
 
 describe("Admin - Products", () => {
 
     test.beforeEach(async ({adminPage, adminProductsPage}, testInfo) => {
-        // @ts-ignore
-        test.skip(process.env.skipBaseTests.includes(testInfo.title), testInfo.title + " test skipped for this environment: " + process.env.APP_NAME);
+        // Use the helper function to determine if the test should be skipped
+        const shouldSkip = shouldSkipTest(testInfo);
+
+        test.skip(shouldSkip, testInfo.title + " test skipped for this environment: " + process.env.APP_NAME);
         await adminPage.navigateTo();
         await adminPage.login();
         await adminProductsPage.navigateTo();

@@ -1,5 +1,6 @@
 import { test, describe, expect } from "@hyva/fixtures";
 import { loadLocators } from "@utils/functions/file";
+import { shouldSkipTest } from "@utils/functions/test-skip";
 
 // Load the locators dynamically based on the APP_NAME environment variable
 const locators = loadLocators('locators/sidecart.locator', 'hyva');
@@ -9,8 +10,10 @@ const pageLocators = loadLocators('locators/page.locator', 'hyva');
 describe("Side cart check", () => {
 
     test.beforeEach(async ({ simpleProductPage }, testInfo) => {
-        // @ts-ignore
-        test.skip(process.env.skipBaseTests.includes(testInfo.title), "Test skipped for this environment: " + process.env.APP_NAME);
+        // Use the helper function to determine if the test should be skipped
+        const shouldSkip = shouldSkipTest(testInfo);
+
+        test.skip(shouldSkip, "Test skipped for this environment: " + process.env.APP_NAME);
         await simpleProductPage.navigateTo();
         await simpleProductPage.addToCart();
     });

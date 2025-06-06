@@ -24,6 +24,7 @@ const config: PlaywrightTestConfig = {
             slowMo: 500,
         },
     },
+    preserveOutput: 'failures-only',
     reporter: [
         ["list"],
         [

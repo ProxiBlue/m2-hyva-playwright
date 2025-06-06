@@ -1,11 +1,14 @@
 import { test, describe, expect } from "@hyva/fixtures";
 import { parsePrice } from "@utils/functions/price";
+import { shouldSkipTest } from "@utils/functions/test-skip";
 
 describe("Side cart price check", () => {
 
     test.beforeEach(async ({ simpleProductPage }, testInfo) => {
-        // @ts-ignore
-        test.skip(process.env.skipBaseTests.includes(testInfo.title), "Test skipped for this environment: " + process.env.APP_NAME);
+        // Use the helper function to determine if the test should be skipped
+        const shouldSkip = shouldSkipTest(testInfo);
+
+        test.skip(shouldSkip, "Test skipped for this environment: " + process.env.APP_NAME);
         await simpleProductPage.navigateTo();
         await simpleProductPage.addToCart();
     });
