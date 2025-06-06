@@ -36,11 +36,7 @@ async function authenticateAdmin(workerId: number) {
 
   // Create a new context with ignoreHTTPSErrors
   const context = await browser.newContext({
-    ignoreHTTPSErrors: true,
-    recordVideo: {
-      dir: path.join(__dirname, 'test-results', 'videos'),
-      size: { width: 1280, height: 720 }
-    }
+    ignoreHTTPSErrors: true
   });
 
   // Create a new page
@@ -62,6 +58,25 @@ async function authenticateAdmin(workerId: number) {
   const videosDir = path.join(testResultsDir, 'videos');
   if (!fs.existsSync(videosDir)) {
     fs.mkdirSync(videosDir, { recursive: true });
+  }
+
+  // Create app-specific test-results directories if they don't exist
+  const appName = process.env.APP_NAME || 'hyva';
+  const appTestResultsDir = path.join(__dirname, 'src', 'apps', appName, 'test-results');
+  if (!fs.existsSync(appTestResultsDir)) {
+    fs.mkdirSync(appTestResultsDir, { recursive: true });
+  }
+
+  // Create app-specific screenshots directory if it doesn't exist
+  const appScreenshotsDir = path.join(appTestResultsDir, 'screenshots');
+  if (!fs.existsSync(appScreenshotsDir)) {
+    fs.mkdirSync(appScreenshotsDir, { recursive: true });
+  }
+
+  // Create app-specific videos directory if it doesn't exist
+  const appVideosDir = path.join(appTestResultsDir, 'videos');
+  if (!fs.existsSync(appVideosDir)) {
+    fs.mkdirSync(appVideosDir, { recursive: true });
   }
 
   // Get admin URL and credentials from environment variables or config files

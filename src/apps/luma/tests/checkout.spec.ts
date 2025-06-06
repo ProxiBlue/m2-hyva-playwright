@@ -1,14 +1,17 @@
 import {test, describe, expect } from "../fixtures";
 import * as locators from "@luma/locators/customer.locator";
 import * as pageLocators from "@hyva/locators/page.locator";
+import { shouldSkipTest } from "@utils/functions/test-skip";
 
 describe("Frontend Checkout actions with one Item in cart", () => {
 
     test.setTimeout(90000);
 
     test.beforeEach(async ({simpleProductPage}, testInfo) => {
-        //@ts-ignore
-        test.skip(process.env.skipBaseTests.includes(testInfo.title), "Test skipped for this environment: " + process.env.APP_NAME);
+        // Use the helper function to determine if the test should be skipped
+        const shouldSkip = shouldSkipTest(testInfo);
+
+        test.skip(shouldSkip, "Test skipped for this environment: " + process.env.APP_NAME);
         await simpleProductPage.navigateTo();
         await simpleProductPage.addToCart();
     });

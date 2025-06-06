@@ -416,32 +416,48 @@ npx yarn test-live
 
 #### Skipping Base Tests
 
-You can skip specific base tests by defining them in your app's `config.json` file under the `skipBaseTests` key:
+You can skip specific base tests by defining them in your app's `config.json` file under the `skipBaseTests` key.
+
+The configuration organizes tests to skip by test suite name, providing better organization and preventing conflicts when test titles are the same across different test suites:
 
 ```json
 {
-  "skipBaseTests": ["test title to skip", "another test to skip"]
+  "skipBaseTests": {
+    "Category test suite": [
+      "Filters",
+      "it can sort the products by name (a-z)"
+    ],
+    "Configurable products test suite": [
+      "Can increment the product quantity on the pdp",
+      "Can add configurable product to cart and verify options in cart"
+    ],
+    "Simple Product test suite": [
+      "Can add a product to a wishlist when the user is logged in"
+    ]
+  }
 }
 ```
 
-Reference: [Example config.json](https://github.com/ProxiBlue/pps-example-tests/blob/main/config.json#L7C4-L7C17)
+##### Implementation in Test Files
 
-For this to work, any tests added to the base Hyva tests must include a skip test line:
-
-```javascript
-test.skip(process.env.skipBaseTests.includes(testInfo.title), 
-          "Test skipped for this environment: " + process.env.APP_NAME);
-```
-
-This can be defined in a `beforeEach` function:
+For this to work, tests should use the `shouldSkipTest` helper function:
 
 ```javascript
-test.beforeEach(async ({ homePage}, testInfo) => {
-    test.skip(process.env.skipBaseTests.includes(testInfo.title), 
-              testInfo.title + " test skipped for this environment: " + process.env.APP_NAME);
+import { shouldSkipTest } from "@utils/functions/test-skip";
+
+test.beforeEach(async ({ homePage }, testInfo) => {
+    // Use the helper function to determine if the test should be skipped
+    // The function automatically extracts the test suite name from testInfo.parent.title
+    const shouldSkip = shouldSkipTest(testInfo);
+
+    test.skip(shouldSkip, testInfo.title + " test skipped for this environment: " + process.env.APP_NAME);
     await homePage.navigateTo();
 });
 ```
+
+The `shouldSkipTest` function extracts the test suite name from `testInfo.parent.title` and the test title from `testInfo.title`, eliminating the need for manual test suite name declaration.
+
+For a detailed explanation of the test skip solution, see [TEST_SKIP_SOLUTION.md](./TEST_SKIP_SOLUTION.md).
 
 ![2023-11-11_19-41](https://github.com/ProxiBlue/m2-hyva-playwright/assets/4994260/e396b920-332e-40af-9d97-b47795938210)
 

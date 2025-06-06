@@ -1,10 +1,13 @@
 import { test, describe } from "@hyva/fixtures";
+import { shouldSkipTest } from "@utils/functions/test-skip";
 
-describe("Category Product List actions", () => {
+describe("Category test suite", () => {
 
      test.beforeEach(async ({ categoryPage}, testInfo) => {
-         // @ts-ignore
-         test.skip(process.env.skipBaseTests.includes(testInfo.title), testInfo.title + " test skipped for this environment: " + process.env.APP_NAME);
+         // Use the helper function to determine if the test should be skipped
+         const shouldSkip = shouldSkipTest(testInfo);
+
+         test.skip(shouldSkip, testInfo.title + " test skipped for this environment: " + process.env.APP_NAME);
          await categoryPage.navigateTo();
      });
 

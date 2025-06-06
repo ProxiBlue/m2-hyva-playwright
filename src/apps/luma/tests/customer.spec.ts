@@ -1,13 +1,16 @@
 import {describe, expect, test} from "@luma/fixtures";
 import * as locators from "@luma/locators/customer.locator";
 import * as pageLocators from "@luma/locators/page.locator";
+import { shouldSkipTest } from "@utils/functions/test-skip";
 describe("Customer Tests", () => {
 
     test.setTimeout(60000);
 
     test.beforeEach(async ({customerPage}, testInfo) => {
-        //@ts-ignore
-        test.skip(process.env.skipBaseTests.includes(testInfo.title), "Test skipped for this environment: " + process.env.APP_NAME);
+        // Use the helper function to determine if the test should be skipped
+        const shouldSkip = shouldSkipTest(testInfo);
+
+        test.skip(shouldSkip, "Test skipped for this environment: " + process.env.APP_NAME);
         await customerPage.navigateTo();
     });
 
@@ -23,5 +26,3 @@ describe("Customer Tests", () => {
         await customerPage.login(customerData);
     });
 });
-
-

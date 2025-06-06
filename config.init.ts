@@ -17,7 +17,8 @@ export const initConfig = (appName: string) => {
         "config.private.json"
     );
     let jsonData = require(configFile);
-    process.env.skipBaseTests = jsonData.skipBaseTests;
+    // Serialize skipBaseTests to JSON
+    process.env.skipBaseTests = JSON.stringify(jsonData.skipBaseTests);
     process.env.mailcatcher = jsonData.mailcatcher;
     process.env.faker_locale = jsonData.faker_locale;
     process.env.currency_symbol = jsonData.currency_symbol;

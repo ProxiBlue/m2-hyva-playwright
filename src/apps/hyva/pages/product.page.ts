@@ -137,11 +137,11 @@ export default class ProductPage extends BasePage {
                 const wishlistButton = this.page.locator(this.locators.wishlist_button);
 
                 // Use JavaScript evaluation with multiple approaches to trigger the wishlist functionality
-                await this.page.evaluate(() => {
-                    // Find the button element
-                    const element = document.querySelector('.product-info-main [aria-label="Add to Wish List"]');
+                await this.page.evaluate((selector) => {
+                    // Find the button element using the provided selector
+                    const element = document.querySelector(selector);
                     if (!element) {
-                        console.error('Wishlist button not found');
+                        console.error('Wishlist button not found with selector: ' + selector);
                         return;
                     }
 
@@ -225,7 +225,7 @@ export default class ProductPage extends BasePage {
                     } catch (e) {
                         console.error('Error dispatching click event:', e);
                     }
-                });
+                }, this.locators.wishlist_button);
 
                 await this.page.waitForLoadState('domcontentloaded');
                 await this.page.waitForSelector(pageLocators.message_error, { timeout: 7000 });
