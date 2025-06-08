@@ -26,7 +26,7 @@ const testPages = baseTest.extend<pages>({
 
         // Check if this is an admin test by looking at the test file path
         const testFilePath = process.env.TEST_FILE_PATH || '';
-        const isAdminTest = testFilePath.includes('admin') || process.env.TEST_BASE === 'admin';
+        const isAdminTest = testFilePath.includes('admin') || testFilePath.includes('admin.spec.ts') || process.env.TEST_BASE === 'admin';
 
         // If this is an admin test, load the authentication state for this worker
         if (isAdminTest) {
