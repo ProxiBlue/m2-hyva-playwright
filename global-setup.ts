@@ -29,7 +29,7 @@ function joinUrl(base: string, path: string): string {
  * This allows each worker to have its own authenticated session
  */
 async function authenticateAdmin(workerId: number) {
-  console.log(`Authenticating admin for worker ${workerId}`);
+  //console.log(`Authenticating admin for worker ${workerId}`);
 
   // Launch browser
   const browser = await chromium.launch();
@@ -93,7 +93,7 @@ async function authenticateAdmin(workerId: number) {
   try {
     // Navigate to admin page
     await page.goto(adminUrl);
-    console.log(`Navigated to admin page for worker ${adminUrl}`);
+    //console.log(`Navigated to admin page for worker ${adminUrl}`);
 
     // Take a screenshot of the login page
     await page.screenshot({
@@ -119,7 +119,7 @@ async function authenticateAdmin(workerId: number) {
     const storageStatePath = path.join(authDir, `adminAuth${workerId}.json`);
     await context.storageState({ path: storageStatePath });
 
-    console.log(`Saved admin auth state on for worker ${workerId} to ${storageStatePath}`);
+    //console.log(`Saved admin auth state on for worker ${workerId} to ${storageStatePath}`);
   } catch (error) {
     console.error(`Admin login failed for worker ${workerId}:`, error);
 
@@ -146,7 +146,7 @@ async function authenticateAdmin(workerId: number) {
 const globalSetup = async (config: FullConfig) => {
   // Initialize configuration to ensure environment variables are set
   const appName = process.env.APP_NAME || 'hyva';
-  console.log(`Initializing configuration for app: ${appName}`);
+  //console.log(`Initializing configuration for app: ${appName}`);
   initConfig(appName);
 
   // Set up browser

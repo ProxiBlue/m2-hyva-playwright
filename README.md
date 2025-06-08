@@ -35,9 +35,9 @@ example:
 
 ```
 {
-  "admin_user": "admin",
-  "admin_password": "2RDMUjuGO7ojLYI%",
-  "admin_path": "admin-uptactics"
+  "admin_user": "",
+  "admin_password": "",
+  "admin_path": ""
 }
 ```
 
@@ -46,10 +46,11 @@ Then in any tests that require admin login/auth you can use:
 ```
 process.env.admin_user
 process.env.admin_password
+process.env.admin_path
 ```
 
 The file must not be commited to repo for security concerns.
-It is best to always create a dummy admin user for tests runs, and not use a real existing admin user
+It is best to always create a test admin user, and not use a real existing admin user
 
 ## Locale for address data
 
@@ -388,8 +389,19 @@ From the project root folder:
 
 ```bash
 # Run the tests for the PPS app against the PPS site
-npx yarn workspace pps test-live
+yarn workspace pps test:all
 ```
+
+or you can run individual test suites
+
+```bash
+yarn workspace pps test:hyva
+yarn workspace pps test:pps
+yarn workspace pps test:pps-checkout
+yarn workspace pps test:admin
+```
+
+obviously, since you cannot test the example site live, admin/checkout tests will fail.
 
 You'll notice that:
 1. The base Hyva tests run first
@@ -398,7 +410,7 @@ You'll notice that:
 
 This is achieved by the command:
 ```bash
-APP_NAME=pps NODE_ENV=live TEST_BASE=hyva playwright test
+APP_NAME=pps TEST_BASE=hyva npx playwright test
 ```
 
 Where:
@@ -412,10 +424,20 @@ Alternatively, you can run tests from the app folder:
 cd src/apps/pps
 
 # Run the tests
-npx yarn test-live
+npx yarn test:all
 ```
 
 #### Skipping Base Tests
+
+##### Problem
+
+When running layered tests where one app extends another (e.g., a site-specific app extending the base Hyva tests), there's a need to skip certain base tests that aren't relevant to the extending app. The original implementation had a flaw where tests with identical names in different test suites would both be skipped when only one was intended to be skipped.
+
+For example, if both `simple_product.spec.ts` and `configurable_product.spec.ts` had tests with identical names, and only the tests in `configurable_product.spec.ts` needed to be skipped, the original implementation would skip those tests in both files.
+
+##### Solution
+
+The solution provides a more robust way to skip tests by considering both the test suite name and the test title, rather than just the test title.
 
 You can skip specific base tests by defining them in your app's `config.json` file under the `skipBaseTests` key.
 
@@ -458,6 +480,21 @@ test.beforeEach(async ({ homePage }, testInfo) => {
 
 The `shouldSkipTest` function extracts the test suite name from `testInfo.parent.title` and the test title from `testInfo.title`, eliminating the need for manual test suite name declaration.
 
+##### Benefits
+
+1. **Precision**: Skip tests based on both test suite and test title, preventing unintended skips
+2. **Maintainability**: Clearer configuration structure makes it easier to manage which tests to skip
+3. **Simplicity**: Automatic extraction of test suite name eliminates the need for manual declaration
+
+##### Troubleshooting
+
+If tests aren't being skipped as expected:
+
+1. Verify the test suite name in your config matches the describe block's title exactly
+2. Check that the test title in your config matches the test's title exactly
+3. Ensure the `shouldSkipTest` function is being called correctly in the beforeEach hook
+4. For debugging, you can add console logs in the test-skip.ts file to see what's being checked
+
 For a detailed explanation of the test skip solution, see [TEST_SKIP_SOLUTION.md](./TEST_SKIP_SOLUTION.md).
 
 ![2023-11-11_19-41](https://github.com/ProxiBlue/m2-hyva-playwright/assets/4994260/e396b920-332e-40af-9d97-b47795938210)
@@ -465,15 +502,9 @@ For a detailed explanation of the test skip solution, see [TEST_SKIP_SOLUTION.md
 
 ## Important Implementation Details
 
-### Admin Tests Configuration
-
-**Important**: Admin tests must use only 1 worker, as each login will log out any previous test sessions. 
-
-If you have enough retries configured, tests will eventually resolve, but this will increase execution time. It's better to configure admin tests to run sequentially.
-
 ### App Fixtures File
 
-The fixtures file is a key component for extending the base Hyva tests. See the example here:
+The fixtures file is a key part for extending the base Hyva tests. See the example here:
 [PPS Example Fixtures](https://github.com/ProxiBlue/pps-example-tests/blob/main/fixtures/index.ts)
 
 #### Extending Base Fixtures
@@ -515,7 +546,7 @@ You can customize test data in two ways:
 
 1. **Import base data files**: Import Hyva base locators/data JSON files and extend them
 
-2. **Create matching data files**: Simply create a data file in your app with the same name as one in the base Hyva tests. Your app's data file will be loaded instead of the Hyva base one.
+2. **Create matching data files**: Create a data file in your app with the same name as one in the base Hyva tests. Your app's data file will be loaded instead of the Hyva base one.
 
 This approach lets you use your site-specific data with base Hyva tests without modifying the base files, making it easier to update from upstream.
 
@@ -549,7 +580,7 @@ This framework follows the Page Object Model (POM) pattern, which offers several
 1. **Better organization**: Keep test logic separate from page interactions
 2. **Reusability**: Reuse page objects across multiple tests
 3. **Maintainability**: When the UI changes, you only need to update the page object, not all tests
-4. **Extensibility**: Easily extend page objects for your specific site needs
+4. **Extensibility**: Extend page objects for your specific site needs
 
 It's recommended to:
 - Keep page interactions in 'page' classes
