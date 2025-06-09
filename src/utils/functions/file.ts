@@ -78,16 +78,73 @@ export const isFileUpdateComplete = async (
   }
 };
 
-export const removeFilesInDirectory = async (directory: string) => {
-  fs.readdir(directory, (err, files) => {
-    if (err) throw err;
+/**
+ * Removes all files in a directory
+ * @param directory The directory to clean up
+ * @returns A promise that resolves when all files have been removed
+ */
+export const removeFilesInDirectory = async (directory: string): Promise<void> => {
+  return new Promise((resolve, reject) => {
+    fs.readdir(directory, (err, files) => {
+      if (err) {
+        reject(err);
+        return;
+      }
 
-    for (const file of files) {
-      fs.unlink(path.join(directory, file), (err) => {
-        if (err) throw err;
-      });
-    }
+      if (files.length === 0) {
+        resolve();
+        return;
+      }
+
+      let completed = 0;
+      let hasError = false;
+
+      for (const file of files) {
+        fs.unlink(path.join(directory, file), (err) => {
+          if (err) {
+            if (!hasError) {
+              hasError = true;
+              reject(err);
+            }
+            return;
+          }
+
+          completed++;
+          if (completed === files.length && !hasError) {
+            resolve();
+          }
+        });
+      }
+    });
   });
+};
+
+/**
+ * Recursively removes all files and directories within a directory
+ * @param directory The directory to clean up
+ * @returns A promise that resolves when all files and directories have been removed
+ */
+export const cleanDirectory = async (directory: string): Promise<void> => {
+  if (!fs.existsSync(directory)) {
+    return;
+  }
+
+  const items = fs.readdirSync(directory);
+
+  for (const item of items) {
+    const itemPath = path.join(directory, item);
+    const stats = fs.statSync(itemPath);
+
+    if (stats.isDirectory()) {
+      // Recursively clean subdirectory
+      await cleanDirectory(itemPath);
+      // Remove the now-empty directory
+      fs.rmdirSync(itemPath);
+    } else {
+      // Remove file
+      fs.unlinkSync(itemPath);
+    }
+  }
 };
 
 export const updateFile = async (
