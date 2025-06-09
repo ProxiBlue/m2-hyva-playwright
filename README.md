@@ -245,6 +245,8 @@ Out the box we will tests: Chromium, webkit and firefox. Ref in playwright confi
 
 After installation, you can run the base Hyva tests against the Hyva example website.
 
+For detailed information about test reports, including how to find and interpret screenshots and videos of failed tests, see [Test Reports Documentation](./TEST_REPORTS.md).
+
 ### Configuration
 Before running tests, check the configuration file to see the target site URL:
 ```
