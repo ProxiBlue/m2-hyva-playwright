@@ -24,33 +24,26 @@ I am certainly not an expert in anything playwright or js related!
 * There is now an 'admin' app which you can pull in pages/fixtures of in your tests to effect admin related tests, or just use as is to test base admin functionalities
 * If you name your checkout app 'checkout' you can refer to its files and sources using ```@checkout```
 
-### Admin tests user credentials
+### Admin Authentication
 
-Create a file named ```config.private.json``` in the root of your project (same location as config.json)
-Place into this file your admin user credentials that will be used for tests that required admin login.
+Admin authentication is now handled automatically with an on-demand approach:
 
-** NOTE: Admin tests can only use 1 worker, as the admin login will negate existing logins. So admin tests must be run sequencially ! **
+1. When a test calls `adminPage.login()`, a temporary admin user is created specifically for that test
+2. Each admin user has a unique username and a strong, randomly generated password
+3. The temporary admin user is automatically removed after the test completes
+4. No configuration is required for admin credentials
 
-example:
+The admin path is still configurable in your environment or config files:
 
 ```
 {
-  "admin_user": "",
-  "admin_password": "",
-  "admin_path": ""
+  "admin_path": "admin"
 }
 ```
 
-Then in any tests that require admin login/auth you can use: 
+This approach allows admin tests to run in parallel with multiple workers, as each test creates its own isolated admin user.
 
-```
-process.env.admin_user
-process.env.admin_password
-process.env.admin_path
-```
-
-The file must not be commited to repo for security concerns.
-It is best to always create a test admin user, and not use a real existing admin user
+For more details, see the [Admin Authentication Solution](./ADMIN_AUTH_SOLUTION.md) document.
 
 ## Locale for address data
 
@@ -357,7 +350,7 @@ After creating your app, you'll need to edit these files in the `src/apps/{youra
    * Example: See the PPS app configuration mentioned below
 
 2. **config.private.json** (optional)
-   * Store sensitive data like API keys and admin credentials
+   * Store sensitive data like API keys or other private configuration
    * **Important**: Add this file to `.gitignore` to prevent committing sensitive information
 
 3. **playwright.config.js**
