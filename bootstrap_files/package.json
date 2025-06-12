@@ -4,8 +4,13 @@
   "private": true,
   "license": "MIT",
   "scripts": {
-    "test": "bash ./run.sh",
-    "test:debug": "APP_NAME=NEW_APP_NAME  PWDEBUG=1 playwright test",
+    "test:all": "yarn test:admin && yarn test:hyva && yarn test:app",
+    "test:admin": "NODE_TLS_REJECT_UNAUTHORIZED=0 APP_NAME=NEW_APP_NAME TEST_BASE=admin npx playwright test --workers=1 --retries=0",
+    "test:hyva": "NODE_TLS_REJECT_UNAUTHORIZED=0 APP_NAME=NEW_APP_NAME TEST_BASE=hyva npx playwright test",
+    "test:app": "NODE_TLS_REJECT_UNAUTHORIZED=0 APP_NAME=NEW_APP_NAME TEST_BASE=NEW_APP_NAME npx playwright test",
+    "test:debug": "NODE_TLS_REJECT_UNAUTHORIZED=0 APP_NAME=NEW_APP_NAME PWDEBUG=1 npx playwright test",
+    "test:ui": "NODE_TLS_REJECT_UNAUTHORIZED=0 APP_NAME=NEW_APP_NAME npx playwright test --ui",
     "report": "npx playwright show-report reports/playwright-report",
+    "test:display": "NODE_TLS_REJECT_UNAUTHORIZED=0 APP_NAME=NEW_APP_NAME npx playwright test --headed"
   }
 }

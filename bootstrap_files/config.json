@@ -1,10 +1,8 @@
 {
-  "env": {
-    "dev": { "url": "" },
-    "uat": { "url": "" },
-    "live": { "url": "" }
-  },
+  "url": "",
   "mailcatcher": "",
-  "skipBaseTests": [],
-  "faker_locale": "en_US"
+  "skipBaseTests": {
+  },
+  "faker_locale": "en_US",
+  "currency_symbol": "$"
 }

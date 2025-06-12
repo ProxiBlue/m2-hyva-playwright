@@ -7,7 +7,14 @@
     "src/apps/*"
   ],
   "scripts": {
-    "test": "bash ./run.sh"
+    "test:all": "yarn workspaces run test:all",
+    "test:admin": "yarn workspaces run test:admin",
+    "test:hyva": "yarn workspaces run test:hyva",
+    "test:app": "yarn workspaces run test:app",
+    "test:debug": "yarn workspaces run test:debug",
+    "test:ui": "yarn workspaces run test:ui",
+    "test:display": "yarn workspaces run test:display",
+    "report": "yarn workspaces run report"
   },
   "author": "Lucas van Staden",
   "license": "MIT",
