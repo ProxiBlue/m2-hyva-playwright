@@ -52,9 +52,6 @@ The tests use faker.js, and you can set your locale in the config.json file : ``
 Note that country selection is excluded from the built-in customer generated data as faker.js will not limit country to the selected locale.
 You have to do country selections yourself.
 
-
-
-
 ## Progress 
 
 Adapted from https://github.com/elgentos/magento2-cypress-testing-suite/
