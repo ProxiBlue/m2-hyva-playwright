@@ -8,6 +8,6 @@
     "test:ui": "NODE_TLS_REJECT_UNAUTHORIZED=0 APP_NAME=admin  npx playwright test --project=chromium --ui",
     "test:display": "NODE_TLS_REJECT_UNAUTHORIZED=0 APP_NAME=admin  npx playwright test --project=chromium --headed --workers=1",
     "test:debug": "NODE_TLS_REJECT_UNAUTHORIZED=0 APP_NAME=admin  PWDEBUG=1 npx playwright test --project=chromium",
-    "report": "PLAYWRIGHT_HTML_HOST=pps-mageos110.ddev.site npx playwright show-report reports/playwright-report"
+    "report": "PLAYWRIGHT_HTML_HOST=pps-mageos110.ddev.site npx playwright show-report ../../../../test-results/pps-admin-reports/playwright-report"
   }
 }

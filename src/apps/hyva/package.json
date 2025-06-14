@@ -8,7 +8,7 @@
     "test": "NODE_TLS_REJECT_UNAUTHORIZED=0 APP_NAME=hyva  TEST_BASE=hyva npx playwright test",
     "test:ui": "NODE_TLS_REJECT_UNAUTHORIZED=0 APP_NAME=hyva  TEST_BASE=hyva npx playwright test --ui",
     "test:debug": "NODE_TLS_REJECT_UNAUTHORIZED=0 APP_NAME=hyva  TEST_BASE=hyva PWDEBUG=1 npx playwright test",
-    "report": "npx playwright show-report reports/playwright-report",
+    "report": "npx playwright show-report ../../../../test-results/pps-hyva-reports/playwright-report",
     "test:display": "NODE_TLS_REJECT_UNAUTHORIZED=0 APP_NAME=hyva  TEST_BASE=hyva npx playwright test --headed"
   }
 }

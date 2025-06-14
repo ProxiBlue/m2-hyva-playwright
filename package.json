@@ -21,6 +21,7 @@
   "devDependencies": {
     "@faker-js/faker": "*",
     "@playwright/test": "^1.44.1",
+    "axios": "^1.6.2",
     "colors": "^1.4.0",
     "playwright": "^1.44.1",
     "ts-node": "^10.9.1",

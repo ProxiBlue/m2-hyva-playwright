@@ -27,4 +27,10 @@ export const initConfig = (appName: string) => {
     process.env.admin_password = privateData.admin_password;
     process.env.admin_path = privateData.admin_path;
     process.env.url = jsonData.url;
+
+    // Set Pi-hole configuration if available
+    if (privateData["pi-hole-api"] && privateData["pi-hole-service"]) {
+        process.env.pi_hole_api = privateData["pi-hole-api"];
+        process.env.pi_hole_service = privateData["pi-hole-service"];
+    }
 };

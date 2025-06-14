@@ -107,8 +107,8 @@ if (locale == "en_GB") {
 
 For a complete example of how to inject extra locale data, see the following files in the test suite:
 
-- [custom-locale-example.ts](src/apps/pps/examples/custom-locale-example.ts): Contains two example functions that demonstrate how to create a custom locale and how to extend an existing locale.
-- [custom-locale-test.spec.ts](src/apps/pps/examples/custom-locale-test.spec.ts): Contains example tests that use the custom locale data and verify that it works as expected.
+- [custom-locale-example.ts](./locale_examples/custom-locale-example.ts): Contains two example functions that demonstrate how to create a custom locale and how to extend an existing locale.
+- [custom-locale-test.spec.ts](./locale_examples/custom-locale-test.spec.ts): Contains example tests that use the custom locale data and verify that it works as expected.
 
 To run the example tests:
 

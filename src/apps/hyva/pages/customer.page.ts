@@ -79,7 +79,7 @@ export default class CustomerPage extends BasePage<CustomerPageData> {
             });
     }
 
-    async createAccount(customerData: object) {
+    async createAccount(customerData: CustomerData) {
         await test.step(
             this.workerInfo.project.name + ": Customer Create ",
             async () => {

@@ -90,7 +90,7 @@ export default class CategoryPage extends BasePage<CategoryData> {
 
                 // Try to call the function directly
                 try {
-                    const initFunction = window[functionName];
+                    const initFunction = window[functionName as keyof Window] as unknown as Function;
                     if (typeof initFunction === 'function') {
                         const instance = initFunction();
                         if (instance && typeof instance.addToCompare === 'function') {
