@@ -34,7 +34,7 @@ const testPages = baseTest.extend<pages>({
     workerId: [async ({}, use, workerInfo) => {
         // Use the worker index as the worker ID
         await use(workerInfo.workerIndex);
-    }, { scope: 'worker' }],
+    }, { scope: 'test' }],
 
     // Add a testInfo fixture to access test information
     testInfo: async ({}, use, testInfo) => {

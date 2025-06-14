@@ -4,6 +4,7 @@ import fs from "fs";
 import path from "path";
 import { initConfig } from "./config.init";
 import { execSync } from "child_process";
+import axios from "axios";
 
 export const projects = async (config: any) => {
   const projectArg = process.argv.find((arg) => arg.includes("project")) || '';
@@ -24,6 +25,34 @@ function cleanupStragglingAdminUsers() {
     execSync(command, { stdio: 'inherit' });
   } catch (error) {
     console.error('Failed to clean up straggling admin users:', error);
+  }
+}
+
+/**
+ * Disable Pi-hole for 20 minutes if Pi-hole configuration is available
+ * Note: Pi-hole API expects the disable duration in seconds (1200 = 20 minutes)
+ */
+async function disablePiHole() {
+  if (process.env.pi_hole_api && process.env.pi_hole_service) {
+    console.log('Pi-hole configuration found. Disabling Pi-hole for 20 minutes...');
+
+    try {
+      const piHoleService = process.env.pi_hole_service;
+      const piHoleApi = process.env.pi_hole_api;
+      const disableUrl = `http://${piHoleService}/admin/api.php?disable=1200&auth=${piHoleApi}`;
+
+      const response = await axios.get(disableUrl);
+
+      if (response.data && response.data.status === 'disabled') {
+        console.log('Pi-hole successfully disabled for 20 minutes');
+      } else {
+        console.error('Failed to disable Pi-hole:', response.data);
+      }
+    } catch (error) {
+      console.error('Error disabling Pi-hole:', error);
+    }
+  } else {
+    console.log('No Pi-hole configuration found. Skipping Pi-hole disable.');
   }
 }
 
@@ -49,6 +78,9 @@ const globalSetup = async (config: FullConfig) => {
   const appName = process.env.APP_NAME || 'hyva';
   //console.log(`Initializing configuration for app: ${appName}`);
   initConfig(appName);
+
+  // Disable Pi-hole if configuration is available
+  await disablePiHole();
 
   // Set up browser
   const browser = await chromium.launch();
