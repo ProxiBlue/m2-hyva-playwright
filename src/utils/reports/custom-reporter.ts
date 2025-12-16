@@ -8,9 +8,13 @@ import {
   TestResult,
   TestStep,
 } from "@playwright/test/reporter";
-import colors from "colors";
+import path from "path";
+import { extractLastScreenshotFromTrace } from "../functions/trace-extractor";
 
 process.env.FORCE_COLOR = "true";
+
+// Import colors using require to properly extend String prototype
+require("colors");
 
 let totalTests = 0;
 let i = 1;
@@ -133,7 +137,7 @@ export default class CustomReporter implements Reporter {
         );
   };
 
-  onTestEnd = (test: TestCase, result: TestResult): void => {
+  onTestEnd = async (test: TestCase, result: TestResult): Promise<void> => {
     testEndTime = getFormattedTime();
     console.log(
       `${getFormattedTime()}:`.bgCyan.black,
@@ -145,10 +149,40 @@ export default class CustomReporter implements Reporter {
         : `${result.status}`.red.bold,
       `\n\nTest duration: ${getDuration(testStartTime, testEndTime)}\n`
     );
-    if (result.status === "failed") {
-      console.log(stripAnsi(result.error?.message.red ?? ""));
-      console.log(stripAnsi(result.error?.stack.red ?? ""));
+
+    // Extract last screenshot from trace when test fails
+    if (result.status === "failed" && result.attachments) {
+      try {
+        // Find the trace attachment
+        const traceAttachment = result.attachments.find(
+          attachment => attachment.name === "trace" && attachment.path
+        );
+
+        if (traceAttachment && traceAttachment.path) {
+          console.log(`${getFormattedTime()}:`.bgCyan.black, ` Extracting last screenshot from trace...`.magenta);
+
+          // Get the output directory (same as where the trace is stored)
+          const outputDir = path.dirname(traceAttachment.path);
+
+          // Extract the last screenshot from trace
+          const extractedScreenshotPath = await extractLastScreenshotFromTrace(
+            traceAttachment.path,
+            outputDir
+          );
+
+          if (extractedScreenshotPath) {
+            console.log(`${getFormattedTime()}:`.bgCyan.black, ` Successfully extracted trace screenshot: ${path.basename(extractedScreenshotPath)}`.green);
+          } else {
+            console.log(`${getFormattedTime()}:`.bgCyan.black, ` Failed to extract screenshot from trace`.yellow);
+          }
+        }
+      } catch (error) {
+        console.error(`${getFormattedTime()}:`.bgCyan.black, ` Error extracting trace screenshot:`.red, error);
+      }
     }
+
+    // Detailed failure information is no longer output to console
+    // since reports now exist and provide this information
     if (result.status === "passed" || result.retry === 3) i++;
   };
 

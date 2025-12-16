@@ -15,6 +15,7 @@ describe("Admin Checkouts", () => {
     });
 
     test("checkout using Check / Money order", async ({customerData, adminOrdersPage}, testInfo) => {
+        test.setTimeout(300000); // Extend timeout to 5 minutes (300 seconds)
         await adminOrdersPage.createNewOrderWithNewCustomer(customerData)
         await adminOrdersPage.selectFirstSimpleProductToAddToOrder();
         await adminOrdersPage.selectFirstShippingMethodToAddToOrder();

@@ -1,7 +1,60 @@
-import { removeFilesInDirectory } from "@utils/functions/file";
 import fs from "fs";
 import path from "path";
 import axios from "axios";
+import { execSync } from "child_process";
+
+/**
+ * Copy HTML reports from the app-specific location to the expected location
+ */
+async function copyHtmlReports() {
+  console.log('Copying HTML reports to the expected location...');
+
+  try {
+    const appName = process.env.APP_NAME || 'hyva';
+    const testBase = process.env.TEST_BASE || 'default';
+    const reportDirName = `${appName}-${testBase}-reports`;
+
+    // Source directory (where reports are actually generated)
+    const sourceDir = path.join(
+      process.cwd(),
+      '../../../../../tests',
+      reportDirName,
+      'playwright-report'
+    );
+
+    // Destination directory (where reports should be - in the main test-results directory)
+    const destDir = path.join(
+      process.cwd(),
+      '../../../test-results',
+      'pps',
+      reportDirName
+    );
+
+    // Create the destination directory if it doesn't exist
+    if (!fs.existsSync(destDir)) {
+      fs.mkdirSync(destDir, { recursive: true });
+    }
+
+    // Destination report directory
+    const destReportDir = path.join(destDir, 'playwright-report');
+
+    // Remove the destination report directory if it exists
+    if (fs.existsSync(destReportDir)) {
+      execSync(`rm -rf "${destReportDir}"`);
+    }
+
+    // Check if the source directory exists
+    if (fs.existsSync(sourceDir)) {
+      // Copy the reports from the source to the destination
+      execSync(`cp -r "${sourceDir}" "${destDir}/"`);
+      console.log(`Successfully copied HTML reports from ${sourceDir} to ${destDir}`);
+    } else {
+      console.log(`Source directory ${sourceDir} does not exist, skipping copy`);
+    }
+  } catch (error) {
+    console.error('Failed to copy HTML reports:', error);
+  }
+}
 
 /**
  * Enable Pi-hole if it was disabled and configuration is available
@@ -37,20 +90,9 @@ async function enablePiHole() {
 async function globalTeardown() {
   console.log('Running global teardown...');
 
-  // Clean up adminauth.json files
-  const authDir = path.join(__dirname, 'auth');
 
-  if (fs.existsSync(authDir)) {
-    console.log('Cleaning up adminauth.json files...');
-    try {
-      await removeFilesInDirectory(authDir);
-      console.log('Successfully removed adminauth.json files');
-    } catch (error) {
-      console.error('Failed to remove adminauth.json files:', error);
-    }
-  } else {
-    console.log('No auth directory found, skipping cleanup');
-  }
+  // Copy HTML reports to the expected location
+  await copyHtmlReports();
 
   // Enable Pi-hole if it was disabled
   await enablePiHole();

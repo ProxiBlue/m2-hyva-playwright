@@ -9,7 +9,7 @@ const config: PlaywrightTestConfig = {
     workers: 3,
     globalSetup: require.resolve("@home/global-setup"),
     globalTeardown: require.resolve("@home/global-teardown"),
-    outputDir: path.join(process.cwd(), '../../../test-results', `luma-${process.env.TEST_BASE || 'default'}`),
+    outputDir: path.join(process.cwd(), '../../../test-results', 'pps', `luma-${process.env.TEST_BASE || 'default'}`),
     expect: {
         timeout: 20000,
     },
@@ -32,13 +32,13 @@ const config: PlaywrightTestConfig = {
         [
             "json",
             {
-                outputFile: path.join(process.cwd(), '../../../test-results', `luma-${process.env.TEST_BASE || 'default'}-reports`, "json-reports/json-report.json"),
+                outputFile: path.join(process.cwd(), '../../../test-results', 'pps', `luma-${process.env.TEST_BASE || 'default'}-reports`, "json-reports/json-report.json"),
             },
         ],
         [
             "html",
             {
-                outputFolder: path.join(process.cwd(), '../../../test-results', `luma-${process.env.TEST_BASE || 'default'}-reports`, "playwright-report/"),
+                outputFolder: path.join(process.cwd(), '../../../test-results', 'pps', `luma-${process.env.TEST_BASE || 'default'}-reports`, "playwright-report/"),
                 open: "never",
             },
         ]

@@ -369,8 +369,29 @@ export default class ProductPage extends BasePage {
             async () => {
                 await this.page.fill(productLocators.product_qty_input, qty);
                 await this.page.locator(productLocators.product_add_to_cart_button).click();
-                await this.page.waitForSelector(pageLocators.message_success)
-                await this.page.waitForLoadState('domcontentloaded');
+
+                // Use a more robust approach for waiting for success message
+                try {
+                    await this.page.waitForSelector(pageLocators.message_success, { timeout: 10000 });
+                } catch (error) {
+                    // Check if page context is still valid before retrying
+                    if (!this.page.isClosed()) {
+                        await this.page.waitForTimeout(2000);
+                        await this.page.waitForSelector(pageLocators.message_success, { timeout: 5000 });
+                    } else {
+                        throw new Error('Page context was closed during add to cart operation');
+                    }
+                }
+
+                // Use a more robust approach for waiting after add to cart
+                try {
+                    await this.page.waitForLoadState('domcontentloaded', { timeout: 5000 });
+                } catch (error) {
+                    // If waitForLoadState fails, wait a bit and continue
+                    // This handles Firefox-specific timing issues
+                    await this.page.waitForTimeout(1000);
+                }
+
                 expect(await this.page.locator(pageLocators.message_success).isVisible(), "Verify element is visible " + pageLocators.message_success).toBe(true);
                 const productName = this.data.default.name;
                 expect(await this.page.locator(pageLocators.message_success).textContent()).toContain(productName);

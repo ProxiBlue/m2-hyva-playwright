@@ -6,9 +6,9 @@
    - The bootstrap script was checking for the existence of `$DIR` but defining `$APP`, so the directory check wasn't working correctly.
    - Fixed by changing the check to use `$APP` instead of `$DIR`.
 
-2. **Outdated Admin Authentication**
-   - The `config.private.json` file still had fields for `admin_user` and `admin_password`, which are no longer needed according to the new on-demand admin authentication approach described in `ADMIN_AUTH_SOLUTION.md`.
-   - Removed these fields from the template file.
+2. **Admin Authentication Configuration**
+   - Updated the `config.private.json` file to include the required `admin_username` and `admin_password` fields for admin authentication.
+   - These fields are required for admin tests to function properly.
 
 3. **Hardcoded App Name in run.sh**
    - The `run.sh` file was hardcoded to use "pps" as the app name, which is not appropriate for a bootstrap file that should be configurable for any app name.

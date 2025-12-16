@@ -32,15 +32,42 @@ export default class SideCartPage extends BasePage {
         await test.step(
             this.workerInfo.project.name + ": Open Sidecart ",
             async () => {
-                this.page.waitForLoadState('domcontentloaded')
-                await test.step(
-                    this.workerInfo.project.name + ": Click element " + locators.miniCartButton,
-                    async () => await this.page.locator(locators.miniCartButton).click()
-                );
-                await this.page.waitForTimeout(500);
-                await this.page.waitForLoadState('domcontentloaded');
+                // Use a more robust approach for waiting
+                try {
+                    await this.page.waitForLoadState('domcontentloaded', { timeout: 5000 });
+                } catch (error) {
+                    // If waitForLoadState fails, wait a bit and continue
+                    await this.page.waitForTimeout(1000);
+                }
+
+                // Check if sidecart is already open
                 const sideCartTitle = this.page.locator(locators.title);
-                await expect(sideCartTitle).toBeVisible();
+                const isAlreadyOpen = await sideCartTitle.isVisible().catch(() => false);
+
+                if (!isAlreadyOpen) {
+                    await test.step(
+                        this.workerInfo.project.name + ": Click element " + locators.miniCartButton,
+                        async () => {
+                            // Ensure the mini cart button is ready before clicking
+                            await this.page.locator(locators.miniCartButton).waitFor({ state: 'visible', timeout: 10000 });
+                            await this.page.locator(locators.miniCartButton).click();
+                        }
+                    );
+
+                    // Wait longer for sidecart to open, especially in Firefox
+                    await this.page.waitForTimeout(1000);
+
+                    // Use a more robust approach for waiting after click
+                    try {
+                        await this.page.waitForLoadState('domcontentloaded', { timeout: 5000 });
+                    } catch (error) {
+                        // If waitForLoadState fails, wait a bit and continue
+                        await this.page.waitForTimeout(1000);
+                    }
+                }
+
+                // Ensure the sidecart is visible with a longer timeout
+                await expect(sideCartTitle).toBeVisible({ timeout: 10000 });
             });
     }
 
@@ -48,10 +75,31 @@ export default class SideCartPage extends BasePage {
         await test.step(
             this.workerInfo.project.name + ": Check side cart qty ",
             async () => {
-                // browse to homepage
-                this.page.reload();
-                await this.page.waitForLoadState('domcontentloaded');
-                await this.page.waitForSelector(locators.miniCartQtyIndicator);
+                // Use a more robust approach for page reload in Firefox
+                try {
+                    if (!this.page.isClosed()) {
+                        await this.page.reload({ waitUntil: 'domcontentloaded', timeout: 10000 });
+                    } else {
+                        throw new Error('Page context was closed during checkQtyIndication');
+                    }
+                } catch (error) {
+                    // If reload fails, try navigating to current URL instead
+                    if (!this.page.isClosed()) {
+                        const currentUrl = this.page.url();
+                        await this.page.goto(currentUrl, { waitUntil: 'domcontentloaded', timeout: 10000 });
+                    } else {
+                        throw new Error('Page context was closed during checkQtyIndication');
+                    }
+                }
+
+                // Use a more robust approach for waiting
+                try {
+                    await this.page.waitForLoadState('domcontentloaded', { timeout: 5000 });
+                } catch (error) {
+                    await this.page.waitForTimeout(1000);
+                }
+
+                await this.page.waitForSelector(locators.miniCartQtyIndicator, { timeout: 10000 });
                 await test.step(
                     this.workerInfo.project.name + ": Verify element is visible " + locators.miniCartQtyIndicator,
                     async () => expect(await this.page.locator(locators.miniCartQtyIndicator).isVisible()).toBe(true)

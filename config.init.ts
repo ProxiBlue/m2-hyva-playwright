@@ -23,10 +23,10 @@ export const initConfig = (appName: string) => {
     process.env.faker_locale = jsonData.faker_locale;
     process.env.currency_symbol = jsonData.currency_symbol;
     let privateData = require(privateConfigFile);
-    process.env.admin_user = privateData.admin_user;
+    process.env.admin_username = privateData.admin_username;
     process.env.admin_password = privateData.admin_password;
     process.env.admin_path = privateData.admin_path;
-    process.env.url = jsonData.url;
+    process.env.url = privateData.url || jsonData.url;
 
     // Set Pi-hole configuration if available
     if (privateData["pi-hole-api"] && privateData["pi-hole-service"]) {

@@ -8,6 +8,7 @@
   ],
   "scripts": {
     "test:all": "yarn workspaces run test:all",
+    "test:all:ui": "yarn workspaces run test:all:ui",
     "test:admin": "yarn workspaces run test:admin",
     "test:hyva": "yarn workspaces run test:hyva",
     "test:app": "yarn workspaces run test:app",
@@ -21,6 +22,7 @@
   "devDependencies": {
     "@faker-js/faker": "*",
     "@playwright/test": "^1.44.1",
+    "adm-zip": "^0.5.16",
     "axios": "^1.6.2",
     "colors": "^1.4.0",
     "playwright": "^1.44.1",

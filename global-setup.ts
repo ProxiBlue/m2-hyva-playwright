@@ -3,7 +3,6 @@ import { removeFilesInDirectory, cleanDirectory } from "@utils/functions/file";
 import fs from "fs";
 import path from "path";
 import { initConfig } from "./config.init";
-import { execSync } from "child_process";
 import axios from "axios";
 
 export const projects = async (config: any) => {
@@ -11,22 +10,6 @@ export const projects = async (config: any) => {
   const projectName = projectArg.split("=")[1];
 };
 
-/**
- * Clean up any straggling temporary admin users from previous test runs
- */
-function cleanupStragglingAdminUsers() {
-  console.log('Cleaning up any straggling temporary admin users...');
-
-  try {
-    // Use direct MySQL command to remove all temporary admin users
-    const command = `cd /var/www/html && mysql -e "DELETE FROM admin_user WHERE username LIKE 'temp_admin_%';"`;
-
-    // Execute the command
-    execSync(command, { stdio: 'inherit' });
-  } catch (error) {
-    console.error('Failed to clean up straggling admin users:', error);
-  }
-}
 
 /**
  * Disable Pi-hole for 20 minutes if Pi-hole configuration is available
@@ -71,7 +54,6 @@ function joinUrl(base: string, path: string): string {
   return `${cleanBase}/${cleanPath}`;
 }
 
-// No longer needed - admin authentication is now done on-demand in the AdminPage class
 
 const globalSetup = async (config: FullConfig) => {
   // Initialize configuration to ensure environment variables are set
@@ -119,19 +101,17 @@ const globalSetup = async (config: FullConfig) => {
     }
   }
 
-  // Use the m2-hyva-playwright test-results directory for reports
+  // Use the tests directory for reports
   const reportPath = path.join(
     process.cwd(),
-    "tests/m2-hyva-playwright/test-results",
+    "test-results",
+    "pps",
     `${process.env.APP_NAME || 'default'}-${process.env.TEST_BASE || 'default'}-reports`
   );
 
   !fs.existsSync(reportPath) && fs.mkdirSync(reportPath, { recursive: true });
   process.env.REPORT_PATH = reportPath;
 
-  // Clean up any straggling temporary admin users from previous test runs
-  console.log('Cleaning up any straggling temporary admin users at startup');
-  cleanupStragglingAdminUsers();
 };
 
 export default globalSetup;

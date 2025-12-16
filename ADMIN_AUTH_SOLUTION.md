@@ -1,68 +1,35 @@
-# On-Demand Admin Authentication Solution
+# Admin Authentication Configuration
 
-## Problem
+## Requirements
 
-Previous approach created admin users for all tests in certain apps (checkout, hyva, pps) even if they didn't actually use admin functionality. This led to unnecessary admin user creation and potential session conflicts.
+Admin tests require a valid admin username and password to be configured in the `config.private.json` file for each app.
 
-## Solution
+### Configuration
 
-The new solution creates temporary admin users on-demand when a test actually needs to access the admin area. Each admin user is created just before login and removed after the test completes.
+Add the following fields to your app's `config.private.json` file:
 
-### Key Components
+```json
+{
+  "admin_path": "admin",
+  "admin_username": "your_admin_username",
+  "admin_password": "your_admin_password"
+}
+```
 
-1. **On-Demand Admin User Creation**
-   - Admin users are created only when a test actually calls `adminPage.login()`
-   - Each admin user has a unique username and a strong, randomly generated password
-   - Admin users are created using the existing `admin-users.sh` script
+### Magento Admin Configuration
 
-2. **Strong Password Generation**
-   - Passwords are generated with a mix of uppercase, lowercase, numbers, and special characters
-   - Each password is unique and meets security requirements
+For admin tests to work properly with multiple sessions, you must configure the following setting in your Magento admin:
 
-3. **Automatic Cleanup**
-   - Temporary admin users are automatically removed after the test completes
-   - A cleanup process runs once at the beginning of the entire test suite to remove any straggling admin users from previous runs
+**Admin > Stores > Configuration > Advanced > Admin > Security**
 
-4. **No Configuration Required**
-   - No need for config.private.json or environment variables with admin credentials
-   - The admin path is still configurable, but credentials are generated automatically
+Set **Admin Account Sharing** to `Yes` (value: 1)
 
-### Files Modified
+This allows multiple admin sessions to be active simultaneously, which is required for parallel test execution.
 
-1. `tests/m2-hyva-playwright/src/apps/admin/pages/admin.page.ts`
-   - Added methods to create and remove temporary admin users
-   - Added method to generate strong passwords
-   - Modified login method to create a temporary admin user before logging in
-   - Added teardown to remove the temporary admin user after the test completes
+### Path Configuration
 
-2. `tests/m2-hyva-playwright/global-setup.ts`
-   - Removed admin user creation and authentication logic
-   - Added cleanup of straggling admin users at startup
+- `admin_path`: The admin URL path for your Magento installation (default: "admin")
+- `admin_username`: A valid admin user account username
+- `admin_password`: The password for the admin user account
 
-3. `tests/m2-hyva-playwright/src/apps/common/fixtures/index.ts`
-   - Removed admin authentication logic
-   - Simplified context creation
-
-## How to Use
-
-No changes are needed in the test files themselves. The solution works transparently with existing tests. When a test calls `adminPage.login()`, a temporary admin user is created, used for the test, and then removed.
-
-## Cleaning Up Temporary Admin Users
-
-Temporary admin users are automatically removed after each test, but if you need to manually clean them up:
-
-1. **During Test Development**
-   - Call `adminPage.removeAllTempAdminUsers()` in your test
-
-2. **Outside of Tests**
-   - Run the following command:
-   ```
-   ddev exec "cd /var/www/html && mysql -e \"DELETE FROM admin_user WHERE username LIKE 'temp_admin_%';\""
-   ```
-
-## Troubleshooting
-
-If authentication issues occur:
-1. Check that the admin path is correctly set in environment variables or config files
-2. Verify that the selectors used for login match in `admin.locator.ts`
-3. Run the cleanup command above to remove any straggling admin users
+Make sure the admin user account has the necessary permissions to perform the actions required by your tests.

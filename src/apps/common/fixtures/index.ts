@@ -8,7 +8,7 @@ import fs from "fs";
 // Get the test results directory based on the app and test base
 const appName = process.env.APP_NAME || 'hyva';
 const testBase = process.env.TEST_BASE || 'default';
-const testResultsDir = path.join(process.cwd(), '../../../test-results', `${appName}-${testBase}`);
+const testResultsDir = path.join(process.cwd(), '../../../test-results', 'pps', `${appName}-${testBase}`);
 
 // Ensure the test results directory exists
 if (!fs.existsSync(testResultsDir)) {

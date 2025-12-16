@@ -4,10 +4,15 @@ This document describes how test reports work in the m2-hyva-playwright testing 
 
 ## Report Directory Structure
 
-Test results are stored in the `test-results` directory at the root of the m2-hyva-playwright project. The directory structure is organized as follows:
+Test results are stored in two locations:
+
+1. Failed test artifacts (screenshots, videos, traces) are stored in the `test-results` directory at the root of the m2-hyva-playwright project.
+2. HTML and JSON reports are stored in the `tests` directory at the root of the repository, allowing them to be committed and pushed to a test server for viewing.
+
+The directory structure is organized as follows:
 
 ```
-test-results/
+test-results/                        # Contains failed test artifacts
 ├── {app-name}-{test-base}/          # App-specific test results (e.g., pps-admin, hyva-default)
 │   ├── {test-name}/                 # Directory for each failed test
 │   │   ├── test-failed-1.png        # Screenshot of the failed test
@@ -16,8 +21,10 @@ test-results/
 │   └── ...
 ├── screenshots/                     # Screenshots directory
 │   └── ...                          # Various screenshots
-├── videos/                          # Videos directory
-│   └── ...                          # Various video recordings
+└── videos/                          # Videos directory
+    └── ...                          # Various video recordings
+
+tests/                               # Contains HTML and JSON reports
 └── {app-name}-{test-base}-reports/  # HTML and JSON reports
     ├── json-reports/
     │   └── json-report.json         # JSON report data
@@ -61,14 +68,23 @@ Videos provide a complete visual record of the test execution, showing all inter
 After running tests, you can view the HTML report using the following command:
 
 ```bash
-yarn playwright show-report test-results/{app-name}-{test-base}-reports/playwright-report
+yarn playwright show-report tests/{app-name}-{test-base}-reports/playwright-report
 ```
 
 For example:
 
 ```bash
-yarn playwright show-report test-results/pps-admin-reports/playwright-report
+yarn playwright show-report tests/pps-admin-reports/playwright-report
 ```
+
+Alternatively, you can use the report script in the app-specific package.json:
+
+```bash
+cd tests/m2-hyva-playwright/src/apps/pps
+TEST_BASE=admin yarn report
+```
+
+Since the HTML reports are stored in the `tests` directory, they can be committed and pushed to a test server for viewing. This allows team members to view the test results without having to run the tests themselves.
 
 The HTML report provides a comprehensive view of all test results, including:
 

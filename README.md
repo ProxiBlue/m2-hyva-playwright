@@ -26,24 +26,26 @@ I am certainly not an expert in anything playwright or js related!
 
 ### Admin Authentication
 
-Admin authentication is now handled automatically with an on-demand approach:
+Admin tests require a valid admin username and password to be configured in the `config.private.json` file for each app.
 
-1. When a test calls `adminPage.login()`, a temporary admin user is created specifically for that test
-2. Each admin user has a unique username and a strong, randomly generated password
-3. The temporary admin user is automatically removed after the test completes
-4. No configuration is required for admin credentials
-
-The admin path is still configurable in your environment or config files:
-
-```
+Configuration example:
+```json
 {
-  "admin_path": "admin"
+  "admin_path": "admin",
+  "admin_username": "your_admin_username",
+  "admin_password": "your_admin_password"
 }
 ```
 
-This approach allows admin tests to run in parallel with multiple workers, as each test creates its own isolated admin user.
+**Important**: For admin tests to work properly with multiple sessions, you must configure the following setting in your Magento admin:
 
-For more details, see the [Admin Authentication Solution](./ADMIN_AUTH_SOLUTION.md) document.
+**Admin > Stores > Configuration > Advanced > Admin > Security**
+
+Set **Admin Account Sharing** to `Yes` (value: 1)
+
+This allows multiple admin sessions to be active simultaneously, which is required for parallel test execution.
+
+For more details, see the [Admin Authentication Configuration](./ADMIN_AUTH_SOLUTION.md) document.
 
 ## Locale for address data
 
@@ -675,6 +677,18 @@ yarn playwright show-report reports/playwright-report
 
 This report provides detailed information about each test, including screenshots, traces, and logs, which can be invaluable for debugging failed tests.
 
+## Logging and Test Output Consolidation
+
+All Playwright test logs, reports, and outputs must be written to the `tests/m2-hyva-playwright/test-results` directory. Each app (e.g., `pps`, `admin`, `luma`, `checkout`, `nto`, `hyva`) uses its own subfolder within this directory for separation and clarity. 
+
+**Do not write logs or test outputs to any other location.**
+
+If you add custom logging or output in the future, ensure it is always placed under the appropriate subfolder in `test-results`.
+
+This policy keeps the repository clean and makes it easy to find all test artifacts in one place.
+
 ## Acknowledgements
 
 This project has been developed specifically for Magento 2 + Hyvä testing needs, focusing on providing a robust and maintainable testing framework for Hyvä-based storefronts.
+
+The structure of the framework is based on the work by @eric-stanley, but has diverged significantly. Credit to Eric for his work. It gave me a head start on my ideas.

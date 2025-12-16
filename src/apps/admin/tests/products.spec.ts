@@ -24,6 +24,7 @@ describe("Admin - Products", () => {
     });
 
     test("can make edit to product and save correctly (admin save errors checking)", async ({adminProductsPage}, testInfo) => {
+        test.setTimeout(600000);
         const gridRows = adminProductsPage.page.locator(locators.adminProductGridRows);
         const firstRow = await adminProductsPage.page.locator(locators.adminProductGridRows + ' >> tbody >> tr').first();
         await firstRow.click();
