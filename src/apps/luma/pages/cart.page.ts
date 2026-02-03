@@ -66,7 +66,7 @@ export default class CartPage extends BasePage {
                             this.workerInfo.project.name + ": Enter text: 2",
                             async () => await this.page.fill(qtyInput, '2')
                         );
-                        await this.page.locator('.action.update').click();
+                        await this.page.getByRole('button', { name: 'Update Shopping Cart' }).click();
                         await this.page.waitForURL("**/checkout/cart");
                         await this.page.waitForLoadState('domcontentloaded');
                         await this.checkQuantity(itemRowNum, newQuantity);

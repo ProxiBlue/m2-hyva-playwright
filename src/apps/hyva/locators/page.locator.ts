@@ -1,6 +1,6 @@
 export const pageTitle = ".page-title"
 export const message_success = ".message.success";
-export const message_error = ".message.error";
+export const message_error = "#messages.message.error'";
 
 export const messageClose = "Close Message"
 

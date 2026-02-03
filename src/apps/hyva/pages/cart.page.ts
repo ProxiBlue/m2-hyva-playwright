@@ -4,6 +4,7 @@ import { expect } from "../../../../playwright.config";
 import * as cartLocators from "@hyva/locators/cart.locator";
 import { CartData } from "@hyva/interfaces/CartData";
 import { parsePrice } from "@utils/functions/price";
+import {update_cart_button} from "@luma/locators/cart.locator";
 
 // dynamically load the test JSON data based on the APP_NAME env variable
 // and if the file exists in APP path, and if not default to the base data
@@ -65,7 +66,7 @@ export default class CartPage extends BasePage<CartData> {
                 const beforeSubTotal = await this.page.innerText(itemRow + '>>' + cartLocators.cart_row_subtotal);
                 const qtyInput = itemRow + '>>' + cartLocators.cart_row_qty_input;
                 await this.page.fill(qtyInput, newQuantity.toString());
-                await this.page.locator('.action.update').click();
+                await this.page.getByRole('button', { name: 'Update Shopping Cart' }).click();
                 await this.page.waitForURL("**/checkout/cart");
                 await this.page.waitForLoadState('domcontentloaded');
                 await this.checkQuantity(itemRowNum, newQuantity);
@@ -184,8 +185,12 @@ export default class CartPage extends BasePage<CartData> {
                 await this.page.locator(cartLocators.cart_clear).click();
                 await this.page.waitForLoadState('networkidle');
                 await this.page.waitForLoadState('domcontentloaded');
-                expect(await this.page.locator("[aria-label='Are you sure?']").isVisible(), "Verify element is visible [aria-label='Are you sure?']").toBe(true);
-                await this.page.locator("[aria-label='Are you sure?']>>.btn-primary").click();
+                // Wait for confirmation dialog
+                const dialog = this.page.locator('dialog[role="alertdialog"]');
+                await dialog.waitFor({ state: 'visible', timeout: 5000 });
+                expect(await dialog.isVisible(), "Verify dialog is visible").toBe(true);
+                // Click OK button
+                await dialog.locator('.btn.btn-primary').click();
                 await this.page.waitForLoadState('networkidle');
                 await this.page.waitForLoadState('domcontentloaded');
             });
@@ -199,8 +204,12 @@ export default class CartPage extends BasePage<CartData> {
                 await this.page.locator(cartLocators.cart_clear).click();
                 await this.page.waitForLoadState('networkidle');
                 await this.page.waitForLoadState('domcontentloaded');
-                expect(await this.page.locator("[aria-label='Are you sure?']").isVisible(), "Verify element is visible [aria-label='Are you sure?']").toBe(true);
-                await this.page.locator("[aria-label='Are you sure?']>>.btn>>nth=0").click();
+                // Wait for confirmation dialog
+                const dialog = this.page.locator('dialog[role="alertdialog"]');
+                await dialog.waitFor({ state: 'visible', timeout: 5000 });
+                expect(await dialog.isVisible(), "Verify dialog is visible").toBe(true);
+                // Click Cancel button (not btn-primary, just btn)
+                await dialog.locator('.btn').nth(1).click();
                 await this.page.waitForLoadState('networkidle');
                 await this.page.waitForLoadState('domcontentloaded');
             });
