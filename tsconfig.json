@@ -1,0 +1,21 @@
+{
+  "compilerOptions": {
+    "target": "es6",
+    "module": "es6",
+    "moduleResolution": "node",
+    "experimentalDecorators": true,
+    "noImplicitAny": true,
+    "resolveJsonModule": true,
+    "esModuleInterop": true,
+    "baseUrl": ".",
+    "paths": {
+      /* Specify a set of entries that re-map imports to additional lookup locations. */
+      "@home/*": ["./*"],
+      "@data/*": ["data/*"],
+      "@utils/*": ["src/utils/*"],
+      "@config": ["playwright.config.ts"],
+      "@common/*": ["src/apps/common/*"]
+    }
+  },
+  "exclude": ["node_modules"]
+}

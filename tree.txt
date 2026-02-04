@@ -1,0 +1,99 @@
+.
+├── 📁 src
+│   ├── 📁 apps
+│   │   └── 📁 common
+│   │   │   ├── 📁 pages
+│   │   │   │   ├── 📃 common.page.ts # common page shared b/w apps
+│   │   └── 📁 app 01
+│   │   │   ├── 📁 data
+│   │   │   │   ├── 📃 page_01.data.json # data for app 01, page 01
+│   │   │   │   ├── 📃 page_02.data.json # data for app 01, page 02
+│   │   │   │   ├── 📃 ...
+│   │   │   │   ├── 📃 page_n.data.json # data for app 01, page n
+│   │   │   ├── 📁 fixtures
+│   │   │   │   └── 📃 index.ts # app 01 specific fixtures
+│   │   │   ├── 📁 locators
+│   │   │   │   ├── 📃 page_01.locator.ts # locators for app 01, page 01
+│   │   │   │   ├── 📃 page_02.locator.ts # locators for app 01, page 02
+│   │   │   │   ├── 📃 ...
+│   │   │   │   ├── 📃 page_n.locator.ts # locators for app 01, page n
+│   │   │   ├── 📁 pages
+│   │   │   │   ├── 📃 page_01.page.ts # functions for app 01, page 01
+│   │   │   │   ├── 📃 page_02.page.ts # functions for app 01, page 02
+│   │   │   │   ├── 📃 ...
+│   │   │   │   ├── 📃 page_n.page.ts # functions for app 01, page n
+│   │   │   └── 📁 tests
+│   │   │   │   ├── 📃 page_01.spec.ts # tests for app 01, page 01
+│   │   │   │   ├── 📃 page_02.spec.ts # tests for app 01, page 02
+│   │   │   │   ├── 📃 ...
+│   │   │   │   ├── 📃 page_n.spec.ts # tests for app 01, page n
+│   │   │   ├── 📃 config.json # config data for app 01
+│   │   │   ├── 📃 package.json # scripts for app 01
+│   │   │   ├── 📃 playwright.config.ts # config details for app 01
+│   │   └── 📁 app 02
+│   │   │   ├── 📁 data
+│   │   │   │   ├── 📃 page_01.data.json # data for app 02, page 01
+│   │   │   │   ├── 📃 page_02.data.json # data for app 02, page 02
+│   │   │   │   ├── 📃 ...
+│   │   │   │   ├── 📃 page_n.data.json # data for app 02, page n
+│   │   │   ├── 📁 fixtures
+│   │   │   │   └── 📃 index.ts # app 02 specific fixtures
+│   │   │   ├── 📁 locators
+│   │   │   │   ├── 📃 page_01.locator.ts # locators for app 02, page 01
+│   │   │   │   ├── 📃 page_02.locator.ts # locators for app 02, page 02
+│   │   │   │   ├── 📃 ...
+│   │   │   │   ├── 📃 page_n.locator.ts # locators for app 02, page n
+│   │   │   ├── 📁 pages
+│   │   │   │   ├── 📃 page_01.page.ts # functions for app 02, page 01
+│   │   │   │   ├── 📃 page_02.page.ts # functions for app 02, page 02
+│   │   │   │   ├── 📃 ...
+│   │   │   │   ├── 📃 page_n.page.ts # functions for app 02, page n
+│   │   │   └── 📁 tests
+│   │   │   │   ├── 📃 page_01.spec.ts # tests for app 02, page 01
+│   │   │   │   ├── 📃 page_02.spec.ts # tests for app 02, page 02
+│   │   │   │   ├── 📃 ...
+│   │   │   │   ├── 📃 page_n.spec.ts # tests for app 02, page n
+│   │   │   ├── 📃 config.json # config data for app 02
+│   │   │   ├── 📃 package.json # scripts for app 02
+│   │   │   ├── 📃 playwright.config.ts # config details for app 02
+│   │   └── 📁 ...
+│   │   └── 📁 app n
+│   │   │   ├── 📁 data
+│   │   │   │   ├── 📃 page_01.data.json # data for app n, page 01
+│   │   │   │   ├── 📃 page_02.data.json # data for app n, page 02
+│   │   │   │   ├── 📃 ...
+│   │   │   │   ├── 📃 page_n.data.json # data for app n, page n
+│   │   │   ├── 📁 fixtures
+│   │   │   │   └── 📃 index.ts # app n specific fixtures
+│   │   │   ├── 📁 locators
+│   │   │   │   ├── 📃 page_01.locator.ts # locators for app n, page 01
+│   │   │   │   ├── 📃 page_02.locator.ts # locators for app n, page 02
+│   │   │   │   ├── 📃 ...
+│   │   │   │   ├── 📃 page_n.locator.ts # locators for app n, page n
+│   │   │   ├── 📁 pages
+│   │   │   │   ├── 📃 page_01.page.ts # functions for app n, page 01
+│   │   │   │   ├── 📃 page_02.page.ts # functions for app n, page 02
+│   │   │   │   ├── 📃 ...
+│   │   │   │   ├── 📃 page_n.page.ts # functions for app n, page n
+│   │   │   └── 📁 tests
+│   │   │   │   ├── 📃 page_01.spec.ts # tests for app n, page 01
+│   │   │   │   ├── 📃 page_02.spec.ts # tests for app n, page 02
+│   │   │   │   ├── 📃 ...
+│   │   │   │   ├── 📃 page_n.spec.ts # tests for app n, page n
+│   │   │   ├── 📃 config.json # config data for app n
+│   │   │   ├── 📃 package.json # scripts for app n
+│   │   │   ├── 📃 playwright.config.ts # config details for app n
+│   └── 📁 utils
+│   │   ├── 📁 base
+│   │   │   └── 📁 web
+│   │   │   │   ├── 📃 actions.ts # actions in web applications
+│   │   │   │   └── 📃 screenshots.ts # screenshot functions
+│   │   ├── 📁 functions (utility functions)
+│   │   ├── 📁 packages (other reusable packages)
+│   │   └── 📁 reports
+│   │   │   └── 📃 custom-reporter.ts # custom reporter to pretty print in console
+├── 📃 config.init.ts # configuration initializer
+├── 📃 global-setup.ts
+├── 📃 global-teardown.ts
+├── 📃 package.json
+├── 📃 playwright.config.ts # global config

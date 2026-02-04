@@ -1,0 +1,31 @@
+{
+  "name": "playwright-hands-on",
+  "version": "1.0.0",
+  "private": true,
+  "description": "",
+  "workspaces": [
+    "src/apps/*"
+  ],
+  "scripts": {
+    "test": "yarn workspace ui-testing-playground test",
+    "test:debug": "yarn workspace ui-testing-playground test:debug",
+    "report": "yarn workspace ui-testing-playground report",
+    "allure": "yarn workspace ui-testing-playground allure",
+    "test:ui-testing-playground": "yarn workspace ui-testing-playground test",
+    "test:debug:ui-testing-playground": "yarn workspace ui-testing-playground test:debug",
+    "report:ui-testing-playground": "yarn workspace ui-testing-playground report",
+    "allure:ui-testing-playground": "yarn workspace ui-testing-playground allure"
+  },
+  "author": "Eric Stanley",
+  "license": "MIT",
+  "devDependencies": {
+    "@faker-js/faker": "^7.5.0",
+    "@playwright/test": "^1.25.2",
+    "allure-commandline": "^2.18.1",
+    "allure-playwright": "^2.0.0-beta.19",
+    "colors": "^1.4.0",
+    "playwright": "^1.25.2",
+    "ts-node": "^10.9.1",
+    "typescript": "^4.8.3"
+  }
+}
