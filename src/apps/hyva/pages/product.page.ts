@@ -229,7 +229,7 @@ export default class ProductPage extends BasePage {
 
                 await this.page.waitForLoadState('domcontentloaded');
                 await this.page.waitForSelector(pageLocators.message_error, { timeout: 7000 });
-                const errorMessage = await this.page.locator('#messages.message.error').textContent();
+                const errorMessage = await this.page.locator(pageLocators.message_error).textContent();
                 expect(errorMessage).toContain(this.data.default.wishlist_error);
             }
         );

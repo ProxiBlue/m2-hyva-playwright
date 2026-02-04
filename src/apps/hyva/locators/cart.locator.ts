@@ -1,16 +1,16 @@
 export const title = 'h1';
 export const cart_table  = '#shopping-cart-table';
-export const cart_table_head  = '#shopping-cart-table thead';
-export const cart_table_body  = 'tbody';
-export const cart_row_item  = '.item'
-export const cart_row_item_info  = '.item-info'
-export const cart_row_item_name  = '.item';
+export const cart_table_head  = '#shopping-cart-table legend';
+export const cart_table_body  = 'li';
+export const cart_row_item  = 'article'
+export const cart_row_item_info  = 'article'
+export const cart_row_item_name  = '.product-item-name';
 export const cart_row_item_price  = '.price';
 export const cart_row_qty_input  = '.qty.form-input';
-export const cart_row_subtotal  = '.subtotal';
-export const cart_item_row_qty_input  = '.item-info .qty input';
-export const cart_item_row_delete   = '.action-delete';
-export const update_cart_button   = '[name="update_cart_action"] [type="submit"]';
+export const cart_row_subtotal  = '.font-medium .price';
+export const cart_item_row_qty_input  = 'input.qty';
+export const cart_item_row_delete   = 'button[aria-label^="Remove"]';
+export const update_cart_button   = 'button.btn-secondary[type="submit"]';
 export const cart_clear  = '#empty_cart_button';
 export const cart_empty  = '.cart-empty';
 export const  cart_totals = '#cart-totals';

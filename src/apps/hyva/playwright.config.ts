@@ -48,7 +48,7 @@ const config: PlaywrightTestConfig = {
             name: "chromium",
             use: {
                 ...devices["Desktop Chrome"],
-                viewport: { width: 1280, height: 1400 },
+                viewport: { width: 1920, height: 1080 },
                 ignoreHTTPSErrors: true,
             },
         },
@@ -56,7 +56,7 @@ const config: PlaywrightTestConfig = {
             name: "firefox",
             use: {
                 ...devices["Desktop Firefox"],
-                viewport: { width: 1280, height: 1400 },
+                viewport: { width: 1920, height: 1080 },
                 ignoreHTTPSErrors: true,
                 // Firefox-specific settings for better stability
                 actionTimeout: 15000,
@@ -69,7 +69,7 @@ const config: PlaywrightTestConfig = {
             name: "webkit",
             use: {
                 ...devices["Desktop Safari"],
-                viewport: { width: 1280, height: 1400 },
+                viewport: { width: 1920, height: 1080 },
                 ignoreHTTPSErrors: true,
             },
         }

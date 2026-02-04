@@ -1,5 +1,6 @@
 import { expect as playwrightExpect, test } from "@playwright/test";
 import { initConfig } from "./config.init";
+import path from "path";
 
 const appName = process.env.APP_NAME || 'hyva';
 initConfig(appName);
@@ -7,6 +8,18 @@ initConfig(appName);
 const appDir = "./src/apps/" + appName;
 
 export const appConfigPath = appDir + "/playwright.config.ts";
+
+// Load and re-export the app-specific Playwright config so test discovery
+// is scoped to the correct app's testDir instead of scanning everything.
+// Resolve testDir relative to the app config directory, not the root.
+const appConfigDir = path.resolve(__dirname, appDir);
+const appConfig = require(path.resolve(appConfigDir, "playwright.config.ts")).default;
+
+if (appConfig.testDir && !path.isAbsolute(appConfig.testDir)) {
+    appConfig.testDir = path.resolve(appConfigDir, appConfig.testDir);
+}
+
+export default appConfig;
 
 declare global {
   namespace PlaywrightTest {

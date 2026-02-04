@@ -1,5 +1,10 @@
 {
-  "url": "https://hyva.ddev.site/",
+  "url": "https://demo.hyva.io/",
+  "skipBaseTests": {
+    "Search test suite": [
+      "it can show search suggestions"
+    ]
+  },
   "faker_locale": "en_US",
-  "currency_symbol": "₹"
+  "currency_symbol": "€"
 }

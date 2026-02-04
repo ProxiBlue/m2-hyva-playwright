@@ -1,7 +1,7 @@
 {
   "url": "https://luma.ddev.site/",
   "mailcatcher": "",
-  "skipBaseTests": [
-  ],
+  "skipBaseTests": {
+  },
   "faker_locale": "en_US"
 }

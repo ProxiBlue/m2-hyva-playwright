@@ -1,7 +1,7 @@
 {
   "url": "https://pvcpipesupplies.ddev.site/",
   "mailcatcher": "",
-  "skipBaseTests": [
-  ],
+  "skipBaseTests": {
+  },
   "faker_locale": "en_US"
 }

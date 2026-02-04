@@ -5,6 +5,9 @@ import { shouldSkipTest } from "@utils/functions/test-skip";
 describe("Admin - Products", () => {
 
     test.beforeEach(async ({adminPage, adminProductsPage}, testInfo) => {
+        test.skip(process.env.APP_NAME === 'hyva' || process.env.TEST_BASE === 'hyva',
+            'Admin tests require admin access - skipped for hyva environment');
+
         // Use the helper function to determine if the test should be skipped
         const shouldSkip = shouldSkipTest(testInfo);
 

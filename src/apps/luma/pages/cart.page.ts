@@ -1,7 +1,6 @@
 import BasePage from "@common/pages/base.page";
 import {Page, TestInfo, expect, test} from "@playwright/test";
-import * as cartLocators from "@luma/locators/cart.locator";
-import { loadJsonData } from "@utils/functions/file";
+import { loadJsonData, loadLocators } from "@utils/functions/file";
 import { parsePrice } from "@utils/functions/price";
 
 // Define the interface for the cart data structure
@@ -17,6 +16,9 @@ const defaultData: CartData = { default: {} };
 
 // Load the cart data using the utility function
 const data = loadJsonData<CartData>('cart.data.json', 'luma', defaultData);
+
+// Load the locators dynamically based on the APP_NAME environment variable
+const cartLocators = loadLocators('locators/cart.locator', 'luma');
 
 export default class CartPage extends BasePage {
     constructor(public page: Page, public workerInfo: TestInfo) {

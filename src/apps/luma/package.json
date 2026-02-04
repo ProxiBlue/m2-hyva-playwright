@@ -5,7 +5,7 @@
   "author": "Lucas van Staden",
   "license": "MIT",
   "scripts": {
-    "test:all": "NODE_TLS_REJECT_UNAUTHORIZED=0 APP_NAME=luma  TEST_BASE=default npx playwright test",
+    "test:all": "NODE_TLS_REJECT_UNAUTHORIZED=0 APP_NAME=luma npx playwright test",
     "test:ui": "NODE_TLS_REJECT_UNAUTHORIZED=0 APP_NAME=luma  npx playwright test --ui",
     "test:debug": "NODE_TLS_REJECT_UNAUTHORIZED=0 APP_NAME=luma  PWDEBUG=1 npx playwright test",
     "report": "npx playwright show-report ../../../../test-results/pps/luma-default-reports/playwright-report",
