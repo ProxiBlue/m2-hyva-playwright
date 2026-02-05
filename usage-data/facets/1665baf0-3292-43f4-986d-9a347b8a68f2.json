@@ -1,0 +1,20 @@
+{
+  "underlying_goal": "Analyze a specific ticket (#337), review its latest comments, switch to the appropriate branch, and get a suggested fix",
+  "goal_categories": {
+    "bug_investigation": 1,
+    "git_operations": 1
+  },
+  "outcome": "not_achieved",
+  "user_satisfaction_counts": {
+    "frustrated": 1
+  },
+  "claude_helpfulness": "unhelpful",
+  "session_type": "single_task",
+  "friction_counts": {
+    "user_rejected_action": 1
+  },
+  "friction_detail": "User interrupted Claude's tool use (likely a web fetch for the ticket) and then exited the session, possibly due to missing MCP server configuration needed to access the ticket system.",
+  "primary_success": "none",
+  "brief_summary": "User asked Claude to analyze ticket 337 and suggest a fix, but interrupted the process and exited, likely because the required MCP integration was not configured.",
+  "session_id": "1665baf0-3292-43f4-986d-9a347b8a68f2"
+}

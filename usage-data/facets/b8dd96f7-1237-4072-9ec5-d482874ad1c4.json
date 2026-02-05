@@ -1,0 +1,15 @@
+{
+  "underlying_goal": "Understand why MCP servers are not loading despite being configured",
+  "goal_categories": {
+    "debugging": 1
+  },
+  "outcome": "partially_achieved",
+  "user_satisfaction_counts": {},
+  "claude_helpfulness": "moderately_helpful",
+  "session_type": "quick_question",
+  "friction_counts": {},
+  "friction_detail": "",
+  "primary_success": "good_debugging",
+  "brief_summary": "User asked why MCP servers weren't loading; Claude identified the config was correct and began diagnosing environment issues but the session ended before resolution.",
+  "session_id": "b8dd96f7-1237-4072-9ec5-d482874ad1c4"
+}

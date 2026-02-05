@@ -1,14 +1,12 @@
 import BasePage from "@common/pages/base.page";
 import {Page, TestInfo, test} from "@playwright/test";
 import { expect } from "../../../../playwright.config";
-import * as cartLocators from "@hyva/locators/cart.locator";
 import { CartData } from "@hyva/interfaces/CartData";
 import { parsePrice } from "@utils/functions/price";
-import {update_cart_button} from "@luma/locators/cart.locator";
+import { loadJsonData, loadLocators } from "@utils/functions/file";
 
-// dynamically load the test JSON data based on the APP_NAME env variable
-// and if the file exists in APP path, and if not default to the base data
-let data: CartData = {
+// Default cart data structure
+const defaultData: CartData = {
     default: {
         url: "",
         header_title: "",
@@ -17,40 +15,31 @@ let data: CartData = {
         grandtotal_label: ""
     }
 };
-// Load data synchronously to ensure it's available when needed
-const fs = require("fs");
-try {
-    let dataPath;
-    if (fs.existsSync(__dirname + '/../../' + process.env.APP_NAME + '/data/cart.data.json')) {
-        dataPath = __dirname + '/../../' + process.env.APP_NAME + '/data/cart.data.json';
-    } else {
-        dataPath = __dirname + '/../data/cart.data.json';
-    }
-    const jsonData = fs.readFileSync(dataPath, 'utf8');
-    let parsedData = JSON.parse(jsonData);
-    // Ensure data has a default property
-    if (!parsedData.default) {
-        data = { default: parsedData };
-    } else {
-        data = parsedData;
-    }
-} catch (error) {
-    // Error loading cart data
+
+// Load the cart data using the utility function
+let data = loadJsonData<CartData>('cart.data.json', 'hyva', defaultData);
+
+// Ensure data has a default property
+if (data && !data.default) {
+    data = { default: data as any };
 }
+
+// Load the locators dynamically based on the APP_NAME environment variable
+const locators = loadLocators('locators/cart.locator', 'hyva');
 
 export default class CartPage extends BasePage<CartData> {
     constructor(public page: Page, public workerInfo: TestInfo) {
-        super(page, workerInfo, data, cartLocators);
+        super(page, workerInfo, data, locators);
     }
 
     async checkQuantity(itemRowNum: number, expectedQuantity: number) {
         await test.step(
             this.workerInfo.project.name + ": Check Quantity of row " + itemRowNum + ' has expected qty of ' + expectedQuantity,
             async () => {
-                const itemRow = cartLocators.cart_table + '>>' + cartLocators.cart_table_body + ">>nth=" + itemRowNum + '>>' + cartLocators.cart_row_item_info
+                const itemRow = this.locators.cart_table + '>>' + this.locators.cart_table_body + ">>nth=" + itemRowNum + '>>' + this.locators.cart_row_item_info
                 await expect(this.page.locator(itemRow), "Verify element exists " + itemRow).toHaveCount(1);
-                const beforeSubTotal = await this.page.innerText(itemRow + '>>' + cartLocators.cart_row_subtotal);
-                const qtyInput = itemRow + '>>' + cartLocators.cart_row_qty_input;
+                const beforeSubTotal = await this.page.innerText(itemRow + '>>' + this.locators.cart_row_subtotal);
+                const qtyInput = itemRow + '>>' + this.locators.cart_row_qty_input;
                 const qtyValue = await this.page.$eval(qtyInput, (element: HTMLInputElement) => element.value);
                 expect(qtyValue, "Check quantity value matches expected").toEqual(expectedQuantity.toString());
             });
@@ -61,10 +50,10 @@ export default class CartPage extends BasePage<CartData> {
         await test.step(
             this.workerInfo.project.name + ": Change itemrow " + itemRowNum + " quantity to " + newQuantity,
             async () => {
-                const itemRow = cartLocators.cart_table + '>>' + cartLocators.cart_table_body + ">>nth=" + itemRowNum + '>>' + cartLocators.cart_row_item_info
+                const itemRow = this.locators.cart_table + '>>' + this.locators.cart_table_body + ">>nth=" + itemRowNum + '>>' + this.locators.cart_row_item_info
                 await expect(this.page.locator(itemRow), "Verify element exists " + itemRow).toHaveCount(1);
-                const beforeSubTotal = await this.page.innerText(itemRow + '>>' + cartLocators.cart_row_subtotal);
-                const qtyInput = itemRow + '>>' + cartLocators.cart_row_qty_input;
+                const beforeSubTotal = await this.page.innerText(itemRow + '>>' + this.locators.cart_row_subtotal);
+                const qtyInput = itemRow + '>>' + this.locators.cart_row_qty_input;
                 await this.page.fill(qtyInput, newQuantity.toString());
                 await this.page.getByRole('button', { name: 'Update Shopping Cart' }).click();
                 await this.page.waitForURL("**/checkout/cart");
@@ -76,7 +65,7 @@ export default class CartPage extends BasePage<CartData> {
     async getLineItemsPrices() {
 
         let total = 0.00;
-        const itemCount = await this.page.locator(cartLocators.cart_row_item_info).count();
+        const itemCount = await this.page.locator(this.locators.cart_row_item_info).count();
         for (let i = 0; i < itemCount; i++) {
             const priceText = await this.getItemSubTotal(i);
             total += parsePrice(priceText);
@@ -89,22 +78,22 @@ export default class CartPage extends BasePage<CartData> {
         await test.step(
             this.workerInfo.project.name + ": Delete Item ",
             async () => {
-                const itemRow = cartLocators.cart_table + '>>' + cartLocators.cart_table_body + ">>nth=" + itemRowNum;
+                const itemRow = this.locators.cart_table + '>>' + this.locators.cart_table_body + ">>nth=" + itemRowNum;
                 await expect(this.page.locator(itemRow), "Verify element exists " + itemRow).toHaveCount(1);
-                const deleteButton = itemRow + '>>' + cartLocators.cart_item_row_delete;
+                const deleteButton = itemRow + '>>' + this.locators.cart_item_row_delete;
                 await expect(this.page.locator(deleteButton), "Verify element exists " + deleteButton).toHaveCount(1);
                 await this.page.locator(deleteButton).click();
                 await this.page.waitForLoadState('networkidle');
                 await this.page.waitForLoadState('domcontentloaded');
-                expect(await this.page.locator(cartLocators.cart_empty).isVisible(), "Verify element is visible " + cartLocators.cart_empty).toBe(true);
+                expect(await this.page.locator(this.locators.cart_empty).isVisible(), "Verify element is visible " + this.locators.cart_empty).toBe(true);
             })
     }
 
     async getItemSubTotal(itemRowNum: number) {
         await this.page.waitForLoadState('domcontentloaded')
-        const itemRow = cartLocators.cart_table + '>>' + cartLocators.cart_table_body + ">>nth=" + itemRowNum;
+        const itemRow = this.locators.cart_table + '>>' + this.locators.cart_table_body + ">>nth=" + itemRowNum;
         await expect(this.page.locator(itemRow), "Verify element exists " + itemRow).toHaveCount(1);
-        let subTotal = await this.page.innerText(itemRow + '>>' + cartLocators.cart_row_subtotal);
+        let subTotal = await this.page.innerText(itemRow + '>>' + this.locators.cart_row_subtotal);
         // mobiles (and seems safari) get the label string included, so strip it if it exists
         // I am sure there is s smarter regex way, but i am not feeling smart right now ;)
         const subtotalLabel = data.default.subtotal_label || "";
@@ -119,7 +108,7 @@ export default class CartPage extends BasePage<CartData> {
         await test.step(
             this.workerInfo.project.name + ": Check subtotals match ",
             async () => {
-                await this.page.locator(cartLocators.cart_subtotal).textContent().then((value) => {
+                await this.page.locator(this.locators.cart_subtotal).textContent().then((value) => {
                     // mobiles (and seems safari) get the label string included, so strip it if it exists
                     // i am sure there is s smarter regex way, but i am not feeling smart right now ;)
                     const subtotalLabel = data.default.subtotal_label || "";
@@ -181,8 +170,8 @@ export default class CartPage extends BasePage<CartData> {
         await test.step(
             this.workerInfo.project.name + ": Clear the cart ",
             async () => {
-                await expect(this.page.locator(cartLocators.cart_clear), "Verify element exists " + cartLocators.cart_clear).toHaveCount(1);
-                await this.page.locator(cartLocators.cart_clear).click();
+                await expect(this.page.locator(this.locators.cart_clear), "Verify element exists " + this.locators.cart_clear).toHaveCount(1);
+                await this.page.locator(this.locators.cart_clear).click();
                 await this.page.waitForLoadState('networkidle');
                 await this.page.waitForLoadState('domcontentloaded');
                 // Wait for confirmation dialog
@@ -200,8 +189,8 @@ export default class CartPage extends BasePage<CartData> {
         await test.step(
             this.workerInfo.project.name + ": Cancel Clear cart ",
             async () => {
-                await expect(this.page.locator(cartLocators.cart_clear), "Verify element exists " + cartLocators.cart_clear).toHaveCount(1);
-                await this.page.locator(cartLocators.cart_clear).click();
+                await expect(this.page.locator(this.locators.cart_clear), "Verify element exists " + this.locators.cart_clear).toHaveCount(1);
+                await this.page.locator(this.locators.cart_clear).click();
                 await this.page.waitForLoadState('networkidle');
                 await this.page.waitForLoadState('domcontentloaded');
                 // Wait for confirmation dialog
@@ -216,10 +205,10 @@ export default class CartPage extends BasePage<CartData> {
     }
 
     async clickProceedToCheckout() {
-        await this.page.locator(cartLocators.checkout_button).click();
+        await this.page.locator(this.locators.checkout_button).click();
         await this.page.waitForLoadState("domcontentloaded");
-        //await this.page.waitForSelector(cartLocators.shipping_label);
-        //expect(this.page.locator(cartLocators.title)).toContainText(data.default.header_title);
+        //await this.page.waitForSelector(this.locators.shipping_label);
+        //expect(this.page.locator(this.locators.title)).toContainText(data.default.header_title);
     }
 
 }
