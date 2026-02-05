@@ -263,6 +263,8 @@ git clone git@github.com:ProxiBlue/m2-hyva-playwright.git
 cd m2-hyva-playwright
 npm install
 yarn run playwright install --with-deps
+#copy the exmample private config in place
+cp src/apps/hyva/config.private.json.sample src/apps/hyva/config.private.json
 ```
 
 ## Running Tests
