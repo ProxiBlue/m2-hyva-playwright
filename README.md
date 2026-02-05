@@ -118,7 +118,18 @@ Site URLs, test skip configuration, locale settings:
 
 ### config.private.json
 
-Sensitive data (not committed to git): admin credentials, API keys, alternate URLs.
+Sensitive data (not committed to git): admin credentials, API keys.
+
+```json
+{
+  "admin_path": "admin",
+  "admin_username": "your_admin_username",
+  "admin_password": "your_admin_password",
+  "url": "https://your-private-url.com/"
+}
+```
+
+**URL Override:** If a `url` is set in `config.private.json`, it takes precedence over the `url` in `config.json`. This allows you to keep the real site URL private and out of version control.
 
 ### playwright.config.ts
 
