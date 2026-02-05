@@ -1,32 +1,41 @@
 import CheckoutPage from "@checkout/pages/checkout.page";
-import type {Page, TestInfo} from "@playwright/test";
-import {expect} from "@luma/fixtures";
+import type { Page, TestInfo } from "@playwright/test";
+import { expect } from "@luma/fixtures";
 import * as locators from "@checkout/locators/checkout.locator";
-import * as pageLocators from "@luma/locators/page.locator"
+import { loadLocators } from "@utils/functions/file";
+
+// Load Luma-specific page locators
+const pageLocators = loadLocators('locators/page.locator', 'luma');
 
 export default class LumaCheckoutPage extends CheckoutPage {
     constructor(public page: Page, public workerInfo: TestInfo) {
-        super(page, workerInfo ); // pass the data and locators to teh base page class
+        super(page, workerInfo);
     }
 
     async selectShippingMethod() {
-        // shipperHQ must be disabled by setting flatrate enabled, setting it as fallback and setting timeout to 0
-        await this.page.waitForTimeout(5000);
-        await this.page.getByLabel('Fixed').check()
+        // Wait for shipping methods to load (Luma uses KnockoutJS which can be slow)
+        await this.page.waitForTimeout(3000);
+        // Try flat rate first, fall back to any available method
+        const flatRate = this.page.getByLabel('Fixed');
+        if (await flatRate.isVisible()) {
+            await flatRate.check();
+        } else {
+            // Select first available shipping method
+            const firstMethod = this.page.locator('input[name="ko_unique_1"]').first();
+            if (await firstMethod.isVisible()) {
+                await firstMethod.check();
+            }
+        }
         await this.page.locator(locators.shipping_next_button).click();
     }
 
-
-    async testSuccessPage() : Promise<string> {
+    async testSuccessPage(): Promise<string> {
         await this.page.waitForLoadState("networkidle");
         await this.page.waitForLoadState("domcontentloaded");
         await this.page.waitForSelector(pageLocators.pageTitle);
-        // Handle both data structures: with and without 'default' property
-        const successPageHeading = this.data.default?.success_page_heading || this.data.success_page_heading;
-        expect(this.page.locator(pageLocators.pageTitle)).toHaveText(successPageHeading);
+        const successPageHeading = this.data.default?.success_page_heading || this.data.success_page_heading || 'Thank you for your purchase!';
+        await expect(this.page.locator(pageLocators.pageTitle)).toHaveText(successPageHeading);
         const orderId = await this.page.locator(locators.success_order_id).first().textContent();
-        //@ts-ignore
-        return orderId;
+        return orderId ?? "";
     }
-
 }
