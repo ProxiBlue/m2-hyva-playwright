@@ -1,7 +1,0 @@
-{
-  "url": "https://luma.ddev.site/",
-  "mailcatcher": "",
-  "skipBaseTests": {},
-  "faker_locale": "en_US",
-  "notes": "Update 'url' to point to your Luma-themed Magento instance. Test data references Magento sample data products."
-}
