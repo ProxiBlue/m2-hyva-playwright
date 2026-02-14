@@ -1,0 +1,25 @@
+{
+  "permissions": {
+    "allow": [
+      "WebFetch(domain:docs.ddev.com)",
+      "WebSearch",
+      "Bash(xargs:*)",
+      "Bash(grep:*)",
+      "Bash(find:*)",
+      "Bash(NODE_TLS_REJECT_UNAUTHORIZED=0 APP_NAME=pps TEST_BASE=hyva npx playwright test:*)"
+    ]
+  },
+  "enabledMcpjsonServers": [
+    "filesystem",
+    "git",
+    "database",
+    "context7",
+    "sequential-thinking",
+    "magento2-dev",
+    "memory",
+    "playwright",
+    "github",
+    "chrome-devtools"
+  ],
+  "enableAllProjectMcpServers": true
+}

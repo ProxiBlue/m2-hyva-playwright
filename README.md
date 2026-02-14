@@ -135,6 +135,37 @@ Sensitive data (not committed to git): admin credentials, API keys.
 
 Playwright options per app: browser projects, timeouts, retries, workers, report output paths.
 
+### APP_NAME and TEST_BASE Combinations
+
+The framework uses two environment variables to control test execution:
+
+| Variable | Purpose |
+|----------|---------|
+| `APP_NAME` | Determines which app's `config.json` and `config.private.json` to load (sets URL, credentials) |
+| `TEST_BASE` | Determines which app's `tests/` directory to run |
+
+**Valid Combinations:**
+
+| APP_NAME | TEST_BASE | Use Case | URL Source |
+|----------|-----------|----------|------------|
+| `hyva` | `hyva` | Base Hyva tests against Hyva demo site | hyva config |
+| `pps` | `pps` | PPS-specific tests against PPS site | pps config |
+| `pps` | `hyva` | Base Hyva tests against PPS site | pps config |
+| `pps` | `admin` | Admin tests against PPS site | pps config |
+| `pps` | `checkout` | Checkout tests against PPS site | pps config |
+| `luma` | `luma` | Luma tests against Luma demo site | luma config |
+
+**Invalid Combinations (will produce warnings):**
+
+| APP_NAME | TEST_BASE | Problem |
+|----------|-----------|---------|
+| `hyva` | `pps` | Runs PPS tests against wrong URL (hyva.ddev.site instead of pvcpipesupplies.ddev.site) |
+| `luma` | `pps` | Runs PPS tests against wrong URL |
+
+The `global-setup.ts` validates combinations and warns about potential mismatches. If tests fail with unexpected URLs or missing elements, check your APP_NAME/TEST_BASE combination first.
+
+**Rule of thumb:** For site-specific apps (pps, nto), always set `APP_NAME` to match or be the site app. Use `TEST_BASE` to select which test suite to run against that site.
+
 ## Implemented Tests
 
 Tests run across Chromium, Firefox, and WebKit by default.
@@ -326,6 +357,64 @@ APP_NAME=pps TEST_BASE=hyva npx playwright test
 #### Option 2: DDEV Exec
 ```bash
 ddev exec "cd tests/m2-hyva-playwright/ && APP_NAME=pps TEST_BASE=hyva npx playwright test"
+```
+
+### Running Specific Tests
+
+You can run a single test file, a specific test by name, or filter tests using various Playwright CLI options.
+
+#### Run a Specific Test File
+```bash
+# From tests/m2-hyva-playwright directory
+APP_NAME=pps NODE_ENV=dev npx playwright test src/apps/pps/tests/custom-options-qty-limit.spec.ts
+```
+
+#### Run Tests Matching a Pattern (grep)
+```bash
+# Run tests with "cart" in the title
+APP_NAME=pps NODE_ENV=dev npx playwright test --grep "cart"
+
+# Run tests NOT matching a pattern
+APP_NAME=pps NODE_ENV=dev npx playwright test --grep-invert "slow"
+```
+
+#### Run a Specific Test by Title
+```bash
+# Run only the test with exact title match
+APP_NAME=pps NODE_ENV=dev npx playwright test --grep "it can add product to cart"
+```
+
+#### Debug Mode Options
+```bash
+# UI mode (interactive test runner)
+APP_NAME=pps NODE_ENV=dev npx playwright test src/apps/pps/tests/cart.spec.ts --ui
+
+# Headed mode (visible browser)
+APP_NAME=pps NODE_ENV=dev npx playwright test src/apps/pps/tests/cart.spec.ts --headed
+
+# Debug mode (step through test)
+APP_NAME=pps NODE_ENV=dev npx playwright test src/apps/pps/tests/cart.spec.ts --debug
+```
+
+#### Run Against Different Environments
+```bash
+# Development (DDEV local)
+APP_NAME=pps NODE_ENV=dev npx playwright test src/apps/pps/tests/home.spec.ts
+
+# UAT
+APP_NAME=pps NODE_ENV=uat npx playwright test src/apps/pps/tests/home.spec.ts
+
+# Production/Live
+APP_NAME=pps NODE_ENV=live npx playwright test src/apps/pps/tests/home.spec.ts
+```
+
+#### Combined Examples
+```bash
+# Run specific file in headed mode against UAT
+APP_NAME=pps NODE_ENV=uat npx playwright test src/apps/pps/tests/cart.spec.ts --headed
+
+# Run grep-filtered tests with UI
+APP_NAME=pps NODE_ENV=dev npx playwright test --grep "shipping" --ui
 ```
 
 ## Adding Your Own App

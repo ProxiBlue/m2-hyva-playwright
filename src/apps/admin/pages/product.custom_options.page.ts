@@ -276,10 +276,91 @@ export default class AdminProductCustomOptionsPage {
      * Delete a custom option by index
      */
     async deleteCustomOption(optionIndex: number) {
-        const deleteButtons = await this.page.locator('[data-index="button_remove"]').all();
-        if (deleteButtons[optionIndex]) {
-            await deleteButtons[optionIndex].click();
-            await this.page.waitForTimeout(500);
+        // Get initial count for verification
+        const initialCount = await this.getCustomOptionsCount();
+
+        // Get all custom option containers
+        const optionContainers = await this.page.locator('[data-index="container_option"]').all();
+
+        if (!optionContainers[optionIndex]) {
+            console.log(`Option container not found for index ${optionIndex}`);
+            return;
+        }
+
+        // The trash icon is on the right side of the collapsible header
+        // Try direct SVG/icon click or parent button
+        const selectors = [
+            // SVG trash icon or its parent
+            'svg[class*="trash"]',
+            'svg[class*="delete"]',
+            'svg[class*="remove"]',
+            // Action classes
+            '.action-remove',
+            '.action-delete',
+            // Any clickable in the title with trash/delete
+            '[class*="title"] [class*="trash"]',
+            '[class*="title"] [class*="delete"]',
+            '[class*="title"] [class*="remove"]',
+            // Last button in header (usually delete)
+            '[data-index="header"] button:last-of-type',
+            // Magento UI component patterns
+            'button[data-index="button_remove"]'
+        ];
+
+        // Try JavaScript-based deletion as last resort
+        const deleted = await this.page.evaluate((index) => {
+            const containers = document.querySelectorAll('[data-index="container_option"]');
+            if (!containers[index]) return false;
+
+            // Find delete button - try multiple approaches
+            let deleteBtn = containers[index].querySelector('[data-index="button_remove"]');
+            if (!deleteBtn) {
+                deleteBtn = containers[index].querySelector('.action-remove, .action-delete');
+            }
+            if (!deleteBtn) {
+                // Look for trash icon's parent button
+                const trashIcon = containers[index].querySelector('svg, [class*="icon"]');
+                if (trashIcon) {
+                    deleteBtn = trashIcon.closest('button');
+                }
+            }
+
+            if (deleteBtn) {
+                deleteBtn.click();
+                return true;
+            }
+            return false;
+        }, optionIndex);
+
+        if (!deleted) {
+            console.log(`Could not find or click delete button for option ${optionIndex} via JavaScript`);
+            return;
+        }
+
+        console.log(`Clicked delete button for option ${optionIndex} via JavaScript`);
+        await this.page.waitForTimeout(500);
+
+        // Handle confirmation modal if it appears
+        const confirmButton = this.page.locator('.modal-footer button.action-primary, .modal-footer button.action-accept, button.action-accept');
+        const isModalVisible = await confirmButton.isVisible({ timeout: 2000 }).catch(() => false);
+
+        if (isModalVisible) {
+            await confirmButton.click();
+            await this.page.waitForTimeout(1000);
+        }
+
+        // Wait for the option count to decrease
+        try {
+            await this.page.waitForFunction(
+                (expected) => {
+                    const containers = document.querySelectorAll('[data-index="container_option"]');
+                    return containers.length < expected;
+                },
+                initialCount,
+                { timeout: 5000 }
+            );
+        } catch (e) {
+            console.log(`Warning: Option count did not decrease after delete. Initial: ${initialCount}, Current: ${await this.getCustomOptionsCount()}`);
         }
     }
 
@@ -359,5 +440,59 @@ export default class AdminProductCustomOptionsPage {
         }
 
         await this.productsPage.saveAndContinueEdit();
+    }
+
+    /**
+     * Set up a dropdown custom option where ALL values have qty limits.
+     * This deletes any existing custom options first to ensure clean state.
+     * @param title The title for the dropdown option
+     * @param values Array of values with title and qty_limit
+     * @param required Whether the option should be required
+     */
+    async setupDropdownWithAllLimitedValues(
+        title: string,
+        values: Array<{ title: string; qty_limit: string }>,
+        required: boolean = true
+    ) {
+        // Delete all existing custom options
+        const existingCount = await this.getCustomOptionsCount();
+        for (let i = existingCount - 1; i >= 0; i--) {
+            await this.deleteCustomOption(i);
+            await this.page.waitForTimeout(300);
+        }
+
+        // Add new dropdown option
+        await this.addCustomOption();
+        await this.selectOptionType('drop_down');
+        await this.fillOptionTitle(title, 0);
+
+        // Set required if specified
+        if (required) {
+            const requireCheckbox = this.page.locator('[data-index="is_require"] input[type="checkbox"]').first();
+            await requireCheckbox.check();
+        }
+
+        // Add all values with their qty limits
+        for (let i = 0; i < values.length; i++) {
+            await this.addOptionValue();
+            await this.fillOptionValueTitle(values[i].title, i);
+            if (values[i].qty_limit) {
+                await this.setOptionValueQtyLimit(values[i].qty_limit, i);
+            }
+        }
+
+        // Save and continue editing to persist changes
+        await this.productsPage.saveAndContinueEdit();
+
+        // Wait for save to complete and verify
+        await this.page.waitForTimeout(2000);
+
+        // Re-navigate to custom options tab to verify save
+        await this.navigateToCustomOptionsTab();
+        const savedCount = await this.getCustomOptionsCount();
+
+        if (savedCount !== 1) {
+            throw new Error(`Expected 1 custom option after save, but found ${savedCount}`);
+        }
     }
 }

@@ -12,6 +12,22 @@ export default class AdminOrdersPage extends BasePage {
         super(page, workerInfo, data, locators); // pass the data and locators to teh base page class
     }
 
+    /**
+     * Wait for the admin grid loading spinner to disappear
+     */
+    private async waitForGridSpinner() {
+        const gridSpinner = this.page.locator('.admin__data-grid-loading-mask');
+        try {
+            // Check if spinner is visible, if so wait for it to disappear
+            const isSpinnerVisible = await gridSpinner.isVisible();
+            if (isSpinnerVisible) {
+                await gridSpinner.waitFor({state: 'hidden', timeout: 30000});
+            }
+        } catch (e) {
+            // Spinner may not be present - continue
+        }
+    }
+
     async navigateTo() {
         // get the orders url from admin dashboard (need the key value)
         const orderListItem = this.page.locator(locators.orders_list_item);
@@ -22,13 +38,19 @@ export default class AdminOrdersPage extends BasePage {
             this.workerInfo.project.name + ": Go to " + hrefValue,
             async () => await this.page.goto(hrefValue)
         );
-        await this.page.waitForLoadState("networkidle")
-        await this.page.waitForLoadState("domcontentloaded")
-        await this.page.waitForSelector(locators.adminOrdersGrid + ' >> tr')
-        // sometimes we have filters let over from prior sessions, so clear them
+        await this.page.waitForLoadState("networkidle");
+        await this.page.waitForLoadState("domcontentloaded");
+
+        // Wait for grid spinner to disappear before interacting
+        await this.waitForGridSpinner();
+
+        await this.page.waitForSelector(locators.adminOrdersGrid + ' >> tr');
+
+        // sometimes we have filters left over from prior sessions, so clear them
         const isVisible = await this.page.isVisible(locators.remove_filter_button);
         if (isVisible) {
             await this.page.click(locators.remove_filter_button);
+            await this.waitForGridSpinner();
         }
     }
 
@@ -36,23 +58,56 @@ export default class AdminOrdersPage extends BasePage {
         await test.step(
             this.workerInfo.project.name + ": Check if order exists by increment id ",
             async () => {
+                // Wait for page to fully load
+                await this.page.waitForLoadState("networkidle");
+                await this.page.waitForTimeout(2000);
+
+                // Wait for any existing spinner to disappear first
+                await this.waitForGridSpinner();
+
                 const isVisible = await this.page.isVisible(locators.remove_filter_button);
                 if (isVisible) {
-                    await this.page.click(locators.remove_filter_button);
+                    await this.page.click(locators.remove_filter_button, { force: true });
+                    await this.waitForGridSpinner();
+                    await this.page.waitForLoadState("networkidle");
+                    await this.page.waitForTimeout(1000);
                 }
-                await this.page.locator(locators.filter_button_expand).first().waitFor({state: 'visible'});
-                await this.page.locator(locators.filter_button_expand).first().click();
+
+                // Wait for filter button to be visible and clickable
+                await this.page.locator(locators.filter_button_expand).first().waitFor({state: 'visible', timeout: 30000});
+                await this.waitForGridSpinner();
+                await this.page.waitForTimeout(500);
+
+                // Use force click to bypass any overlay issues
+                await this.page.locator(locators.filter_button_expand).first().click({ force: true });
+
+                // Wait for filter panel to expand
+                await this.page.waitForTimeout(1000);
+
                 await this.page.locator(locators.filter_increment_id).first().waitFor({state: 'visible'});
                 await this.page.locator(locators.filter_increment_id).first().fill(incrementId);
+
+                // Click apply and wait for grid to update
                 await this.page.click(locators.filter_apply);
-                await this.page.waitForLoadState("networkidle")
-                await this.page.waitForLoadState("domcontentloaded")
+
+                // Wait for grid loading spinner to appear and disappear
+                await this.waitForGridSpinner();
+
+                await this.page.waitForLoadState("networkidle");
+                await this.page.waitForTimeout(1000); // Allow grid to fully update
+
+                // Wait for grid to show filtered results with the specific order ID
+                const firstRowIdCell = this.page.locator(".data-grid tbody tr").first().locator("td:nth-child(2) .data-grid-cell-content");
+                await expect(firstRowIdCell).toHaveText(incrementId, {timeout: 15000});
+
+                // Verify only one row matches - wait a bit more to ensure grid is stable
+                await this.page.waitForTimeout(500);
                 const rows = this.page.locator(".data-grid tbody tr");
                 const rowCount = await rows.count();
-                expect(rowCount).toBe(1);
-                const idCell = rows.nth(0).locator("td:nth-child(2) .data-grid-cell-content");
-                const idText = await idCell.textContent();
-                expect(idText?.trim()).toBe(incrementId);
+
+                // If more than 1 row, the filter might not have applied correctly
+                // This can happen if the order ID is a substring of other IDs
+                expect(rowCount, `Expected 1 order with ID ${incrementId}, found ${rowCount}`).toBe(1);
             });
     }
 
@@ -66,20 +121,47 @@ export default class AdminOrdersPage extends BasePage {
     async createNewOrderWithNewCustomer(customerData: CustomerData) {
         await this.page.locator(locators.create_new_order_button).waitFor({state: 'visible'});
         await this.page.click(locators.create_new_order_button);
-        await this.page.waitForLoadState("domcontentloaded")
+        await this.page.waitForLoadState("domcontentloaded");
+        await this.page.waitForLoadState("networkidle");
+
         await this.page.getByRole('button', {name: locators.create_new_customer_button}).click();
+        await this.page.waitForLoadState("networkidle");
+
         await test.step(
             this.workerInfo.project.name + ": Create new order and creating a new customer ",
             async () => {
-                await this.page.waitForSelector(CustomerFormLocators.email);
+                // Wait for the form to be fully loaded
+                await this.page.waitForSelector(CustomerFormLocators.email, { state: 'visible', timeout: 30000 });
+                await this.page.waitForTimeout(1000); // Allow AJAX to complete
+
+                // Fill email and verify it's filled
                 await this.page.fill(CustomerFormLocators.email, customerData.email);
+                await this.page.waitForTimeout(300);
+
+                // Fill billing address fields
+                await this.page.locator(CustomerFormLocators.billing_firstname).waitFor({ state: 'visible' });
                 await this.page.fill(CustomerFormLocators.billing_firstname, customerData.firstName);
+                await this.page.waitForTimeout(200);
+
                 await this.page.fill(CustomerFormLocators.billing_lastname, customerData.lastName);
+                await this.page.waitForTimeout(200);
+
                 await this.page.fill(CustomerFormLocators.billing_street_address, customerData.street_one_line);
+                await this.page.waitForTimeout(200);
+
                 await this.page.fill(CustomerFormLocators.billing_city, customerData.city);
+                await this.page.waitForTimeout(200);
+
                 await this.page.locator(CustomerFormLocators.billing_zip).pressSequentially(customerData.zip);
+                await this.page.waitForTimeout(200);
+
                 await this.page.fill(CustomerFormLocators.billing_phone, customerData.phone);
+                await this.page.waitForTimeout(200);
+
+                // Select state and wait for AJAX (may trigger address validation)
                 await this.page.selectOption(CustomerFormLocators.billing_state, customerData.state);
+                await this.page.waitForTimeout(1000);
+                await this.page.waitForLoadState("networkidle");
             });
     }
 
@@ -166,12 +248,37 @@ export default class AdminOrdersPage extends BasePage {
     }
 
     async placeOrder() {
-        // fix issue with Purchase Order failing. Seems to focus first works
-        await this.page.getByRole('group', {name: 'Order Totals'}).getByRole('button').focus();
-        await this.page.getByRole('group', {name: 'Order Totals'}).getByRole('button').click();
-        await this.page.waitForLoadState("domcontentloaded")
-        await this.page.waitForLoadState("networkidle")
-        await this.page.locator(locators.admin_success_message).waitFor({state: 'visible'});
+        // Wait for any AJAX spinners to complete before clicking
+        await this.page.waitForTimeout(3000);
+
+        // Find the Submit Order button
+        const submitButton = this.page.locator('button:has-text("Submit Order")').first();
+        await submitButton.waitFor({ state: 'visible', timeout: 30000 });
+
+        // Scroll into view and focus first to ensure the button is ready
+        await submitButton.scrollIntoViewIfNeeded();
+        await submitButton.focus();
+        await this.page.waitForTimeout(1000);
+
+        // Get current URL before clicking
+        const currentUrl = this.page.url();
+
+        // Click the button with force to bypass any overlay issues
+        await submitButton.click({ force: true });
+
+        // Wait for URL to change (order creation redirects to order view page)
+        try {
+            await this.page.waitForURL((url) => url.href !== currentUrl, { timeout: 90000 });
+        } catch (e) {
+            // URL may not change if there's an error, continue to check for success message
+        }
+
+        // Wait for the page to fully load
+        await this.page.waitForLoadState("domcontentloaded");
+        await this.page.waitForLoadState("networkidle");
+
+        // Wait for success message with extended timeout (order creation can be slow)
+        await this.page.locator(locators.admin_success_message).waitFor({state: 'visible', timeout: 60000});
         await expect(this.page.locator(locators.admin_success_message)).toContainText(locators.order_success_message);
     }
 

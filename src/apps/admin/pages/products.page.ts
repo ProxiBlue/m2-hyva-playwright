@@ -18,6 +18,22 @@ export default class AdminProductsPage extends BasePage {
     }
 
     /**
+     * Wait for the admin grid loading spinner to disappear
+     */
+    private async waitForGridSpinner() {
+        const gridSpinner = this.page.locator('.admin__data-grid-loading-mask');
+        try {
+            // Check if spinner is visible, if so wait for it to disappear
+            const isSpinnerVisible = await gridSpinner.isVisible();
+            if (isSpinnerVisible) {
+                await gridSpinner.waitFor({state: 'hidden', timeout: 30000});
+            }
+        } catch (e) {
+            // Spinner may not be present - continue
+        }
+    }
+
+    /**
      * Navigate to products grid (original method)
      */
     async navigateTo() {
@@ -30,13 +46,19 @@ export default class AdminProductsPage extends BasePage {
             this.workerInfo.project.name + ": Go to " + hrefValue,
             async () => await this.page.goto(hrefValue)
         );
-        await this.page.waitForLoadState("networkidle")
-        await this.page.waitForLoadState("domcontentloaded")
-        await this.page.waitForSelector(locators.adminProductGrid + ' >> tr')
+        await this.page.waitForLoadState("networkidle");
+        await this.page.waitForLoadState("domcontentloaded");
+
+        // Wait for grid spinner to disappear before interacting
+        await this.waitForGridSpinner();
+
+        await this.page.waitForSelector(locators.adminProductGrid + ' >> tr');
+
         // sometimes we have filters left over from prior sessions, so clear them
         const isVisible = await this.page.isVisible(locators.remove_filter_button);
         if (isVisible) {
             await this.page.click(locators.remove_filter_button);
+            await this.waitForGridSpinner();
         }
     }
 
@@ -56,13 +78,17 @@ export default class AdminProductsPage extends BasePage {
 
         await this.page.waitForLoadState("networkidle");
         await this.page.waitForLoadState("domcontentloaded");
+
+        // Wait for grid spinner to disappear before interacting
+        await this.waitForGridSpinner();
+
         await this.page.waitForSelector(locators.adminProductGrid + ' >> tr');
 
         // Clear any leftover filters from prior sessions
         const isVisible = await this.page.isVisible(locators.remove_filter_button);
         if (isVisible) {
             await this.page.click(locators.remove_filter_button);
-            await this.page.waitForLoadState('networkidle');
+            await this.waitForGridSpinner();
         }
     }
 
@@ -70,9 +96,13 @@ export default class AdminProductsPage extends BasePage {
      * Search for a product by SKU or name
      */
     async searchProduct(searchTerm: string) {
+        // Wait for any existing spinner to disappear first
+        await this.waitForGridSpinner();
+
         // Expand filters first (similar to orders filtering pattern)
         const filterExpandButton = this.page.locator('[data-action="grid-filter-expand"]').first();
         await filterExpandButton.waitFor({ state: 'visible' });
+        await this.waitForGridSpinner();
         await filterExpandButton.click();
 
         // Use SKU filter field (similar to order increment_id pattern)
@@ -81,6 +111,10 @@ export default class AdminProductsPage extends BasePage {
         await skuFilter.fill(searchTerm);
 
         await this.page.click(locators.products_grid_search_submit);
+
+        // Wait for grid loading spinner to appear and disappear
+        await this.waitForGridSpinner();
+
         await this.page.waitForLoadState('networkidle');
         await this.page.waitForTimeout(1000);
     }

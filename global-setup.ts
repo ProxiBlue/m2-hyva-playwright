@@ -55,9 +55,46 @@ function joinUrl(base: string, path: string): string {
 }
 
 
+/**
+ * Validates APP_NAME and TEST_BASE configuration combination.
+ * Site-specific apps (pps, nto, etc.) should use matching APP_NAME and TEST_BASE
+ * to ensure tests run against the correct URL configuration.
+ *
+ * Valid combinations:
+ * - APP_NAME=hyva, TEST_BASE=hyva (base Hyva tests against hyva.ddev.site)
+ * - APP_NAME=pps, TEST_BASE=pps (PPS-specific tests against pvcpipesupplies.ddev.site)
+ * - APP_NAME=pps, TEST_BASE=hyva (base Hyva tests against PPS site - uses PPS config)
+ * - APP_NAME=pps, TEST_BASE=admin (admin tests against PPS site)
+ * - APP_NAME=pps, TEST_BASE=checkout (checkout tests against PPS site)
+ *
+ * Invalid combinations:
+ * - APP_NAME=hyva, TEST_BASE=pps (runs PPS tests against wrong URL!)
+ */
+function validateConfiguration(appName: string, testBase: string): void {
+  const siteSpecificApps = ['pps', 'nto']; // Apps with their own URL configs
+
+  // Warn if running site-specific tests without matching APP_NAME
+  if (siteSpecificApps.includes(testBase) && appName !== testBase) {
+    console.warn('\n' + '='.repeat(80));
+    console.warn('⚠️  CONFIGURATION WARNING: Potential URL mismatch detected!');
+    console.warn('='.repeat(80));
+    console.warn(`APP_NAME=${appName} but TEST_BASE=${testBase}`);
+    console.warn(`This will load config from "src/apps/${appName}/" but run tests from "src/apps/${testBase}/tests/"`);
+    console.warn(`Tests may fail because they expect a different site configuration.`);
+    console.warn('');
+    console.warn(`Did you mean: APP_NAME=${testBase} TEST_BASE=${testBase} ?`);
+    console.warn('='.repeat(80) + '\n');
+  }
+}
+
 const globalSetup = async (config: FullConfig) => {
   // Initialize configuration to ensure environment variables are set
   const appName = process.env.APP_NAME || 'hyva';
+  const testBase = process.env.TEST_BASE || 'default';
+
+  // Validate configuration combination
+  validateConfiguration(appName, testBase);
+
   //console.log(`Initializing configuration for app: ${appName}`);
   initConfig(appName);
 

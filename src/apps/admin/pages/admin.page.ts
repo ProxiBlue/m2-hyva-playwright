@@ -102,9 +102,15 @@ export default class AdminPage extends BasePage {
                     throw new Error('Admin credentials not found. Please set admin_username and admin_password in config.private.json');
                 }
 
+                // Wait for login form to be ready (Magento JS validation needs to initialize)
+                await this.page.waitForSelector(locators.username, { state: 'visible', timeout: 10000 });
+                await this.page.waitForTimeout(1000); // Wait for Magento JS to initialize
+
                 // Perform login with the configured admin credentials
                 await this.page.fill(locators.username, username);
+                await this.page.waitForTimeout(300); // Small delay after username
                 await this.page.fill(locators.password, password);
+                await this.page.waitForTimeout(300); // Small delay after password
                 await this.page.getByRole('button', {name: 'Sign in'}).click();
 
                 // Wait for login to complete with a longer timeout
