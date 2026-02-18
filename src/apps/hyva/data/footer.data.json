@@ -1,0 +1,6 @@
+{
+  "default": {
+    "newsletter_success_message": "Thank you for your subscription.",
+    "newsletter_already_subscribed_message": "This email address is already subscribed."
+  }
+}

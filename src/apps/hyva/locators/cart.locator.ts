@@ -21,3 +21,9 @@ export const checkout_button = "#checkout-link-button"
 export const cart_item_options = ".item-options";
 export const cart_item_option_label = ".item-options dt";
 export const cart_item_option_value = ".item-options dd";
+
+export const discount_toggle = 'Apply Discount Code';
+export const coupon_input = '#coupon_code';
+export const coupon_apply_button = 'Apply Discount';
+export const coupon_cancel_button = 'Cancel coupon';
+export const discount_amount = '.discount .amount .price';

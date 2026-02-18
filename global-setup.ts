@@ -1,5 +1,5 @@
 import { FullConfig, chromium } from "@playwright/test";
-import { removeFilesInDirectory, cleanDirectory } from "@utils/functions/file";
+import { cleanDirectory } from "@utils/functions/file";
 import fs from "fs";
 import path from "path";
 import { initConfig } from "./config.init";

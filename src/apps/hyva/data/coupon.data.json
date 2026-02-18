@@ -1,0 +1,9 @@
+{
+  "default": {
+    "valid_coupon_code": "",
+    "invalid_coupon_code": "INVALIDCODE999",
+    "coupon_applied_message": "You used coupon code",
+    "coupon_removed_message": "You canceled the coupon code.",
+    "invalid_coupon_error": "is not valid"
+  }
+}
