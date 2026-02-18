@@ -1,0 +1,8 @@
+{
+  "default": {
+    "password_saved_message": "You saved the account information.",
+    "address_saved_message": "You saved the address.",
+    "address_deleted_message": "You deleted the address.",
+    "newsletter_saved_message": "We have saved your subscription."
+  }
+}
