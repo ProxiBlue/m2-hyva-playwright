@@ -42,7 +42,7 @@ describe("Side cart check", () => {
             await editButton.click();
             await page.waitForLoadState("networkidle");
             await page.waitForLoadState("domcontentloaded");
-            await expect(page.getByRole('heading', { name: lineItemName, exact: true }).locator('span')).toBeVisible();
+            await expect(page.getByRole('heading', { name: lineItemName, exact: true })).toBeVisible();
             await page.locator(productLocators.product_qty_input).fill('2');
             await page.waitForLoadState("domcontentloaded");
             await page.locator(productLocators.product_add_to_cart_button).click();
