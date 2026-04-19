@@ -1,6 +1,6 @@
 import { test, describe, expect } from "@hyva/fixtures";
 import { loadLocators, loadJsonData } from "@utils/functions/file";
-import { shouldSkipTest } from "@utils/functions/test-skip";
+import { shouldSkipTest, isMobile } from "@utils/functions/test-skip";
 
 const sidecartLocators = loadLocators('locators/sidecart.locator', 'hyva');
 const pageLocators = loadLocators('locators/page.locator', 'hyva');
@@ -19,8 +19,10 @@ describe("Cart persistence test suite", () => {
         await simpleProductPage.navigateTo();
         await simpleProductPage.addToCart();
 
-        // Verify item is in minicart
-        await sideCartPage.checkQtyIndication(1);
+        // Verify item is in minicart (desktop only - mobile has no sidecart icon)
+        if (!isMobile(page)) {
+            await sideCartPage.checkQtyIndication(1);
+        }
 
         // Create account (will auto-login)
         await customerPage.createAccount(customerData);

@@ -12,6 +12,7 @@ export interface CategoryData {
     ascending?: string;
     filters?: Record<string, Record<string, number>>;
     limiter?: string[];
+    pager_size?: string;
     breadcrumbs?: string[];
     grid_mode?: string;
     list_mode?: string;

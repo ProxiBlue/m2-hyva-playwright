@@ -12,9 +12,18 @@ interface WishlistData {
 
 const defaultData: WishlistData = {
     default: {
+        // Hyvä view.phtml emits "You have no items in your wish list." (per-customer
+        // wishlist view) while item/list.phtml emits "This Wish List has no Items".
+        // Use a regex that accepts either so the test is resilient across the two
+        // render paths.
         empty_message: "You have no items in your wish list.",
     }
 };
+
+// Shared regex used by the tests below: matches either Hyvä "empty wishlist"
+// wording variant, case-insensitive, so we do not care which template branch
+// actually renders.
+const emptyWishlistRegex = /(you have no items in your wish list|this wish list has no items)/i;
 
 let data = loadJsonData<WishlistData>('wishlist.data.json', 'hyva', defaultData);
 if (data && !data.default) {
@@ -36,13 +45,17 @@ describe("Wishlist test suite", () => {
         await simpleProductPage.navigateTo();
         await page.waitForLoadState('domcontentloaded');
 
+        // Capture product name from PDP before adding to wishlist
+        const pdpProductName = (await page.locator('h1').textContent() || '').trim();
+        expect(pdpProductName).not.toBe('');
+
         await simpleProductPage.addToWishlistLoggedIn();
 
         await page.goto(process.env.url + 'wishlist/');
         await page.waitForLoadState('domcontentloaded');
 
         // Verify the product name appears on the wishlist page
-        const productName = page.getByText('Joust Duffle Bag');
+        const productName = page.getByText(pdpProductName);
         await expect(
             productName.first(),
             'Product should be visible in wishlist'
@@ -67,10 +80,10 @@ describe("Wishlist test suite", () => {
             await page.waitForLoadState('domcontentloaded');
         }
 
-        // Verify empty wishlist message
-        const emptyMessage = data.default.empty_message || '';
+        // Verify empty wishlist message — scope to the Hyvä empty-state
+        // container so we do not accidentally match other page copy.
         await expect(
-            page.getByText(emptyMessage),
+            page.locator('.message.info.empty').getByText(emptyWishlistRegex),
             'Empty wishlist message should be visible'
         ).toBeVisible({ timeout: 10000 });
     });
@@ -79,9 +92,8 @@ describe("Wishlist test suite", () => {
         await page.goto(process.env.url + 'wishlist/');
         await page.waitForLoadState('domcontentloaded');
 
-        const emptyMessage = data.default.empty_message || '';
         await expect(
-            page.getByText(emptyMessage),
+            page.locator('.message.info.empty').getByText(emptyWishlistRegex),
             'Empty wishlist message should be visible for new account'
         ).toBeVisible({ timeout: 10000 });
     });

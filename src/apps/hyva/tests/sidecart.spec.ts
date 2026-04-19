@@ -1,6 +1,6 @@
 import { test, describe, expect } from "@hyva/fixtures";
 import { loadLocators } from "@utils/functions/file";
-import { shouldSkipTest } from "@utils/functions/test-skip";
+import { shouldSkipTest, isMobile } from "@utils/functions/test-skip";
 
 // Load the locators dynamically based on the APP_NAME environment variable
 const locators = loadLocators('locators/sidecart.locator', 'hyva');
@@ -9,11 +9,12 @@ const pageLocators = loadLocators('locators/page.locator', 'hyva');
 
 describe("Side cart check", () => {
 
-    test.beforeEach(async ({ simpleProductPage }, testInfo) => {
+    test.beforeEach(async ({ simpleProductPage, page }, testInfo) => {
         // Use the helper function to determine if the test should be skipped
         const shouldSkip = shouldSkipTest(testInfo);
 
         test.skip(shouldSkip, "Test skipped for this environment: " + process.env.APP_NAME);
+        test.skip(isMobile(page), "Sidecart not available on mobile viewport");
         await simpleProductPage.navigateTo();
         await simpleProductPage.addToCart();
     });

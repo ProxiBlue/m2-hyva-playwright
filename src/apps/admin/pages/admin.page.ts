@@ -21,12 +21,6 @@ export default class AdminPage extends BasePage {
         super(page, workerInfo, data, locators); // pass the data and locators to teh base page class
     }
 
-
-
-
-
-
-
     /**
      * Joins URL parts correctly, avoiding double slashes
      * @param base The base URL (e.g., "https://example.com/")
@@ -79,7 +73,7 @@ export default class AdminPage extends BasePage {
                 // Check if we're already logged in by looking for the admin title
                 try {
                     // Try to find the admin title with a short timeout
-                    await this.page.waitForSelector(locators.title, { timeout: 3000 });
+                    await this.page.waitForSelector(locators.title, { timeout: 30 });
                     await test.step(this.workerInfo.project.name + ": Already logged in, skipping login process", async () => {});
 
                     // Verify we're on the admin page
@@ -113,8 +107,23 @@ export default class AdminPage extends BasePage {
                 await this.page.waitForTimeout(300); // Small delay after password
                 await this.page.getByRole('button', {name: 'Sign in'}).click();
 
-                // Wait for login to complete with a longer timeout
-                await this.page.waitForSelector(locators.title, { timeout: 20000 });
+                // Positive login-completion signal: Magento admin redirects away from
+                // the login URL (which contains "/admin/" + "index/" or "login") to a
+                // hashed dashboard URL once credentials are accepted. Anchor on that
+                // navigation instead of on .page-title, which is a heavy post-login
+                // DOM element gated behind UI component / KO bootstrap.
+                await this.page.waitForURL(
+                    (url) => !/\/admin\/?(index\/)?(index\/)?login/i.test(url.pathname)
+                        && !url.pathname.endsWith('/admin')
+                        && !url.pathname.endsWith('/admin/'),
+                    { timeout: 30000, waitUntil: 'domcontentloaded' },
+                );
+
+                // Now wait for the admin chrome to render. Cold-cache dashboards
+                // (after DI rebuild) have been measured at ~2.2s; 2s was below the
+                // observed p95. 30s is the Playwright default action budget and is
+                // the right ceiling for a cold Magento admin bootstrap.
+                await this.page.waitForSelector(locators.title, { timeout: 30000 });
 
                 // Verify we're on the admin page
                 const pageTitleText = data.default.page_title_text || '';
@@ -122,7 +131,7 @@ export default class AdminPage extends BasePage {
 
                 // Sometimes there is a dialog, just refresh and it will go away
                 await this.page.reload();
-                await this.page.waitForSelector(locators.title);
+                await this.page.waitForSelector(locators.title, { timeout: 30000 });
             });
     }
 

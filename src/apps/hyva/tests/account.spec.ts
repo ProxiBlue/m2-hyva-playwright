@@ -2,6 +2,7 @@ import { test, describe, expect } from "@hyva/fixtures";
 import { loadLocators, loadJsonData } from "@utils/functions/file";
 import { shouldSkipTest } from "@utils/functions/test-skip";
 
+const locators = loadLocators('locators/customer.locator', 'hyva');
 const pageLocators = loadLocators('locators/page.locator', 'hyva');
 
 interface AccountData {
@@ -119,6 +120,45 @@ describe("Account management test suite", () => {
             page.locator(pageLocators.message_success),
             'Email update success message should be visible'
         ).toContainText(successMessage, { timeout: 10000 });
+    });
+
+    test("Editing name/surname removes leading/trailing spaces on save", async ({ customerData, page }) => {
+        const newFirst = "  UpdatedFirst  ";
+        const newLast = "  UpdatedLast  ";
+
+        await page.goto(process.env.url + 'customer/account/edit/');
+        await page.waitForLoadState('domcontentloaded');
+
+        const firstNameField = page.locator(locators.create_firstname);
+        await expect(firstNameField).toBeVisible({ timeout: 5000 });
+        await firstNameField.fill(newFirst);
+
+        const lastNameField = page.locator(locators.create_lastname);
+        await expect(lastNameField).toBeVisible({ timeout: 5000 });
+        await lastNameField.fill(newLast);
+
+        await page.getByRole('button', { name: 'Save' }).click();
+        await page.waitForLoadState('domcontentloaded');
+
+        const successMessage = data.default.password_saved_message || 'You saved the account information.';
+        await expect(
+            page.locator(pageLocators.message_success),
+            'Account save success message should be visible',
+        ).toContainText(successMessage, { timeout: 10000 });
+
+        // Reload edit page to verify saved values
+        await page.goto(process.env.url + 'customer/account/edit/');
+        await page.waitForLoadState('domcontentloaded');
+
+        const savedFirstName = await page.locator(locators.create_firstname).inputValue();
+        expect(savedFirstName, 'First name should not have leading spaces after edit').not.toMatch(/^\s/);
+        expect(savedFirstName, 'First name should not have trailing spaces after edit').not.toMatch(/\s$/);
+        expect(savedFirstName).toBe('UpdatedFirst');
+
+        const savedLastName = await page.locator(locators.create_lastname).inputValue();
+        expect(savedLastName, 'Last name should not have leading spaces after edit').not.toMatch(/^\s/);
+        expect(savedLastName, 'Last name should not have trailing spaces after edit').not.toMatch(/\s$/);
+        expect(savedLastName).toBe('UpdatedLast');
     });
 
     test("Update newsletter subscription", async ({ page }) => {

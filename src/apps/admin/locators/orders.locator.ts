@@ -18,3 +18,10 @@ export const filter_apply = '[data-action="grid-filter-apply"]'
 export const adminOrdersGrid = 'table[data-role="grid"]'
 export const orders_list_item = 'li[data-ui-id="menu-magento-sales-sales-order"]';
 export const order_success_message = 'created the order';
+
+// Payment method labels
+export const payment_check_money_order = 'Check / Money order';
+export const payment_cash_on_delivery = 'Cash On Delivery';
+export const payment_purchase_order = 'Purchase Order';
+export const purchase_order_number_field = 'input[name="payment[po_number]"]';
+export const purchase_order_number_value = 'PO123456789';

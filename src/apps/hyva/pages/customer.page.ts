@@ -72,10 +72,19 @@ export default class CustomerPage extends BasePage<CustomerPageData> {
             this.workerInfo.project.name + ": Customer Logout ",
             async () => {
                 await this.page.waitForTimeout(2000);
-                await this.page.getByRole('link', {name: locators.logout_link}).click();
+
+                const viewport = this.page.viewportSize();
+                const isMobile = viewport !== null && viewport.width < 640;
+
+                if (isMobile) {
+                    // On mobile, the Sign Out link is hidden. Navigate directly.
+                    await this.page.goto(process.env.url + 'customer/account/logout/');
+                } else {
+                    await this.page.getByRole('link', {name: locators.logout_link}).click();
+                }
+
                 await this.page.waitForLoadState('domcontentloaded');
                 await this.page.waitForTimeout(6000);
-                //await expect(this.page.locator(pageLocators.pageTitle)).toContainText(data.default.logged_out);
             });
     }
 

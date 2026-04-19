@@ -62,7 +62,7 @@ describe("Forgot password test suite", () => {
         await page.waitForTimeout(1000);
 
         // Should remain on the same page with validation error
-        const emailField = page.getByRole('textbox', { name: 'Email', exact: true });
+        const emailField = page.locator('#email_address');
         await expect(emailField).toBeVisible();
 
         // No success message should appear

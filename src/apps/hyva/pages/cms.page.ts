@@ -60,16 +60,15 @@ export default class CMSPage extends BasePage<CMSData> {
         const allLinks = await this.page.locator(locators.cmsDefaultPages).all();
         expect(allLinks.length).toBeGreaterThan(0);
 
-        // Filter out links with target="_blank" or href starting with "tel:"
-        const cmsLinks = [];
+        // Filter out links with target="_blank", tel:, anchors, store switches
+        const cmsLinks: { href: string }[] = [];
         for (const link of allLinks) {
             const target = await link.getAttribute('target');
             const href = await link.getAttribute('href');
             if (target !== '_blank' && href && !href.startsWith('tel') &&
                 !href.startsWith('#') && !href.includes('__store')) {
-                cmsLinks.push(link);
+                cmsLinks.push({ href });
             }
-
         }
 
         if (cmsLinks.length > 0) {
@@ -77,9 +76,19 @@ export default class CMSPage extends BasePage<CMSData> {
         }
 
         expect(cmsLinks.length).toBeGreaterThan(0);
+        const baseUrl = (process.env.url || '').replace(/\/$/, '');
         for (let i = 0; i < cmsLinks.length; i++) {
-            const link = cmsLinks[i];
-            await link.click();
+            // Resolve relative URLs to absolute
+            let linkHref = cmsLinks[i].href;
+            if (!linkHref.startsWith('http')) {
+                // Ensure the path starts with /
+                if (!linkHref.startsWith('/')) {
+                    linkHref = '/' + linkHref;
+                }
+                linkHref = baseUrl + linkHref;
+            }
+            // Navigate by URL directly to avoid issues with collapsed mobile footer sections
+            await this.page.goto(linkHref);
             await this.page.waitForLoadState('domcontentloaded');
 
             // Check if the page has breadcrumbs

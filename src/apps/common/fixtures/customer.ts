@@ -18,8 +18,6 @@ export async function createCustomerData(locale: string = "en_US"): Promise<Cust
     let state = fakerLocale.location.state({abbreviated: false});
     let zip = fakerLocale.location.zipCode();
     if (locale == "en_AU") {
-        state = fakerLocale.location.state({abbreviated: true});
-        let zip = fakerLocale.location.zipCode({state: state});
         const stateMap: { [key: string]: string } = {
             NSW: "New South Wales",
             ACT: "Australian Capital Territory",
@@ -63,9 +61,10 @@ export async function createCustomerData(locale: string = "en_US"): Promise<Cust
                 '{{number.int({"min": 0800,"max": 0899})}}',
                 '{{number.int({"min": 0900,"max": 0999})}}'
             ]
-        }
-
-        state = stateMap[state]
+        };
+        state = fakerLocale.location.state({abbreviated: true});
+        zip = fakerLocale.location.zipCode({state: state});
+        state = stateMap[state];
     }
     let firstname = fakerLocale.person.firstName();
     let lastname = fakerLocale.person.lastName();

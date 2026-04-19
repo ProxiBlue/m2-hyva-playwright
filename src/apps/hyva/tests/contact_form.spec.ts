@@ -3,6 +3,7 @@ import { loadLocators, loadJsonData } from "@utils/functions/file";
 import { shouldSkipTest } from "@utils/functions/test-skip";
 
 const pageLocators = loadLocators('locators/page.locator', 'hyva');
+const contactLocators = loadLocators('locators/contact.locator', 'hyva');
 
 interface ContactData {
     default: {
@@ -36,13 +37,19 @@ describe("Contact form test suite", () => {
 
         const timestamp = Date.now();
 
-        await page.getByRole('textbox', { name: 'Name' }).fill('Test User ' + timestamp);
-        await page.getByRole('textbox', { name: 'Email', exact: true }).fill('testuser' + timestamp + '@example.com');
-        await page.getByRole('textbox', { name: 'Phone Number' }).fill('5551234567');
-        // Label uses curly quote (U+2019) — use CSS selector instead of role-based
-        await page.locator('#comment').fill('Automated test message ' + timestamp);
+        await page.locator(contactLocators.nameField).fill('Test User ' + timestamp);
+        await page.locator(contactLocators.emailField).fill('testuser' + timestamp + '@example.com');
 
-        await page.locator('button[type="submit"][title="Submit"]').click({ force: true });
+        await page.locator(contactLocators.telephoneField).fill('5551234567');
+
+        // Fill Subject field if present (some themes include it)
+        const subjectField = page.locator(contactLocators.subjectField);
+        if (await subjectField.count() > 0) {
+            await subjectField.fill('Test inquiry ' + timestamp);
+        }
+
+        await page.locator(contactLocators.commentField).fill('Automated test message ' + timestamp);
+        await page.locator(contactLocators.submitButton).click({ force: true });
         await page.waitForLoadState('domcontentloaded');
 
         const successMessage = data.default.success_message || '';
@@ -56,11 +63,11 @@ describe("Contact form test suite", () => {
         await page.goto(process.env.url + 'contact/');
         await page.waitForLoadState('domcontentloaded');
 
-        await page.locator('button[type="submit"][title="Submit"]').click({ force: true });
+        await page.locator(contactLocators.submitButton).click({ force: true });
         await page.waitForTimeout(1000);
 
         // Required fields should show validation errors — still on contact page
-        const nameField = page.getByRole('textbox', { name: 'Name' });
+        const nameField = page.locator(contactLocators.nameField);
         await expect(nameField).toBeVisible();
 
         // Verify no success message appeared

@@ -367,6 +367,21 @@ export default class ProductPage extends BasePage {
         await test.step(
             this.workerInfo.project.name + ": Add product to cart ",
             async () => {
+                // Handle required custom options (e.g. Installation dropdown)
+                await this.page.waitForLoadState('networkidle');
+                const customSelectCount = await this.page.locator('select.product-custom-option').count();
+                for (let i = 0; i < customSelectCount; i++) {
+                    const sel = this.page.locator('select.product-custom-option').nth(i);
+                    const firstValue = await sel.evaluate((el: HTMLSelectElement) => {
+                        const opt = Array.from(el.options).find(o => o.value !== '');
+                        return opt ? opt.value : null;
+                    });
+                    if (firstValue) {
+                        await sel.selectOption(firstValue);
+                        await this.page.waitForTimeout(300);
+                    }
+                }
+
                 await this.page.fill(productLocators.product_qty_input, qty);
                 await this.page.locator(productLocators.product_add_to_cart_button).click();
 

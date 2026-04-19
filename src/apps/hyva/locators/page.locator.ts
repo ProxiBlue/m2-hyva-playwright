@@ -1,6 +1,9 @@
 export const pageTitle = ".page-title"
-export const message_success = ".message.success";
-export const message_error = "#messages .message.error";
+// Hyvä 1.4.5 renders messages via Alpine in <section id="messages">.
+// The rendered message element is <div class="message {type}" ui-id="message-{type}">.
+// Using the ui-id attribute is Hyvä-canonical and unambiguous (Luma does not emit ui-id).
+export const message_success = "#messages [ui-id='message-success']";
+export const message_error = "#messages [ui-id='message-error']";
 
 export const messageClose = "Close Message"
 

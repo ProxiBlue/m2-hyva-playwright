@@ -8,7 +8,7 @@
     "test:all": "NODE_TLS_REJECT_UNAUTHORIZED=0 APP_NAME=admin npx playwright test",
     "test:ui": "NODE_TLS_REJECT_UNAUTHORIZED=0 APP_NAME=admin  npx playwright test --ui",
     "test:debug": "NODE_TLS_REJECT_UNAUTHORIZED=0 APP_NAME=admin  PWDEBUG=1 npx playwright test",
-    "report": "PLAYWRIGHT_HTML_HOST=pvcpipesupplies.ddev.site npx playwright show-report ../../../../test-results/pps/admin-default-reports/playwright-report",
+    "report": "PLAYWRIGHT_HTML_HOST=lcd-mageos.ddev.site npx playwright show-report ../../../../test-results/lcd/admin-default-reports/playwright-report",
     "test:display": "NODE_TLS_REJECT_UNAUTHORIZED=0 APP_NAME=admin  npx playwright test --headed"
   }
 }
