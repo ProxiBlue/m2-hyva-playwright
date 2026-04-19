@@ -31,7 +31,7 @@ describe("Simple Product test suite", () => {
         await simpleProductPage.addToWishlistNotLoggedIn();
     });
 
-    test("Can add a product to a wishlist when the user is logged in", async ({ configurableProductPage, customerPage, customerData, page }, testInfo) => {
+    test("Can add a product to a wishlist when the user is logged in", async ({ simpleProductPage, customerPage, customerData, page }, testInfo) => {
         // First login the user
         await customerPage.navigateTo();
         await customerPage.page.waitForLoadState('domcontentloaded');
@@ -43,10 +43,9 @@ describe("Simple Product test suite", () => {
         await customerPage.page.waitForLoadState('domcontentloaded');
         await customerPage.page.waitForSelector(pageLocators.message_success);
 
-        // Navigate back to the configurable product page
-        await configurableProductPage.navigateTo();
-
-        await configurableProductPage.addToWishlistLoggedIn();
+        // Navigate to the simple product page and add it to the wishlist
+        await simpleProductPage.navigateTo();
+        await simpleProductPage.addToWishlistLoggedIn();
 
         // Logout after test
         await customerPage.logout();

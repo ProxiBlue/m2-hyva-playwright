@@ -21,9 +21,16 @@ describe("Product widgets test suite", () => {
 
         // Hyva renders upsell in section#upsell with snap-slider
         const upsellSection = page.locator('section#upsell, section[data-slider-type="upsell"]');
-        await upsellSection.scrollIntoViewIfNeeded().catch(() => {});
 
-        if (!(await upsellSection.isVisible({ timeout: 5000 }).catch(() => false))) {
+        // Short-circuit BEFORE scrollIntoViewIfNeeded: with actionTimeout:0 and
+        // slowMo, scrolling a non-existent locator blocks until the 60s test
+        // timeout rather than being caught.
+        if ((await upsellSection.count()) === 0) {
+            test.skip(true, 'No upsell products section on this product page');
+        }
+        await upsellSection.first().scrollIntoViewIfNeeded({ timeout: 5000 }).catch(() => {});
+
+        if (!(await upsellSection.first().isVisible({ timeout: 5000 }).catch(() => false))) {
             test.skip(true, 'No upsell products section on this product page');
         }
 
@@ -32,7 +39,7 @@ describe("Product widgets test suite", () => {
         await expect(upsellHeading, 'Upsell heading should be visible').toBeVisible();
 
         // Verify at least one product card
-        const upsellProducts = upsellSection.locator('.product-item');
+        const upsellProducts = upsellSection.first().locator('.product-item');
         const productCount = await upsellProducts.count();
         expect(productCount).toBeGreaterThan(0);
     });
@@ -42,14 +49,17 @@ describe("Product widgets test suite", () => {
         await page.waitForLoadState('domcontentloaded');
 
         const upsellSection = page.locator('section#upsell, section[data-slider-type="upsell"]');
-        await upsellSection.scrollIntoViewIfNeeded().catch(() => {});
+        if ((await upsellSection.count()) === 0) {
+            test.skip(true, 'No upsell products section on this product page');
+        }
+        await upsellSection.first().scrollIntoViewIfNeeded({ timeout: 5000 }).catch(() => {});
 
-        if (!(await upsellSection.isVisible({ timeout: 5000 }).catch(() => false))) {
+        if (!(await upsellSection.first().isVisible({ timeout: 5000 }).catch(() => false))) {
             test.skip(true, 'No upsell products section on this product page');
         }
 
         // Click first upsell product link
-        const upsellLinks = upsellSection.locator('a[href*=".html"]');
+        const upsellLinks = upsellSection.first().locator('a[href*=".html"]');
         const linkCount = await upsellLinks.count();
         if (linkCount === 0) {
             test.skip(true, 'No clickable upsell product links found');
