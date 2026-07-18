@@ -7,15 +7,17 @@
     "src/apps/*"
   ],
   "scripts": {
-    "test:all": "yarn workspaces run test:all",
-    "test:all:ui": "yarn workspaces run test:all:ui",
-    "test:admin": "yarn workspaces run test:admin",
-    "test:hyva": "yarn workspaces run test:hyva",
-    "test:app": "yarn workspaces run test:app",
-    "test:debug": "yarn workspaces run test:debug",
-    "test:ui": "yarn workspaces run test:ui",
-    "test:display": "yarn workspaces run test:display",
-    "report": "yarn workspaces run report"
+    "test:all": "yarn --silent workspace pps run test:all",
+    "test:all:ui": "yarn --silent workspace pps run test:all:ui",
+    "test:admin": "yarn --silent workspace pps run test:admin",
+    "test:pps-admin": "yarn --silent workspace pps run test:pps-admin",
+    "test:hyva": "yarn --silent workspace pps run test:hyva",
+    "test:pps": "yarn --silent workspace pps run test:pps",
+    "test:checkout": "yarn --silent workspace pps run test:checkout",
+    "test:debug": "yarn --silent workspace pps run test:debug",
+    "test:ui": "yarn --silent workspace pps run test:ui",
+    "test:display": "yarn --silent workspace pps run test:display",
+    "report": "yarn --silent workspace pps run report"
   },
   "author": "Lucas van Staden",
   "license": "MIT",

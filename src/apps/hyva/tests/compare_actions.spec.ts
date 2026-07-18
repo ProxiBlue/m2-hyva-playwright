@@ -22,18 +22,20 @@ describe("Compare page actions test suite", () => {
         // We should now be on the compare page (addToCompare navigates there)
         await expect(page.locator(pageLocators.compare_table)).toBeVisible({ timeout: 10000 });
 
-        // Find and click Add to Cart button on compare page
-        const addToCartButton = page.locator('.table-wrapper').getByRole('link', { name: /Add to Cart/i }).first();
-        if (!(await addToCartButton.isVisible({ timeout: 5000 }).catch(() => false))) {
-            // Try button instead of link
-            const addToCartBtn = page.locator('.table-wrapper').getByRole('button', { name: /Add to Cart/i }).first();
-            if (!(await addToCartBtn.isVisible({ timeout: 3000 }).catch(() => false))) {
+        // Find Add to Cart target on compare page (link first, fall back to button)
+        let addToCartTarget = page.locator('.table-wrapper').getByRole('link', { name: /Add to Cart/i }).first();
+        if (!(await addToCartTarget.isVisible({ timeout: 5000 }).catch(() => false))) {
+            addToCartTarget = page.locator('.table-wrapper').getByRole('button', { name: /Add to Cart/i }).first();
+            if (!(await addToCartTarget.isVisible({ timeout: 3000 }).catch(() => false))) {
                 test.skip(true, 'No Add to Cart button on compare page');
             }
-            await addToCartBtn.click();
-        } else {
-            await addToCartButton.click();
         }
+
+        // Webkit races DOMContentLoaded ahead of the form POST redirect — wait for the actual round-trip.
+        await Promise.all([
+            page.waitForResponse(r => r.url().includes('checkout/cart/add'), { timeout: 15000 }),
+            addToCartTarget.click(),
+        ]);
 
         await page.waitForLoadState('domcontentloaded');
 
