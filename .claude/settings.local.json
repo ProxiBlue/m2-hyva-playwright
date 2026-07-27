@@ -6,9 +6,11 @@
       "Bash(xargs:*)",
       "Bash(grep:*)",
       "Bash(find:*)",
-      "Bash(NODE_TLS_REJECT_UNAUTHORIZED=0 APP_NAME=pps TEST_BASE=hyva npx playwright test:*)"
+      "Bash(NODE_TLS_REJECT_UNAUTHORIZED=0 APP_NAME=pps TEST_BASE=hyva npx playwright test:*)",
+      "mcp__plugin_context-mode_context-mode__ctx_execute"
     ]
   },
+  "enableAllProjectMcpServers": true,
   "enabledMcpjsonServers": [
     "filesystem",
     "git",
@@ -20,6 +22,5 @@
     "playwright",
     "github",
     "chrome-devtools"
-  ],
-  "enableAllProjectMcpServers": true
+  ]
 }

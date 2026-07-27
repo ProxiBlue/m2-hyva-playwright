@@ -7,7 +7,7 @@ export const cart_row_item_info  = 'article'
 export const cart_row_item_name  = '.product-item-name';
 export const cart_row_item_price  = '.price';
 export const cart_row_qty_input  = '.qty.form-input';
-export const cart_row_subtotal  = '.font-medium .price';
+export const cart_row_subtotal  = ':is(.font-medium, [class~="xl:font-medium"]) .price:visible';
 export const cart_item_row_qty_input  = 'input.qty';
 export const cart_item_row_delete   = 'button[aria-label^="Remove"]';
 export const update_cart_button   = 'button.btn-secondary[type="submit"]';

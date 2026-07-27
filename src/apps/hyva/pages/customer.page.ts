@@ -51,7 +51,18 @@ export default class CustomerPage extends BasePage<CustomerPageData> {
         await test.step(
             this.workerInfo.project.name + ": Customer Login ",
             async () => {
-                await this.navigateTo();
+                // Navigate to the login URL directly. If the storefront session is already
+                // active (e.g. auto-login after createAccount), Magento redirects to my-account.
+                await this.page.goto((process.env.url ?? '') + (data.default.url ?? 'customer/account/login/'));
+                await this.page.waitForLoadState('domcontentloaded');
+
+                const myAccountTitle = (data.default.my_account_title || '').toLowerCase();
+                const currentTitle = (await this.page.locator(pageLocators.pageTitle).first().textContent().catch(() => '') || '').toLowerCase();
+                if (myAccountTitle && currentTitle.includes(myAccountTitle)) {
+                    // Already logged in — Magento redirected to my-account.
+                    return;
+                }
+
                 await expect(this.page.getByRole('button', {name: locators.login_button})).toBeVisible();
                 await expect(this.page.locator(locators.login_email_field)).toBeVisible();
                 await expect(this.page.locator(locators.login_password_field)).toBeVisible();
@@ -61,8 +72,7 @@ export default class CustomerPage extends BasePage<CustomerPageData> {
                 await this.page.waitForLoadState('domcontentloaded');
                 await this.page.waitForLoadState('networkidle');
                 await expect(this.page.locator(pageLocators.pageTitle)).toBeVisible();
-                const myAccountTitle = data.default.my_account_title || '';
-                await expect(this.page.locator(pageLocators.pageTitle)).toContainText(myAccountTitle);
+                await expect(this.page.locator(pageLocators.pageTitle)).toContainText(data.default.my_account_title || '');
             });
     }
 
@@ -72,10 +82,19 @@ export default class CustomerPage extends BasePage<CustomerPageData> {
             this.workerInfo.project.name + ": Customer Logout ",
             async () => {
                 await this.page.waitForTimeout(2000);
-                await this.page.getByRole('link', {name: locators.logout_link}).click();
+
+                const viewport = this.page.viewportSize();
+                const isMobile = viewport !== null && viewport.width < 640;
+
+                if (isMobile) {
+                    // On mobile, the Sign Out link is hidden. Navigate directly.
+                    await this.page.goto(process.env.url + 'customer/account/logout/');
+                } else {
+                    await this.page.getByRole('link', {name: locators.logout_link}).click();
+                }
+
                 await this.page.waitForLoadState('domcontentloaded');
                 await this.page.waitForTimeout(6000);
-                //await expect(this.page.locator(pageLocators.pageTitle)).toContainText(data.default.logged_out);
             });
     }
 

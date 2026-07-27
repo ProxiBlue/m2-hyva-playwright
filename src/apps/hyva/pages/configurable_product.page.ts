@@ -121,27 +121,27 @@ export default class ConfigurableProductPage extends ProductPage {
                     const select = selectElements.nth(i);
                     const attributeId = await select.getAttribute('id');
 
-                    // Get all options except the first one (which is usually "Choose an Option...")
-                    const options = select.locator('option:not(:first-child)');
+                    // Get all selectable options: skip the placeholder AND any option the
+                    // theme rendered as :disabled (out-of-stock / non-salable children — e.g.
+                    // vendor's optionIsDisabled() marks these when the salable JSON excludes them).
+                    // Selecting a disabled option makes selectOption() hang and blocks HTML5
+                    // form validation from ever succeeding.
+                    const options = select.locator('option:not(:first-child):not([disabled])');
                     const optionsCount = await options.count();
 
                     if (optionsCount > 0) {
-                        // Choose a random option index
                         const randomIndex = Math.floor(Math.random() * optionsCount);
                         const option = options.nth(randomIndex);
 
-                        // Get the option text and value for verification later
                         const optionText = await option.textContent() || '';
                         const optionValue = await option.getAttribute('value') || '';
 
-                        // Remove price information from option text before storing
                         const cleanedOptionText = this.removePriceFromOptionText(optionText);
-
-                        // Store the selected option without price information
                         selectedOptions[attributeId || ''] = cleanedOptionText;
 
-                        // Select the option
-                        await select.selectOption({ index: randomIndex + 1 }); // +1 because we're skipping the first option
+                        // Select by value — index-based selection breaks once :disabled options
+                        // are filtered out (locator index no longer matches raw <select> index).
+                        await select.selectOption({ value: optionValue });
                     }
                 }
 

@@ -36,13 +36,17 @@ describe("Wishlist test suite", () => {
         await simpleProductPage.navigateTo();
         await page.waitForLoadState('domcontentloaded');
 
+        // Capture product name from PDP before adding to wishlist
+        const pdpProductName = (await page.locator('h1').textContent() || '').trim();
+        expect(pdpProductName).not.toBe('');
+
         await simpleProductPage.addToWishlistLoggedIn();
 
         await page.goto(process.env.url + 'wishlist/');
         await page.waitForLoadState('domcontentloaded');
 
         // Verify the product name appears on the wishlist page
-        const productName = page.getByText('Joust Duffle Bag');
+        const productName = page.getByText(pdpProductName);
         await expect(
             productName.first(),
             'Product should be visible in wishlist'

@@ -190,6 +190,84 @@ describe("Address management test suite", () => {
         ).toContainText(successMessage, { timeout: 10000 });
     });
 
+    test("New address trims leading/trailing spaces from all fields", async ({ customerData, page }) => {
+        const spacedFirst = "  " + customerData.firstName + "  ";
+        const spacedLast = "  " + customerData.lastName + "  ";
+        const spacedCity = "  " + customerData.city + "  ";
+        const spacedStreet = "  " + customerData.street_one_line + "  ";
+        const spacedZip = "  " + customerData.zip + "  ";
+        const spacedPhone = "  " + customerData.phone + "  ";
+
+        // Navigate to add new address page
+        await page.goto(process.env.url + 'customer/address/new/');
+        await page.waitForLoadState('domcontentloaded');
+
+        const heading = page.locator('h1');
+        const headingText = await heading.textContent().catch(() => '');
+        if (headingText?.includes('Customer Login')) {
+            test.skip(true, 'Session expired, redirected to login');
+        }
+
+        // Fill address form with leading/trailing spaces
+        await page.locator('#firstname').fill(spacedFirst);
+        await page.locator('#lastname').fill(spacedLast);
+        await page.locator('#telephone').fill(spacedPhone);
+        await page.locator('#street_1').fill(spacedStreet);
+        await page.locator('#city').fill(spacedCity);
+        await page.locator('#zip').fill(spacedZip);
+
+        const countrySelect = page.locator('#country_id, #country');
+        if (await countrySelect.isVisible({ timeout: 3000 }).catch(() => false)) {
+            await countrySelect.selectOption({ label: 'United States' });
+            await page.waitForTimeout(500);
+        }
+
+        const stateSelect = page.locator('#region_id');
+        if (await stateSelect.isVisible({ timeout: 3000 }).catch(() => false)) {
+            await stateSelect.selectOption({ index: 1 });
+        }
+
+        await page.getByRole('button', { name: 'Save Address' }).click();
+        await page.waitForLoadState('domcontentloaded');
+
+        const successMessage = data.default.address_saved_message || 'You saved the address.';
+        await expect(
+            page.locator(pageLocators.message_success),
+            'Address saved success message should be visible',
+        ).toContainText(successMessage, { timeout: 10000 });
+
+        // Navigate to edit the address to verify saved values
+        await page.goto(process.env.url + 'customer/address/');
+        await page.waitForLoadState('domcontentloaded');
+
+        const editLink = page.locator('a[href*="customer/address/edit"]').first();
+        await expect(editLink).toBeVisible({ timeout: 5000 });
+        await editLink.click();
+        await page.waitForLoadState('domcontentloaded');
+
+        // Verify all fields are trimmed
+        const fields = [
+            { selector: '#firstname', label: 'First name' },
+            { selector: '#lastname', label: 'Last name' },
+            { selector: '#telephone', label: 'Phone' },
+            { selector: '#street_1', label: 'Street' },
+            { selector: '#city', label: 'City' },
+            { selector: '#zip', label: 'Zip' },
+        ];
+
+        for (const field of fields) {
+            const value = await page.locator(field.selector).inputValue();
+            expect(
+                value,
+                `${field.label} should not have leading spaces`,
+            ).not.toMatch(/^\s/);
+            expect(
+                value,
+                `${field.label} should not have trailing spaces`,
+            ).not.toMatch(/\s$/);
+        }
+    });
+
     test("Missing required field prevents address creation", async ({ customerData, page }) => {
         // Navigate to add new address page
         await page.goto(process.env.url + '/customer/address/new/');

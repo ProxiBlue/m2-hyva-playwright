@@ -12,7 +12,7 @@ import {createCustomerData} from "@common/fixtures/customer";
  */
 // Virtual Terminal is a loki-branch-only feature (Uptactics/VirtualTerminal module).
 // Unconditionally skipped on non-loki branches — remove `.skip` when working on loki.
-describe.skip("Admin - Virtual Terminal Take Payment form", () => {
+describe("Admin - Virtual Terminal Take Payment form", () => {
 
     test.beforeEach(async ({adminPage, adminVirtualTerminalPage}, testInfo) => {
         test.skip(process.env.APP_NAME === 'hyva' || process.env.TEST_BASE === 'hyva',

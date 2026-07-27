@@ -41,19 +41,15 @@ describe("Customer dashboard test suite", () => {
             'My Account page title should be visible'
         ).toBeVisible({ timeout: 10000 });
 
-        // Verify dashboard content blocks
-        const accountInfo = page.getByText('Account Information')
-            .or(page.getByRole('heading', { name: /Account Information/i }));
+        // Verify dashboard content blocks (use heading locators to avoid matching hidden sidebar links on mobile)
         await expect(
-            accountInfo.first(),
-            'Account Information section should be visible'
+            page.getByRole('heading', { name: /Account Information/i }),
+            'Account Information heading should be visible'
         ).toBeVisible({ timeout: 10000 });
 
-        const contactInfo = page.getByText('Contact Information')
-            .or(page.getByRole('heading', { name: /Contact Information/i }));
         await expect(
-            contactInfo.first(),
-            'Contact Information section should be visible'
+            page.getByRole('heading', { name: /Contact Information/i }),
+            'Contact Information heading should be visible'
         ).toBeVisible({ timeout: 10000 });
     });
 

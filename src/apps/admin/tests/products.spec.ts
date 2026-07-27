@@ -28,6 +28,16 @@ describe("Admin - Products", () => {
 
     test("can make edit to product and save correctly (admin save errors checking)", async ({adminProductsPage}, testInfo) => {
         test.setTimeout(600000);
+
+        // Dismiss any admin confirmation modal that may appear after save (e.g. URL key warnings)
+        const dismissModal = async () => {
+            const modal = adminProductsPage.page.locator('.modal-popup.confirm._show');
+            if (await modal.isVisible({ timeout: 3000 }).catch(() => false)) {
+                await modal.locator('button.action-accept, button.action-primary').first().click();
+                await adminProductsPage.page.waitForTimeout(500);
+            }
+        };
+
         const gridRows = adminProductsPage.page.locator(locators.adminProductGridRows);
         const firstRow = await adminProductsPage.page.locator(locators.adminProductGridRows + ' >> tbody >> tr').first();
         await firstRow.click();
@@ -39,12 +49,14 @@ describe("Admin - Products", () => {
         await priceField.fill("99.99");
         const saveButton = adminProductsPage.page.locator('[data-ui-id="save-button"]');
         await saveButton.click();
+        await dismissModal();
         await adminProductsPage.page.waitForLoadState("networkidle")
         await adminProductsPage.page.waitForLoadState("domcontentloaded")
         const newPrice = await priceField.inputValue();
         expect(newPrice).toBe("99.99");
         await priceField.fill(originalPrice);
         await saveButton.click();
+        await dismissModal();
         await adminProductsPage.page.waitForLoadState("networkidle")
         await adminProductsPage.page.waitForLoadState("domcontentloaded");
         const restoredPrice = await priceField.inputValue();

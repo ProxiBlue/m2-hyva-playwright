@@ -83,6 +83,8 @@ yarn-error.log
 .now
 
 /test-results/
+# /verify-feature run artifacts (video, trace, screenshots) — redundant with existing test-results glob but kept for clarity
+test-results/verify/
 /playwright-report/
 /blob-report/
 /playwright/.cache/
@@ -92,6 +94,7 @@ src/apps/*
 !src/apps/hyva
 !src/apps/admin
 !/src/apps/common
+!src/apps/pps
 
 # Auth state files
 auth/*.json

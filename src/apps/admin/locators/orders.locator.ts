@@ -14,6 +14,7 @@ export const place_order_button = '.order-toatls-actions .actions .save.primary'
 export const admin_success_message = '.message.message-success.success'
 export const filter_button_expand = '[data-action="grid-filter-expand"]'
 export const filter_increment_id = '[name="increment_id"]'
+export const filter_is_virtual_terminal = '[name="is_virtual_terminal"]'
 export const filter_apply = '[data-action="grid-filter-apply"]'
 export const adminOrdersGrid = 'table[data-role="grid"]'
 export const orders_list_item = 'li[data-ui-id="menu-magento-sales-sales-order"]';

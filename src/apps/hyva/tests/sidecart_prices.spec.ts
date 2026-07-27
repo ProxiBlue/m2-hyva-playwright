@@ -1,14 +1,15 @@
 import { test, describe, expect } from "@hyva/fixtures";
 import { parsePrice } from "@utils/functions/price";
-import { shouldSkipTest } from "@utils/functions/test-skip";
+import { shouldSkipTest, isMobile } from "@utils/functions/test-skip";
 
 describe("Side cart price check", () => {
 
-    test.beforeEach(async ({ simpleProductPage }, testInfo) => {
+    test.beforeEach(async ({ simpleProductPage, page }, testInfo) => {
         // Use the helper function to determine if the test should be skipped
         const shouldSkip = shouldSkipTest(testInfo);
 
         test.skip(shouldSkip, "Test skipped for this environment: " + process.env.APP_NAME);
+        test.skip(isMobile(page), "Sidecart not available on mobile viewport");
         await simpleProductPage.navigateTo();
         await simpleProductPage.addToCart();
     });

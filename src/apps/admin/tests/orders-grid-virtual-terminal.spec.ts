@@ -4,7 +4,7 @@ import {shouldSkipTest} from "@utils/functions/test-skip";
 
 // Virtual Terminal is a loki-branch-only feature (Uptactics/VirtualTerminal module).
 // Unconditionally skipped on non-loki branches — remove `.skip` when working on loki.
-describe.skip("Admin - Sales Grid Virtual Terminal Column", () => {
+describe("Admin - Sales Grid Virtual Terminal Column", () => {
 
     test.beforeEach(async ({adminPage, adminOrdersPage}, testInfo) => {
         test.skip(process.env.APP_NAME === 'hyva' || process.env.TEST_BASE === 'hyva',

@@ -103,7 +103,9 @@ export default class AdminProductsPage extends BasePage {
         const filterExpandButton = this.page.locator('[data-action="grid-filter-expand"]').first();
         await filterExpandButton.waitFor({ state: 'visible' });
         await this.waitForGridSpinner();
-        await filterExpandButton.click();
+        // Scroll into view and use force click — sticky page-actions header can intercept
+        await filterExpandButton.scrollIntoViewIfNeeded();
+        await filterExpandButton.click({ force: true });
 
         // Use SKU filter field (similar to order increment_id pattern)
         const skuFilter = this.page.locator('[name="sku"]').first();

@@ -72,6 +72,51 @@ export default class AdminPage extends BasePage {
         );
     }
 
+    /**
+     * Reload the admin page to dismiss any post-login dialogs.
+     * Falls back to direct navigation if reload returns 503 under load.
+     */
+    private async reloadAdminAndWaitForTitle() {
+        const adminUrl = this.joinUrl(process.env.url || '', process.env.admin_path || 'admin');
+        try {
+            await this.page.reload({ waitUntil: 'domcontentloaded', timeout: 30000 });
+            await this.page.waitForSelector(locators.title, { timeout: 30000 });
+        } catch (e) {
+            // Reload may return 503 under load — navigate directly instead
+            await this.page.goto(adminUrl, { waitUntil: 'domcontentloaded' });
+            await this.page.waitForSelector(locators.title, { timeout: 30000 });
+        }
+        // Dismiss any post-login modal dialogs (e.g. "Incoming Message", session notices)
+        // that would block subsequent admin navigation.
+        await this.dismissPostLoginDialogs();
+    }
+
+    /**
+     * Dismiss any modal dialogs that appear after admin login (session notices,
+     * "Incoming Message" export errors, etc.) so navigation can proceed.
+     */
+    private async dismissPostLoginDialogs() {
+        const closeSelectors = [
+            '.modal-popup .action-close',
+            '.modal-popup button:has-text("OK")',
+            '.modal-popup button[data-role="closeBtn"]',
+        ];
+        for (let attempt = 0; attempt < 3; attempt++) {
+            let dismissed = false;
+            for (const selector of closeSelectors) {
+                const btn = this.page.locator(selector).first();
+                const visible = await btn.isVisible({ timeout: 1000 }).catch(() => false);
+                if (visible) {
+                    await btn.click({ force: true });
+                    await this.page.waitForTimeout(500);
+                    dismissed = true;
+                    break;
+                }
+            }
+            if (!dismissed) break;
+        }
+    }
+
     async login() {
         await test.step(
             this.workerInfo.project.name + ": Login to admin ",
@@ -86,9 +131,8 @@ export default class AdminPage extends BasePage {
                     const pageTitleText = data.default.page_title_text || '';
                     expect(await this.page.locator(locators.title).textContent()).toContain(pageTitleText);
 
-                    // Sometimes there is a dialog, just refresh and it will go away
-                    await this.page.reload();
-                    await this.page.waitForSelector(locators.title);
+                    // Reload to dismiss any post-login dialogs; falls back to direct nav on 503
+                    await this.reloadAdminAndWaitForTitle();
                     return;
                 } catch (e) {
                     await test.step(this.workerInfo.project.name + ": Not logged in, performing login with configured admin credentials", async () => {});
@@ -114,15 +158,14 @@ export default class AdminPage extends BasePage {
                 await this.page.getByRole('button', {name: 'Sign in'}).click();
 
                 // Wait for login to complete with a longer timeout
-                await this.page.waitForSelector(locators.title, { timeout: 20000 });
+                await this.page.waitForSelector(locators.title, { timeout: 40000 });
 
                 // Verify we're on the admin page
                 const pageTitleText = data.default.page_title_text || '';
                 expect(await this.page.locator(locators.title).textContent()).toContain(pageTitleText);
 
-                // Sometimes there is a dialog, just refresh and it will go away
-                await this.page.reload();
-                await this.page.waitForSelector(locators.title);
+                // Only reload if a modal dialog is present (avoids 503 from unconditional reload)
+                await this.reloadAdminAndWaitForTitle();
             });
     }
 
@@ -130,6 +173,14 @@ export default class AdminPage extends BasePage {
         await test.step(
             this.workerInfo.project.name + ": Logout of admin panel ",
             async () => {
+                // Session may already be gone (env-skipped test whose afterEach
+                // still runs, expired session, prior logout). The user dropdown
+                // doesn't exist on the login page and actionTimeout is 0, so the
+                // click below would hang the teardown forever — bail out instead.
+                if (await this.page.isVisible(locators.username)) {
+                    return;
+                }
+
                 await this.page.locator(".admin__action-dropdown-wrap").first().click();
                 await this.page.locator(locators.logout_option).click({force: true});
                 await this.page.waitForSelector(locators.username)

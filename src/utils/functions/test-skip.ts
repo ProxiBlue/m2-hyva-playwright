@@ -1,3 +1,5 @@
+import { Page } from "@playwright/test";
+
 /**
  * Helper function to determine if a test should be skipped based on the skipBaseTests configuration
  *
@@ -16,4 +18,12 @@ export function shouldSkipTest(testInfo: any): boolean {
 
     // Check if this test suite has tests to skip and if the current test is in that list
     return skipBaseTests[testSuiteName] && skipBaseTests[testSuiteName].includes(testTitle);
+}
+
+/**
+ * Check if the current viewport is mobile-sized (below Tailwind's sm breakpoint of 640px)
+ */
+export function isMobile(page: Page): boolean {
+    const viewport = page.viewportSize();
+    return viewport !== null && viewport.width < 640;
 }
