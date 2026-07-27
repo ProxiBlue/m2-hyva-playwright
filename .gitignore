@@ -94,7 +94,6 @@ src/apps/*
 !src/apps/hyva
 !src/apps/admin
 !/src/apps/common
-!src/apps/pps
 
 # Auth state files
 auth/*.json
