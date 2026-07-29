@@ -38,16 +38,24 @@ describe("Admin - Sales Grid Virtual Terminal Column", () => {
 
         // Filter chip confirms the column is wired into the grid's active filters,
         // proving the select filter round-trips through the data provider.
-        const activeFilter = page.locator('.admin__current-filters-list').filter({hasText: 'Virtual Terminal'});
+        // The grid renders the filter-chip list twice (sticky-header clone) — assert the first.
+        const activeFilter = page.locator('.admin__current-filters-list').filter({hasText: 'Virtual Terminal'}).first();
         await expect(activeFilter).toBeVisible();
 
         // Every visible row (if any) must show "Yes" in the Virtual Terminal column —
         // no VT orders are guaranteed to exist in this environment, so an empty grid
         // is an acceptable outcome; a false-positive "No" row is not.
-        const gridRows = page.locator(locators.adminOrdersGrid + ' tbody tr');
-        const rowCount = await gridRows.count();
-        for (let i = 0; i < rowCount; i++) {
-            await expect(gridRows.nth(i)).toContainText('Yes');
+        // The grid re-renders asynchronously after the filter applies — wait for the
+        // loading mask to clear, then read all row texts in one atomic snapshot
+        // (counting first and indexing later races the re-render).
+        await page.locator('.admin__data-grid-loading-mask').last()
+            .waitFor({state: 'hidden', timeout: 30000});
+        const rowTexts = await page.locator(locators.adminOrdersGrid + ' tbody tr').allTextContents();
+        for (const rowText of rowTexts) {
+            if (rowText.includes("couldn't find any records")) {
+                continue;
+            }
+            expect(rowText).toContain('Yes');
         }
 
         await page.click(locators.remove_filter_button);

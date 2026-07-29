@@ -237,6 +237,14 @@ export default class AdminOrdersPage extends BasePage {
                 const rows = await this.page.$$(locators.add_product_grid + ' tbody tr');
                 expect(rows.length).toBeGreaterThan(0);
                 for (const row of rows) {
+                    // Skip non-shippable placeholder products: the Uptactics
+                    // VirtualTerminal MANUAL_PAYMENT item is a virtual $0 product
+                    // that sorts first in the grid (newest entity_id) — adding it
+                    // removes the shipping section and stalls the checkout flow.
+                    const rowText = (await row.textContent()) || '';
+                    if (rowText.includes('MANUAL_PAYMENT')) {
+                        continue;
+                    }
                     const configureLink = await row.$('td:nth-child(2) a.action-configure');
                     if (configureLink) {
                         const isVisible = await configureLink.isVisible();
