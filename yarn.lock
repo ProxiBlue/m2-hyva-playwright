@@ -59,6 +59,13 @@
   resolved "https://registry.npmjs.org/@tsconfig/node16/-/node16-1.0.4.tgz"
   integrity sha512-vxhUy4J8lyeyinH7Azl1pdd43GJhZH/tP2weN8TntQblOY+A0XbT8DJk1/oCPuOOyg/Ja757rG0CgHcWC8OfMA==
 
+"@types/node@*":
+  version "22.15.30"
+  resolved "https://registry.npmjs.org/@types/node/-/node-22.15.30.tgz"
+  integrity sha512-6Q7lr06bEHdlfplU6YRbgG1SFBdlsfNC4/lX+SkhiTs0cpJkOElmWls8PxDFv4yY/xKb8Y6SO0OmSX4wgqTZbA==
+  dependencies:
+    undici-types "~6.21.0"
+
 acorn-walk@^8.1.1:
   version "8.3.4"
   resolved "https://registry.npmjs.org/acorn-walk/-/acorn-walk-8.3.4.tgz"
@@ -75,6 +82,10 @@ adm-zip@^0.5.16:
   version "0.5.16"
   resolved "https://registry.npmjs.org/adm-zip/-/adm-zip-0.5.16.tgz"
   integrity sha512-TGw5yVi4saajsSEgz25grObGHEUaDrniwvA2qwSC060KfqGPdglhvPMA2lPIoxs3PQIItj2iag35fONcQqgUaQ==
+
+"admin@file:/var/www/html/tests/m2-hyva-playwright/src/apps/admin":
+  version "1.0.0"
+  resolved "file:src/apps/admin"
 
 arg@^4.1.0:
   version "4.1.3"
@@ -102,6 +113,10 @@ call-bind-apply-helpers@^1.0.1, call-bind-apply-helpers@^1.0.2:
   dependencies:
     es-errors "^1.3.0"
     function-bind "^1.1.2"
+
+"checkout@file:/var/www/html/tests/m2-hyva-playwright/src/apps/checkout":
+  version "1.0.0"
+  resolved "file:src/apps/checkout"
 
 colors@^1.4.0:
   version "1.4.0"
@@ -182,11 +197,6 @@ form-data@^4.0.0:
     hasown "^2.0.2"
     mime-types "^2.1.12"
 
-fsevents@2.3.2:
-  version "2.3.2"
-  resolved "https://registry.yarnpkg.com/fsevents/-/fsevents-2.3.2.tgz#8a526f78b8fdf4623b709e0b975c52c24c02fd1a"
-  integrity sha512-xiqMQR4xAeHTuB9uWm+fFRcIOgKBMiOBP+eXiyT7jsgVCq1bkVygt00oASowB7EdtpOHaaPgKt812P9ab+DDKA==
-
 function-bind@^1.1.2:
   version "1.1.2"
   resolved "https://registry.npmjs.org/function-bind/-/function-bind-1.1.2.tgz"
@@ -240,6 +250,14 @@ hasown@^2.0.2:
   dependencies:
     function-bind "^1.1.2"
 
+"hyva@file:/var/www/html/tests/m2-hyva-playwright/src/apps/hyva":
+  version "1.0.0"
+  resolved "file:src/apps/hyva"
+
+"luma@file:/var/www/html/tests/m2-hyva-playwright/src/apps/luma":
+  version "1.0.0"
+  resolved "file:src/apps/luma"
+
 make-error@^1.1.1:
   version "1.3.6"
   resolved "https://registry.npmjs.org/make-error/-/make-error-1.3.6.tgz"
@@ -262,12 +280,16 @@ mime-types@^2.1.12:
   dependencies:
     mime-db "1.52.0"
 
+"nto@file:/var/www/html/tests/m2-hyva-playwright/src/apps/nto":
+  version "1.0.0"
+  resolved "file:src/apps/nto"
+
 playwright-core@1.58.1:
   version "1.58.1"
   resolved "https://registry.npmjs.org/playwright-core/-/playwright-core-1.58.1.tgz"
   integrity sha512-bcWzOaTxcW+VOOGBCQgnaKToLJ65d6AqfLVKEWvexyS3AS6rbXl+xdpYRMGSRBClPvyj44njOWoxjNdL/H9UNg==
 
-playwright@1.58.1, playwright@^1.58.1:
+playwright@^1.58.1, playwright@1.58.1:
   version "1.58.1"
   resolved "https://registry.npmjs.org/playwright/-/playwright-1.58.1.tgz"
   integrity sha512-+2uTZHxSCcxjvGc5C891LrS1/NlxglGxzrC4seZiVjcYVQfUa87wBL6rTDqzGjuoWNjnBzRqKmF6zRYGMvQUaQ==
@@ -275,6 +297,10 @@ playwright@1.58.1, playwright@^1.58.1:
     playwright-core "1.58.1"
   optionalDependencies:
     fsevents "2.3.2"
+
+"pps@file:/var/www/html/tests/m2-hyva-playwright/src/apps/pps":
+  version "1.0.0"
+  resolved "file:src/apps/pps"
 
 proxy-from-env@^1.1.0:
   version "1.1.0"
@@ -300,10 +326,15 @@ ts-node@^10.9.1:
     v8-compile-cache-lib "^3.0.1"
     yn "3.1.1"
 
-typescript@^4.8.3:
+typescript@^4.8.3, typescript@>=2.7:
   version "4.9.5"
   resolved "https://registry.npmjs.org/typescript/-/typescript-4.9.5.tgz"
   integrity sha512-1FXk9E2Hm+QzZQ7z+McJiHL4NW1F2EzMu9Nq9i3zAaGqibafqYwCVU6WyWAuyQRRzOlxou8xZSyXLEN8oKj24g==
+
+undici-types@~6.21.0:
+  version "6.21.0"
+  resolved "https://registry.npmjs.org/undici-types/-/undici-types-6.21.0.tgz"
+  integrity sha512-iwDZqg0QAGrg9Rav5H4n0M64c3mkR59cJ6wQp+7C4nI0gsmExaedaYLNO44eT4AtBBwjbTiGPMlt2Md0T9H9JQ==
 
 v8-compile-cache-lib@^3.0.1:
   version "3.0.1"
