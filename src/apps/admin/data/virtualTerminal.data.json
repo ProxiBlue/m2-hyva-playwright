@@ -1,6 +1,40 @@
 {
   "default": {
     "header_title": "Magento Admin",
-    "page_title_text": "Take Payment"
+    "page_title_text": "Take Payment",
+    "saved_cards": [
+      {
+        "id": "pm_test_visa_4242",
+        "brand": "Visa",
+        "last4": "4242",
+        "exp": "04/2027",
+        "exp_month": 4,
+        "exp_year": 2027
+      },
+      {
+        "id": "pm_test_mastercard_5555",
+        "brand": "Mastercard",
+        "last4": "5555",
+        "exp": "11/2026",
+        "exp_month": 11,
+        "exp_year": 2026
+      }
+    ],
+    "past_order_cards_fixture": {
+      "display": {
+        "pm_id": "pm_card_mastercard",
+        "brand": "Mastercard",
+        "last4": "4444",
+        "exp_month": 8,
+        "exp_year": 2028
+      },
+      "capture": {
+        "pm_id": "pm_card_visa",
+        "brand": "Visa",
+        "last4": "4242",
+        "exp_month": 4,
+        "exp_year": 2027
+      }
+    }
   }
 }

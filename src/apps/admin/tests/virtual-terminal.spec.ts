@@ -179,3 +179,201 @@ describe("Admin - Virtual Terminal Take Payment form", () => {
         await expect(page.locator(locators.pay_button)).toBeDisabled();
     });
 });
+
+/**
+ * Task 004 — saved-card reuse JS wiring. No real saved-card data exists yet (task 005
+ * owns actually saving cards to a customer), so every test here mocks both the
+ * CustomerLookup (009) and PaymentMethods (002) AJAX endpoints at the network layer via
+ * AdminVirtualTerminalPage's mock-/track- helpers — this exercises the JS wiring under
+ * test deterministically, independent of task 005's completion.
+ */
+describe("Admin - Virtual Terminal Take Payment form - saved card reuse", () => {
+
+    test.beforeEach(async ({adminPage, adminVirtualTerminalPage}, testInfo) => {
+        test.skip(process.env.APP_NAME === 'hyva' || process.env.TEST_BASE === 'hyva',
+            'Admin tests require admin access - skipped for hyva environment');
+
+        const shouldSkip = shouldSkipTest(testInfo);
+        test.skip(shouldSkip, testInfo.title + " test skipped for this environment: " + process.env.APP_NAME);
+
+        await adminPage.navigateTo();
+        await adminPage.login();
+        await adminVirtualTerminalPage.navigateTo();
+    });
+
+    test.afterEach(async ({adminPage}) => {
+        // See the sibling describe block's afterEach comment: landing back on Dashboard
+        // first keeps logout() on the page shape it was written for.
+        await adminPage.navigateTo();
+        await adminPage.logout();
+    });
+
+    // @story: vt-saved-cards-call-on-unknown-customer
+    test("it still calls the payment-methods endpoint when the customer lookup returns exists false", async ({adminVirtualTerminalPage}) => {
+        // Superseded by task 011: guest-vault "past-order" cards are email-keyed, not
+        // customer-linked — they can exist for an email with NO Magento customer account
+        // at all, so this endpoint must be queried regardless of `exists`. Previously this
+        // test pinned the opposite (no-call) behaviour; that was the actual bug task 011
+        // fixed in virtual-terminal.js's applyLookupResult() (fetchSavedCards() used to run
+        // only inside the `if (customerExists)` branch).
+        const customerData = await createCustomerData(process.env.faker_locale);
+
+        await adminVirtualTerminalPage.mockCustomerLookup(false);
+        await adminVirtualTerminalPage.mockPaymentMethods(false);
+        await adminVirtualTerminalPage.fillEmail(customerData.email);
+        await adminVirtualTerminalPage.waitForLookupReveal();
+
+        await expect.poll(() => adminVirtualTerminalPage.getPaymentMethodsCallCount()).toBe(1);
+        expect(adminVirtualTerminalPage.getLastPaymentMethodsCallBody()).toContain(encodeURIComponent(customerData.email));
+    });
+
+    // @story: vt-saved-cards-call-on-existing-customer
+    test("it calls the payment-methods endpoint with the same email after an existing-customer lookup", async ({adminVirtualTerminalPage}) => {
+        const customerData = await createCustomerData(process.env.faker_locale);
+
+        await adminVirtualTerminalPage.mockCustomerLookup(true, customerData.firstName, customerData.lastName);
+        await adminVirtualTerminalPage.mockPaymentMethods(false);
+        await adminVirtualTerminalPage.fillEmail(customerData.email);
+        await adminVirtualTerminalPage.waitForLookupReveal();
+
+        await expect.poll(() => adminVirtualTerminalPage.getPaymentMethodsCallCount()).toBe(1);
+        expect(adminVirtualTerminalPage.getLastPaymentMethodsCallBody()).toContain(encodeURIComponent(customerData.email));
+    });
+
+    // @story: vt-saved-cards-render-one-radio-per-card
+    test("it renders one radio option per returned saved card with brand, last4, and exp", async ({adminVirtualTerminalPage}) => {
+        const customerData = await createCustomerData(process.env.faker_locale);
+        const cards = adminVirtualTerminalPage.data.default.saved_cards;
+
+        await adminVirtualTerminalPage.mockCustomerLookup(true, customerData.firstName, customerData.lastName);
+        await adminVirtualTerminalPage.mockPaymentMethods(true, cards);
+        await adminVirtualTerminalPage.fillEmail(customerData.email);
+        await adminVirtualTerminalPage.waitForLookupReveal();
+        await adminVirtualTerminalPage.waitForSavedCardsReveal();
+
+        const labels = await adminVirtualTerminalPage.getSavedCardLabelsText();
+        expect(labels).toHaveLength(cards.length);
+        cards.forEach((card: {brand: string; last4: string; exp: string}, index: number) => {
+            expect(labels[index]).toContain(card.brand);
+            expect(labels[index]).toContain(card.last4);
+            expect(labels[index]).toContain(card.exp);
+        });
+    });
+
+    // @story: vt-saved-cards-default-new-card
+    test("it defaults selection to enter-a-new-card when saved cards are present", async ({adminVirtualTerminalPage}) => {
+        const page = adminVirtualTerminalPage.page;
+        const customerData = await createCustomerData(process.env.faker_locale);
+        const cards = adminVirtualTerminalPage.data.default.saved_cards;
+
+        await adminVirtualTerminalPage.mockCustomerLookup(true, customerData.firstName, customerData.lastName);
+        await adminVirtualTerminalPage.mockPaymentMethods(true, cards);
+        await adminVirtualTerminalPage.fillEmail(customerData.email);
+        await adminVirtualTerminalPage.waitForLookupReveal();
+        await adminVirtualTerminalPage.waitForSavedCardsReveal();
+
+        await expect(page.locator(locators.payment_source_new_radio)).toBeChecked();
+        await expect(page.locator(locators.payment_source_saved_radio)).not.toBeChecked();
+    });
+
+    // @story: vt-saved-cards-hide-new-card-form
+    test("it hides the new-card Elements form and save-card checkbox when a saved card is selected", async ({adminVirtualTerminalPage}) => {
+        const page = adminVirtualTerminalPage.page;
+        const customerData = await createCustomerData(process.env.faker_locale);
+        const cards = adminVirtualTerminalPage.data.default.saved_cards;
+
+        await adminVirtualTerminalPage.mockCustomerLookup(true, customerData.firstName, customerData.lastName);
+        await adminVirtualTerminalPage.mockPaymentMethods(true, cards);
+        await adminVirtualTerminalPage.fillEmail(customerData.email);
+        await adminVirtualTerminalPage.waitForLookupReveal();
+        await adminVirtualTerminalPage.waitForSavedCardsReveal();
+
+        await adminVirtualTerminalPage.selectSavedCardSource();
+
+        await expect(page.locator(locators.stripe_payment_fieldset)).toBeHidden();
+        await expect(page.locator(locators.save_card_field)).toBeHidden();
+    });
+
+    // @story: vt-saved-cards-hidden-field-set
+    test("it sets the hidden saved-payment-method field to the selected card id", async ({adminVirtualTerminalPage}) => {
+        const customerData = await createCustomerData(process.env.faker_locale);
+        const cards = adminVirtualTerminalPage.data.default.saved_cards;
+
+        await adminVirtualTerminalPage.mockCustomerLookup(true, customerData.firstName, customerData.lastName);
+        await adminVirtualTerminalPage.mockPaymentMethods(true, cards);
+        await adminVirtualTerminalPage.fillEmail(customerData.email);
+        await adminVirtualTerminalPage.waitForLookupReveal();
+        await adminVirtualTerminalPage.waitForSavedCardsReveal();
+
+        await adminVirtualTerminalPage.selectSavedCardSource();
+        await adminVirtualTerminalPage.selectSavedCardByIndex(0);
+
+        expect(await adminVirtualTerminalPage.getSavedPaymentMethodValue()).toBe(cards[0].id);
+    });
+
+    // @story: vt-saved-cards-restore-new-card-flow
+    test("it restores the unchanged new-card flow when enter-a-new-card is (re)selected", async ({adminVirtualTerminalPage}) => {
+        const page = adminVirtualTerminalPage.page;
+        const customerData = await createCustomerData(process.env.faker_locale);
+        const cards = adminVirtualTerminalPage.data.default.saved_cards;
+
+        await adminVirtualTerminalPage.mockCustomerLookup(true, customerData.firstName, customerData.lastName);
+        await adminVirtualTerminalPage.mockPaymentMethods(true, cards);
+        await adminVirtualTerminalPage.fillEmail(customerData.email);
+        await adminVirtualTerminalPage.waitForLookupReveal();
+        await adminVirtualTerminalPage.waitForSavedCardsReveal();
+
+        await adminVirtualTerminalPage.selectSavedCardSource();
+        await adminVirtualTerminalPage.selectSavedCardByIndex(0);
+        await adminVirtualTerminalPage.selectNewCardSource();
+
+        await expect(page.locator(locators.stripe_payment_fieldset)).toBeVisible();
+        await expect(page.locator(locators.save_card_field)).toBeVisible();
+        expect(await adminVirtualTerminalPage.getSavedPaymentMethodValue()).toBe('');
+    });
+
+    // @story: vt-saved-cards-clear-on-email-change
+    test("it clears any previously selected saved-card state when the email field changes", async ({adminVirtualTerminalPage}) => {
+        const page = adminVirtualTerminalPage.page;
+        const customerData = await createCustomerData(process.env.faker_locale);
+        const otherCustomerData = await createCustomerData(process.env.faker_locale);
+        const cards = adminVirtualTerminalPage.data.default.saved_cards;
+
+        await adminVirtualTerminalPage.mockCustomerLookup(true, customerData.firstName, customerData.lastName);
+        await adminVirtualTerminalPage.mockPaymentMethods(true, cards);
+        await adminVirtualTerminalPage.fillEmail(customerData.email);
+        await adminVirtualTerminalPage.waitForLookupReveal();
+        await adminVirtualTerminalPage.waitForSavedCardsReveal();
+
+        await adminVirtualTerminalPage.selectSavedCardSource();
+        await adminVirtualTerminalPage.selectSavedCardByIndex(0);
+        expect(await adminVirtualTerminalPage.getSavedPaymentMethodValue()).toBe(cards[0].id);
+
+        // Editing the email must clear the stale saved-card state immediately — before
+        // the next (debounced) lookup for otherCustomerData even fires.
+        await adminVirtualTerminalPage.updateEmail(otherCustomerData.email);
+
+        await expect(page.locator(locators.saved_cards_block)).toBeHidden();
+        await expect(page.locator(locators.payment_source_new_radio)).toBeChecked();
+        expect(await adminVirtualTerminalPage.getSavedPaymentMethodValue()).toBe('');
+    });
+
+    // @story: vt-saved-cards-graceful-degradation
+    test("it leaves the form in today's new-card-only state when the payment-methods call fails", async ({adminVirtualTerminalPage}) => {
+        const page = adminVirtualTerminalPage.page;
+        const customerData = await createCustomerData(process.env.faker_locale);
+
+        await adminVirtualTerminalPage.mockCustomerLookup(true, customerData.firstName, customerData.lastName);
+        await adminVirtualTerminalPage.mockPaymentMethodsFailure();
+        await adminVirtualTerminalPage.fillEmail(customerData.email);
+        await adminVirtualTerminalPage.waitForLookupReveal();
+
+        // No reveal signal exists for "the block stayed hidden" — a short settle window
+        // lets the failed round trip resolve before asserting the degraded state.
+        await page.waitForTimeout(1500);
+
+        await expect(page.locator(locators.saved_cards_block)).toBeHidden();
+        await expect(page.locator(locators.stripe_payment_fieldset)).toBeVisible();
+        await expect(page.locator(locators.save_card_field)).toBeVisible();
+    });
+});
