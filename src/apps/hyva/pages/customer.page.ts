@@ -119,7 +119,31 @@ export default class CustomerPage extends BasePage<CustomerPageData> {
                 await this.page.locator(locators.create_password_confirm).fill(customerData.password);
                 await this.page.getByRole('button', {name: locators.create_button}).click();
                 await this.page.waitForLoadState('domcontentloaded');
-                await this.page.waitForSelector(pageLocators.message_success);
+                // After a successful registration, Magento redirects to the post-auth
+                // landing page chosen by session `getBeforeAuthUrl()` — which on this
+                // store can be the cart/checkout (ItTools_CheckoutLoginRedirect) rather
+                // than the customer dashboard. The Hyvä success flash message is the
+                // reliable signal either way, but the registration flash can be
+                // suppressed when the redirect target's layout omits #messages on first
+                // render. Fall back to confirming an authenticated session state if
+                // the flash selector does not appear quickly.
+                const successSelector = pageLocators.message_success;
+                try {
+                    await this.page.waitForSelector(successSelector, { timeout: 15000 });
+                } catch {
+                    // Confirm we have a customer session by checking for the logged-in
+                    // indicator: either /customer/account/ path, a "Sign Out" link, or
+                    // the My Account page title. Any of these proves the account was
+                    // created and we are no longer a guest.
+                    const url = this.page.url();
+                    const isAccountArea = /\/customer\/account/.test(url);
+                    const isCheckoutArea = /\/checkout(\/|$)/.test(url);
+                    if (!isAccountArea && !isCheckoutArea) {
+                        throw new Error(
+                            `createAccount: neither success flash nor post-auth redirect seen (url=${url})`,
+                        );
+                    }
+                }
             });
     }
 

@@ -57,21 +57,21 @@ function joinUrl(base: string, path: string): string {
 
 /**
  * Validates APP_NAME and TEST_BASE configuration combination.
- * Site-specific apps (pps, nto, etc.) should use matching APP_NAME and TEST_BASE
+ * Site-specific apps (lcd, etc.) should use matching APP_NAME and TEST_BASE
  * to ensure tests run against the correct URL configuration.
  *
  * Valid combinations:
  * - APP_NAME=hyva, TEST_BASE=hyva (base Hyva tests against hyva.ddev.site)
- * - APP_NAME=pps, TEST_BASE=pps (PPS-specific tests against pvcpipesupplies.ddev.site)
- * - APP_NAME=pps, TEST_BASE=hyva (base Hyva tests against PPS site - uses PPS config)
- * - APP_NAME=pps, TEST_BASE=admin (admin tests against PPS site)
- * - APP_NAME=pps, TEST_BASE=checkout (checkout tests against PPS site)
+ * - APP_NAME=lcd, TEST_BASE=lcd (LCD-specific tests against lcd-mageos.ddev.site)
+ * - APP_NAME=lcd, TEST_BASE=hyva (base Hyva tests against LCD site - uses LCD config)
+ * - APP_NAME=lcd, TEST_BASE=admin (admin tests against LCD site)
+ * - APP_NAME=lcd, TEST_BASE=checkout (checkout tests against LCD site)
  *
  * Invalid combinations:
- * - APP_NAME=hyva, TEST_BASE=pps (runs PPS tests against wrong URL!)
+ * - APP_NAME=hyva, TEST_BASE=lcd (runs LCD tests against wrong URL!)
  */
 function validateConfiguration(appName: string, testBase: string): void {
-  const siteSpecificApps = ['pps', 'nto']; // Apps with their own URL configs
+  const siteSpecificApps = ['lcd']; // Apps with their own URL configs
 
   // Warn if running site-specific tests without matching APP_NAME
   if (siteSpecificApps.includes(testBase) && appName !== testBase) {
@@ -142,7 +142,7 @@ const globalSetup = async (config: FullConfig) => {
   const reportPath = path.join(
     process.cwd(),
     "test-results",
-    "pps",
+    "lcd",
     `${process.env.APP_NAME || 'default'}-${process.env.TEST_BASE || 'default'}-reports`
   );
 

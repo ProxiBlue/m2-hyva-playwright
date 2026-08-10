@@ -1,10 +1,14 @@
 import {describe, test} from "@admin/fixtures";
 import { shouldSkipTest } from "@utils/functions/test-skip";
+import { loadLocators } from "@utils/functions/file";
+
+const locators = loadLocators('locators/orders.locator', 'admin');
 
 
 describe("Admin Checkouts", () => {
 
     test.beforeEach(async ({adminPage, adminOrdersPage}, testInfo) => {
+        test.setTimeout(120000);
         test.skip(process.env.APP_NAME === 'hyva' || process.env.TEST_BASE === 'hyva',
             'Admin tests require admin access - skipped for hyva environment');
 
@@ -18,30 +22,32 @@ describe("Admin Checkouts", () => {
     });
 
     test("checkout using Check / Money order", async ({customerData, adminOrdersPage}, testInfo) => {
-        test.setTimeout(300000); // Extend timeout to 5 minutes (300 seconds)
+        test.setTimeout(300000);
         await adminOrdersPage.createNewOrderWithNewCustomer(customerData)
         await adminOrdersPage.selectFirstSimpleProductToAddToOrder();
         await adminOrdersPage.selectFirstShippingMethodToAddToOrder();
-        await adminOrdersPage.selectPaymentMethodByText('Check / Money order');
+        await adminOrdersPage.selectPaymentMethodByText(locators.payment_check_money_order);
         await adminOrdersPage.disableOrderEmailSend();
         await adminOrdersPage.placeOrder()
     });
 
     test("checkout using Cash on Delivery", async ({adminOrdersPage, customerData}, testInfo) => {
+        test.setTimeout(300000);
         await adminOrdersPage.createNewOrderWithNewCustomer(customerData)
         await adminOrdersPage.selectFirstSimpleProductToAddToOrder();
         await adminOrdersPage.selectFirstShippingMethodToAddToOrder();
-        await adminOrdersPage.selectPaymentMethodByText('Cash On Delivery');
+        await adminOrdersPage.selectPaymentMethodByText(locators.payment_cash_on_delivery);
         await adminOrdersPage.disableOrderEmailSend();
         await adminOrdersPage.placeOrder()
     });
 
     test("checkout using Purchase Order", async ({adminOrdersPage, customerData}, testInfo) => {
+        test.setTimeout(300000);
         await adminOrdersPage.createNewOrderWithNewCustomer(customerData)
         await adminOrdersPage.selectFirstSimpleProductToAddToOrder();
         await adminOrdersPage.selectFirstShippingMethodToAddToOrder();
-        await adminOrdersPage.selectPaymentMethodByText('Purchase Order');
-        await adminOrdersPage.page.locator('input[name="payment[po_number]"]').fill('PO123456789').then(async () => {
+        await adminOrdersPage.selectPaymentMethodByText(locators.payment_purchase_order);
+        await adminOrdersPage.page.locator(locators.purchase_order_number_field).fill(locators.purchase_order_number_value).then(async () => {
             await adminOrdersPage.disableOrderEmailSend();
             await adminOrdersPage.placeOrder()
         })

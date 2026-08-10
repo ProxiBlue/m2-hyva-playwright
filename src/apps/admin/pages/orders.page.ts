@@ -180,6 +180,14 @@ export default class AdminOrdersPage extends BasePage {
         await this.page.getByRole('button', {name: locators.create_new_customer_button}).click();
         await this.page.waitForLoadState("networkidle");
 
+        // Handle store selection page (appears when multiple store views exist)
+        const storeSelectHeading = this.page.getByText('Please select a store');
+        if (await storeSelectHeading.isVisible({ timeout: 3000 }).catch(() => false)) {
+            // Click the first store view radio button (Default Store View)
+            await this.page.locator('.tree-store-scope input[type="radio"]').first().click();
+            await this.page.waitForLoadState("networkidle");
+        }
+
         await test.step(
             this.workerInfo.project.name + ": Create new order and creating a new customer ",
             async () => {
@@ -228,14 +236,61 @@ export default class AdminOrdersPage extends BasePage {
      * which will have own function to add and is more specific.
      *
      */
+    /**
+     * Dismiss the "Configure Product" modal that appears when a product has
+     * required custom options or is configurable. Selects the first valid
+     * option in every required dropdown and clicks OK.
+     */
+    private async handleConfigureProductModal() {
+        // Wait for the "Configure Product" heading to appear (this is a reliable indicator)
+        const configHeading = this.page.locator('h1:has-text("Configure Product"), [data-role="title"]:has-text("Configure Product")');
+        try {
+            await configHeading.first().waitFor({ state: 'visible', timeout: 5000 });
+        } catch {
+            return; // No configure modal appeared
+        }
+
+        await this.page.waitForTimeout(1000);
+
+        // Scope selects to the configure modal container to avoid matching admin page selects behind the overlay
+        const visibleSelects = this.page.locator('#product_composite_configure select:visible');
+        const selectCount = await visibleSelects.count();
+        for (let i = 0; i < selectCount; i++) {
+            const sel = visibleSelects.nth(i);
+            const currentValue = await sel.inputValue();
+            if (currentValue === '') {
+                // Select index 1 (first non-empty option)
+                try {
+                    await sel.selectOption({ index: 1 });
+                    await this.page.waitForTimeout(500);
+                } catch {
+                    // Option may not exist, continue
+                }
+            }
+        }
+
+        // Click OK button
+        const okButton = this.page.getByRole('button', { name: 'OK' });
+        if (await okButton.isVisible({ timeout: 3000 }).catch(() => false)) {
+            await okButton.click();
+            await this.page.waitForLoadState("networkidle");
+        }
+    }
+
     async selectFirstSimpleProductToAddToOrder() {
         await test.step(
             this.workerInfo.project.name + ": Find and select first simple product to order ",
             async () => {
                 await this.page.click(locators.order_add_products);
                 await this.page.waitForSelector(locators.add_product_grid + ' tbody');
+                await this.page.waitForLoadState("networkidle");
+
                 const rows = await this.page.$$(locators.add_product_grid + ' tbody tr');
                 expect(rows.length).toBeGreaterThan(0);
+
+                let productAdded = false;
+
+                // First pass: find a simple product (no configure link at all)
                 for (const row of rows) {
                     // Skip non-shippable placeholder products: the Uptactics
                     // VirtualTerminal MANUAL_PAYMENT item is a virtual $0 product
@@ -246,19 +301,42 @@ export default class AdminOrdersPage extends BasePage {
                         continue;
                     }
                     const configureLink = await row.$('td:nth-child(2) a.action-configure');
-                    if (configureLink) {
-                        const isVisible = await configureLink.isVisible();
-                        const isDisabled = await configureLink.isDisabled();
-                        if (!isVisible || isDisabled) {
-                            const checkbox = await row.$('td.col-select input[type="checkbox"]');
-                            expect(checkbox).not.toBeNull();
-                            // @ts-ignore
+
+                    if (!configureLink) {
+                        const checkbox = await row.$('td.col-select input[type="checkbox"]');
+                        if (checkbox) {
                             await checkbox.check();
-                            await this.page.click(locators.add_product_to_order_button);
+
+                            // Even simple products can trigger a configure modal
+                            // if they have required custom options
+                            await this.handleConfigureProductModal();
+
+                            productAdded = true;
                             break;
                         }
                     }
                 }
+
+                // Second pass: if no simple product found, use a configurable product
+                if (!productAdded) {
+                    for (const row of rows) {
+                        const configureLink = await row.$('td:nth-child(2) a.action-configure');
+                        if (configureLink && await configureLink.isVisible()) {
+                            const checkbox = await row.$('td.col-select input[type="checkbox"]');
+                            if (checkbox) {
+                                await checkbox.check();
+                                await this.handleConfigureProductModal();
+                                productAdded = true;
+                                break;
+                            }
+                        }
+                    }
+                }
+
+                expect(productAdded, 'No product could be added to the order').toBeTruthy();
+
+                await this.page.click(locators.add_product_to_order_button);
+                await this.page.waitForLoadState("networkidle");
             });
     }
 
@@ -328,39 +406,151 @@ export default class AdminOrdersPage extends BasePage {
             });
     }
 
+    /**
+     * Submit the admin "Create New Order" form and wait for the server to
+     * finish processing it.
+     *
+     * Signals used (in priority order):
+     *   1. Success: Magento's Save controller (vendor/mage-os/module-sales/
+     *      Controller/Adminhtml/Order/Create/Save.php) redirects to
+     *      sales/order/view/order_id/NNN on success. Waiting for that URL is
+     *      the only signal that unambiguously means "order was created".
+     *   2. Form error (real): an error is written into #order-errors (the
+     *      form-scoped error container, see
+     *      vendor/mage-os/module-sales/view/adminhtml/templates/order/create/data.phtml)
+     *      OR a validation alert modal is opened by Magento UI (role=alertdialog).
+     *      If either appears we fail fast with the actual message.
+     *
+     * Page-level admin notices (e.g. Amasty Helpdesk's persistent
+     * ".message.message-warning" banner above the content area) are NOT
+     * inspected, so benign system warnings never cause a false failure.
+     *
+     * For Pin Payments we also anchor on the tokenization XHR so the
+     * place-order click and the subsequent form POST are not conflated by
+     * networkidle heuristics.
+     */
     async placeOrder() {
-        // Wait for any AJAX spinners to complete before clicking
-        await this.page.waitForTimeout(3000);
-
-        // Find the Submit Order button
         const submitButton = this.page.locator('button:has-text("Submit Order")').first();
         await submitButton.waitFor({ state: 'visible', timeout: 30000 });
-
-        // Scroll into view and focus first to ensure the button is ready
         await submitButton.scrollIntoViewIfNeeded();
-        await submitButton.focus();
-        await this.page.waitForTimeout(1000);
 
-        // Get current URL before clicking
-        const currentUrl = this.page.url();
+        // Wait for any payment-form loading mask to clear so the click is not
+        // eaten by an in-flight re-render (e.g. after selecting a payment radio).
+        await this.page
+            .locator('.payment-method-loading-mask, #payment_form_loading')
+            .waitFor({ state: 'hidden', timeout: 15000 })
+            .catch(() => undefined);
 
-        // Click the button with force to bypass any overlay issues
+        // If Pin Payments is the active method, it tokenises the card via
+        // /pinpayment/checkout/request BEFORE the form POST. Start listening
+        // for that XHR now so we catch it even if it resolves quickly.
+        const pinTokenize = this.page.waitForResponse(
+            r => r.url().includes('/pinpayment/checkout/request'),
+            { timeout: 30000 },
+        ).catch(() => null);
+
+        // Fire the submit. Use Promise.race between the three possible outcomes:
+        //   a) URL redirects to sales/order/view  -> success
+        //   b) #order-errors becomes populated    -> real form-level failure
+        //   c) alert modal is opened by Magento  -> validation / JS-thrown error
+        // We give the server up to 90s to either redirect or surface an error;
+        // within the 120s per-test budget that leaves headroom for setup.
         await submitButton.click({ force: true });
 
-        // Wait for URL to change (order creation redirects to order view page)
-        try {
-            await this.page.waitForURL((url) => url.href !== currentUrl, { timeout: 90000 });
-        } catch (e) {
-            // URL may not change if there's an error, continue to check for success message
+        // If Pin, wait for tokenize response and fail fast if Pin itself errored.
+        const pinResponse = await pinTokenize;
+        if (pinResponse) {
+            const pinStatus = pinResponse.status();
+            if (pinStatus >= 400) {
+                const body = await pinResponse.text().catch(() => '');
+                throw new Error(
+                    `Pin Payments tokenization failed (HTTP ${pinStatus}): ${body.slice(0, 500)}`,
+                );
+            }
+            // Pin returns 200 with {success: false, message: ...} on card errors.
+            try {
+                const json = await pinResponse.json();
+                if (json && json.success === false) {
+                    throw new Error(
+                        `Pin Payments rejected the card: ${json.message ?? '(no message)'}`,
+                    );
+                }
+            } catch (e) {
+                // Not JSON or already a thrown Error from the branch above.
+                if (e instanceof Error && e.message.startsWith('Pin Payments')) {
+                    throw e;
+                }
+            }
         }
 
-        // Wait for the page to fully load
-        await this.page.waitForLoadState("domcontentloaded");
-        await this.page.waitForLoadState("networkidle");
+        // Race success redirect against visible form-level errors. Each branch
+        // is wrapped so that timeout/reject maps to `null` - only the branch
+        // whose signal actually fired returns a truthy label, so Promise.race
+        // doesn't get hijacked by whichever branch happens to reject first.
+        const TIMEOUT_MS = 90000;
 
-        // Wait for success message with extended timeout (order creation can be slow)
-        await this.page.locator(locators.admin_success_message).waitFor({state: 'visible', timeout: 60000});
-        await expect(this.page.locator(locators.admin_success_message)).toContainText(locators.order_success_message);
+        const successUrl = this.page
+            .waitForURL(/\/sales\/order\/view\//, { timeout: TIMEOUT_MS })
+            .then(() => 'success' as const)
+            .catch(() => null);
+
+        const formError = this.page
+            .locator('#order-errors .message-error, #order-errors .messages .error-msg')
+            .first()
+            .waitFor({ state: 'visible', timeout: TIMEOUT_MS })
+            .then(() => 'form-error' as const)
+            .catch(() => null);
+
+        const modalError = this.page
+            .locator('aside.modal-popup._show [role="alertdialog"], .modal-popup.confirm._show, aside._show .modal-content')
+            .first()
+            .waitFor({ state: 'visible', timeout: TIMEOUT_MS })
+            .then(() => 'modal-error' as const)
+            .catch(() => null);
+
+        // Use Promise.any so we only act on the first branch that actually
+        // resolves to a non-null label. If all three reject (AggregateError),
+        // treat as timeout.
+        const firstHit = await Promise.any(
+            [successUrl, formError, modalError].map(p =>
+                p.then(v => (v === null ? Promise.reject() : v)),
+            ),
+        ).catch(() => null);
+
+        const outcome = firstHit ?? 'timeout';
+
+        if (outcome === 'form-error') {
+            const errText = (await this.page.locator('#order-errors').innerText()).trim();
+            throw new Error(`Order submission failed (form error): ${errText}`);
+        }
+
+        if (outcome === 'modal-error') {
+            const modalText = (
+                await this.page
+                    .locator('aside.modal-popup._show, aside._show .modal-content')
+                    .first()
+                    .innerText()
+                    .catch(() => '')
+            ).trim();
+            throw new Error(`Order submission failed (modal dialog): ${modalText}`);
+        }
+
+        if (outcome === 'timeout') {
+            throw new Error(
+                `placeOrder(): no success redirect and no error surfaced within 90s. ` +
+                `Current URL: ${this.page.url()}`,
+            );
+        }
+
+        // Success: we are now on the order view page. Assert the confirmation
+        // flash message as a final sanity check.
+        await this.page.waitForLoadState('domcontentloaded');
+        await this.page
+            .locator(locators.admin_success_message)
+            .waitFor({ state: 'visible', timeout: 30000 });
+        await expect(this.page.locator(locators.admin_success_message)).toContainText(
+            locators.order_success_message,
+        );
     }
 
     async selectPaymentMethodByText(paymentText: string) {

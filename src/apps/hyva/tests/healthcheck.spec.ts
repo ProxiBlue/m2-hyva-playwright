@@ -28,8 +28,10 @@ describe("Health check suite", () => {
         const response = await responsePromise;
         expect(response.status(), 'PLP should return 200').toBe(200);
 
+        // Use the Hyvä page-title element (data-ui-id="page-title-wrapper") to
+        // avoid collision with SEO <h1> tags rendered inside static/CMS blocks.
         await expect(
-            page.locator('h1'),
+            page.locator('h1[data-ui-id="page-title-wrapper"]'),
             'PLP has a visible heading'
         ).toBeVisible();
     });

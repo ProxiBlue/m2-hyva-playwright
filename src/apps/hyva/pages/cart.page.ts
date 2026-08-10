@@ -52,12 +52,26 @@ export default class CartPage extends BasePage<CartData> {
             async () => {
                 const itemRow = this.locators.cart_table + '>>' + this.locators.cart_table_body + ">>nth=" + itemRowNum + '>>' + this.locators.cart_row_item_info
                 await expect(this.page.locator(itemRow), "Verify element exists " + itemRow).toHaveCount(1);
-                const beforeSubTotal = await this.page.innerText(itemRow + '>>' + this.locators.cart_row_subtotal);
                 const qtyInput = itemRow + '>>' + this.locators.cart_row_qty_input;
                 await this.page.fill(qtyInput, newQuantity.toString());
+                // Hyvä's cart form uses @submit.prevent="postCart" -> hyva.postCart() which
+                // POSTs via fetch to /checkout/cart/updatePost and replaces #maincontent.
+                // There is NO navigation, so waitForURL won't fire. Wait on the POST
+                // response together with the button click to ensure the update completed
+                // before re-reading the DOM.
+                const updateResponse = this.page.waitForResponse(
+                    (response) => response.url().includes('/checkout/cart/updatePost') && response.request().method() === 'POST',
+                    { timeout: 15000 },
+                );
                 await this.page.getByRole('button', { name: 'Update Shopping Cart' }).click();
-                await this.page.waitForURL("**/checkout/cart");
-                await this.page.waitForLoadState('domcontentloaded');
+                await updateResponse;
+                // Once Hyvä replaces #maincontent, Alpine's initCartForm.init() re-parses
+                // window.checkoutConfig from the fresh data attribute. Wait for the
+                // shopping cart fieldset to be reattached and showing the new qty.
+                await expect(
+                    this.page.locator(qtyInput),
+                    "Qty input reflects new quantity after update",
+                ).toHaveValue(newQuantity.toString(), { timeout: 10000 });
                 await this.checkQuantity(itemRowNum, newQuantity);
             })
     }
@@ -108,18 +122,35 @@ export default class CartPage extends BasePage<CartData> {
         await test.step(
             this.workerInfo.project.name + ": Check subtotals match ",
             async () => {
-                await this.page.locator(this.locators.cart_subtotal).textContent().then((value) => {
-                    // mobiles (and seems safari) get the label string included, so strip it if it exists
-                    // i am sure there is s smarter regex way, but i am not feeling smart right now ;)
-                    const subtotalLabel = data.default.subtotal_label || "";
-                    if(value) {
-                        value = value.replace(subtotalLabel + ': ', '');
-                        value = value.replace(subtotalLabel + ':', '');
-                        value = value.replace(subtotalLabel + ' ', '');
-                        value = value.replace(subtotalLabel, '');
-                        expect(parsePrice(value), "Check subtotal matches expected total").toEqual(parsePrice(total));
+                // The Hyvä cart summary renders totals via two different templates
+                // depending on tax/cart_display/subtotal:
+                //  - Magento_Checkout default (excl-only): x-text="hyva.formatPrice(segment.value)"
+                //  - Magento_Tax variant (both/including):  x-text="hyva.formatPrice(totalsData.subtotal)"
+                // Pulling the authoritative value from window.checkoutConfig.totalsData
+                // avoids locator fragility across these paths and also makes the test
+                // robust to any shipping/tax label injected by Hyvä totals children.
+                const subtotalValue = await this.page.evaluate(() => {
+                    const cfg = (window as any).checkoutConfig;
+                    if (!cfg || !cfg.totalsData) return null;
+                    const segs = cfg.totalsData.total_segments || [];
+                    const subtotalSegment = segs.find((s: any) => s.code === 'subtotal');
+                    if (subtotalSegment && typeof subtotalSegment.value !== 'undefined') {
+                        return Number(subtotalSegment.value);
                     }
+                    if (typeof cfg.totalsData.subtotal !== 'undefined') {
+                        return Number(cfg.totalsData.subtotal);
+                    }
+                    return null;
                 });
+
+                expect(
+                    subtotalValue,
+                    "checkoutConfig.totalsData must expose a cart subtotal",
+                ).not.toBeNull();
+                expect(
+                    Number(subtotalValue),
+                    "Check subtotal matches expected total",
+                ).toEqual(parsePrice(total));
             });
     }
 

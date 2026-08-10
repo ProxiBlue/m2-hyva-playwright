@@ -7,7 +7,17 @@
       "Bash(grep:*)",
       "Bash(find:*)",
       "Bash(NODE_TLS_REJECT_UNAUTHORIZED=0 APP_NAME=pps TEST_BASE=hyva npx playwright test:*)",
-      "mcp__plugin_context-mode_context-mode__ctx_execute"
+      "mcp__plugin_context-mode_context-mode__ctx_execute",
+      "Bash(NODE_TLS_REJECT_UNAUTHORIZED=0 APP_NAME=lcd TEST_BASE=hyva npx playwright test:*)",
+      "mcp__magento2-dev__db-query",
+      "Bash(curl -sk \"https://lcd-mageos.ddev.site/asus-x54c-sx034v-replacement-laptop-lcd-screen-display-panel.html\")",
+      "Bash(curl -sk \"https://lcd-mageos.ddev.site/contact/\")",
+      "Bash(curl -sk \"https://lcd-mageos.ddev.site/catalogsearch/result/?q=xyzabc123\")",
+      "Bash(curl -sk \"https://lcd-mageos.ddev.site/laptop-screens.html\")",
+      "Bash(curl -sk \"https://lcd-mageos.ddev.site/laptop-screens/acer-screen-replacement.html\")",
+      "Bash(curl -sk \"https://lcd-mageos.ddev.site/checkout/cart/\")",
+      "Bash(curl -sk \"https://lcd-mageos.ddev.site/\")",
+      "Bash(echo \"Can connect: $?\")"
     ]
   },
   "enableAllProjectMcpServers": true,

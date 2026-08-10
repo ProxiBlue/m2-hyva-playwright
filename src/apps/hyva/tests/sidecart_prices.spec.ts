@@ -4,6 +4,10 @@ import { shouldSkipTest, isMobile } from "@utils/functions/test-skip";
 
 describe("Side cart price check", () => {
 
+    // With global slowMo + two add-to-cart rounds + drawer reloads the default
+    // 30s budget is insufficient on slow dev envs; raise to 90s.
+    test.setTimeout(90000);
+
     test.beforeEach(async ({ simpleProductPage, page }, testInfo) => {
         // Use the helper function to determine if the test should be skipped
         const shouldSkip = shouldSkipTest(testInfo);
@@ -16,6 +20,11 @@ describe("Side cart price check", () => {
 
     test('it checks if the prices in the slider are displayed correctly', async ({ simpleProductPage, sideCartPage }, testInfo) => {
         await sideCartPage.checkQtyIndication(1);
+        // Some stores are configured with checkout/cart/redirect_to_cart = 1, so after
+        // addToCart() the browser is on /checkout/cart, not on the PDP. The product
+        // price locator (".price-wrapper .price") only exists on the PDP, so navigate
+        // back to the product page before reading its price.
+        await simpleProductPage.navigateTo();
         let itemPrice = await simpleProductPage.getProductPrice();
         await sideCartPage.open();
         // get the subtotal of the first product in the cart

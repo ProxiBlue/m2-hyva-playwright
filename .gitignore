@@ -97,3 +97,4 @@ src/apps/*
 
 # Auth state files
 auth/*.json
+.chief/

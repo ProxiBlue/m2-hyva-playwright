@@ -19,7 +19,8 @@
       "@hyva/*": ["src/apps/hyva/*"],
       "@luma/*": ["src/apps/luma/*"],
       "@admin/*": ["src/apps/admin/*"],
-      "@checkout/*": ["src/apps/checkout/*"]
+      "@checkout/*": ["src/apps/checkout/*"],
+      "@lcd/*": ["src/apps/lcd/*"]
     }
   },
   "exclude": ["node_modules"]

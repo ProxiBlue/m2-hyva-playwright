@@ -76,9 +76,19 @@ export default class CMSPage extends BasePage<CMSData> {
         }
 
         expect(cmsLinks.length).toBeGreaterThan(0);
+        const baseUrl = (process.env.url || '').replace(/\/$/, '');
         for (let i = 0; i < cmsLinks.length; i++) {
+            // Resolve relative URLs to absolute
+            let linkHref = cmsLinks[i].href;
+            if (!linkHref.startsWith('http')) {
+                // Ensure the path starts with /
+                if (!linkHref.startsWith('/')) {
+                    linkHref = '/' + linkHref;
+                }
+                linkHref = baseUrl + linkHref;
+            }
             // Navigate by URL directly to avoid issues with collapsed mobile footer sections
-            await this.page.goto(cmsLinks[i].href);
+            await this.page.goto(linkHref);
             await this.page.waitForLoadState('domcontentloaded');
 
             // Check if the page has breadcrumbs

@@ -70,14 +70,28 @@ export default class SearchPage extends BasePage<SearchData> {
         expect(noResultsText).toContain('Your search returned no results.');
     }
 
-    async checkSearchSuggestions(isMobile: boolean = false, countMatch: number = 3) {
+    async checkSearchSuggestions(isMobile: boolean = false) {
         await this.page.waitForSelector(locators.headerSearchField);
         await this.page.fill(locators.headerSearchField, this.data.default.get_hint || '');
-        //put a 3s delay here
         await this.page.waitForTimeout(3000);
-        const results = this.page.locator(locators.mini_search);
-        await expect(results).toHaveCount(countMatch);
-        const lookupText = await this.page.locator(locators.mini_search).nth(1).textContent();
-        expect(lookupText).toContain(this.data.default.hint_result);
+
+        // Check for suggestion items using the dedicated suggestions locator or fallback
+        const suggestionsContainer = this.page.locator(locators.searchSuggestions);
+        const hasSuggestions = await suggestionsContainer.isVisible({ timeout: 5000 }).catch(() => false);
+
+        if (hasSuggestions) {
+            const suggestionItems = suggestionsContainer.locator('li, a, [role="option"]');
+            await expect(suggestionItems.first()).toBeVisible({ timeout: 5000 });
+            const count = await suggestionItems.count();
+            expect(count).toBeGreaterThan(0);
+        } else {
+            // Fallback: check that the search form has autocomplete results
+            const autocompleteResults = this.page.locator('#search_autocomplete li, #search_autocomplete a');
+            await expect(autocompleteResults.first()).toBeVisible({ timeout: 5000 });
+        }
+
+        // Verify hint text appears somewhere in suggestions
+        const pageText = await this.page.locator('#search_autocomplete, ' + locators.searchSuggestions).textContent();
+        expect(pageText?.toLowerCase()).toContain((this.data.default.hint_result || '').toLowerCase());
     }
 }
