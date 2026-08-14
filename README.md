@@ -99,6 +99,40 @@ For parallel admin testing, helper scripts can create multiple admin accounts:
 
 These scripts are **not** run automatically. Admin credentials must be configured in `config.private.json` before running tests.
 
+#### Per-Worker Admin Accounts (workers > 1 on the admin bucket)
+
+The admin bucket defaults to `workers: 1` because concurrent workers sharing one
+admin account race on per-user grid state (`ui_bookmark` columns/filters/page-size).
+`admin-users.sh create --write-config` provisions N accounts and writes them into
+`config.private.json`'s `admin_users` array; `getAdminForWorker()`
+(`src/utils/functions/admin.ts`) then assigns one account per concurrent worker
+slot round-robin, so each worker gets isolated admin state:
+
+```bash
+./admin-users.sh create --count=2 --write-config
+ADMIN_WORKERS=2 yarn test:admin
+./admin-users.sh remove --write-config
+```
+
+`config.private.json` with `admin_users` set:
+
+```json
+{
+  "admin_path": "admin",
+  "admin_username": "fallback_username",
+  "admin_password": "fallback_password",
+  "admin_users": [
+    { "username": "playwright_admin_0", "password": "secure123" },
+    { "username": "playwright_admin_1", "password": "secure123" }
+  ]
+}
+```
+
+If `admin_users` is empty or absent, every worker falls back to the single
+`admin_username`/`admin_password` pair — existing single-worker setups are
+unaffected. `ADMIN_WORKERS` is unset (workers stays 1) until a bucket has
+empirically verified running clean at the higher count.
+
 ## Configuration
 
 ### config.json

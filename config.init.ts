@@ -25,6 +25,8 @@ export const initConfig = (appName: string) => {
     let privateData = require(privateConfigFile);
     process.env.admin_username = privateData.admin_username;
     process.env.admin_password = privateData.admin_password;
+    // Optional per-worker admin accounts (see @utils/functions/admin.getAdminForWorker)
+    process.env.admin_users = JSON.stringify(privateData.admin_users ?? []);
     process.env.admin_path = privateData.admin_path;
     process.env.url = privateData.url || jsonData.url;
 

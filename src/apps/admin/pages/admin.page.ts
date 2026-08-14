@@ -3,6 +3,7 @@ import {Page, TestInfo, expect, test} from "@playwright/test";
 import * as locators from "@admin/locators/admin.locator";
 import { AdminData } from "@admin/interfaces/AdminData";
 import { loadJsonData } from "@utils/functions/file";
+import { getAdminForWorker } from "@utils/functions/admin";
 import path from "path";
 
 // Default admin data structure
@@ -132,13 +133,9 @@ export default class AdminPage extends BasePage {
                     await test.step(this.workerInfo.project.name + ": Not logged in, performing login with configured admin credentials", async () => {});
                 }
 
-                // Get admin credentials from environment variables (set from config.private.json)
-                const username = process.env.admin_username;
-                const password = process.env.admin_password;
-
-                if (!username || !password) {
-                    throw new Error('Admin credentials not found. Please set admin_username and admin_password in config.private.json');
-                }
+                // Get admin credentials for this worker slot (per-worker account if
+                // config.private.json defines admin_users, else the shared account)
+                const { username, password } = getAdminForWorker(this.workerInfo);
 
                 // Wait for login form to be ready (Magento JS validation needs to initialize)
                 await this.page.waitForSelector(locators.username, { state: 'visible', timeout: 10000 });
