@@ -103,18 +103,24 @@ These scripts are **not** run automatically. Admin credentials must be configure
 
 The admin bucket defaults to `workers: 1` because concurrent workers sharing one
 admin account race on per-user grid state (`ui_bookmark` columns/filters/page-size).
-`admin-users.sh create --write-config` provisions N accounts and writes them into
-`config.private.json`'s `admin_users` array; `getAdminForWorker()`
-(`src/utils/functions/admin.ts`) then assigns one account per concurrent worker
-slot round-robin, so each worker gets isolated admin state:
+`getAdminForWorker()` (`src/utils/functions/admin.ts`) assigns one account per
+concurrent worker slot round-robin from `config.private.json`'s `admin_users`
+array, so each worker gets isolated admin state. Seed it with:
 
 ```bash
-./admin-users.sh create --count=2 --write-config
+./seed-admin-users.sh                 # seeds 2 accounts (or $ADMIN_WORKERS), password auto-generated
+./seed-admin-users.sh --count=4       # or pick a count explicitly
 ADMIN_WORKERS=2 yarn test:admin
-./admin-users.sh remove --write-config
 ```
 
-`config.private.json` with `admin_users` set:
+`seed-admin-users.sh` is idempotent — it always ends with exactly `--count`
+fresh accounts, safe to re-run any time (e.g. per CI run, or after bumping
+`ADMIN_WORKERS`). It's a thin wrapper: `admin-users.sh remove --write-config`
+then `admin-users.sh create --count=N --write-config` with a generated
+Magento-policy-compliant password. Use `admin-users.sh` directly (see above)
+for manual control over the password or account count.
+
+`config.private.json` with `admin_users` set (what the seed script writes):
 
 ```json
 {
