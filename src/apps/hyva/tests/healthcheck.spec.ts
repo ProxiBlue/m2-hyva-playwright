@@ -30,8 +30,9 @@ describe("Health check suite", () => {
 
         // Use the Hyvä page-title element (data-ui-id="page-title-wrapper") to
         // avoid collision with SEO <h1> tags rendered inside static/CMS blocks.
+        // Tag-agnostic: Magento default theme renders <h1>, Hyvä renders <span>.
         await expect(
-            page.locator('h1[data-ui-id="page-title-wrapper"]'),
+            page.locator('[data-ui-id="page-title-wrapper"]'),
             'PLP has a visible heading'
         ).toBeVisible();
     });
