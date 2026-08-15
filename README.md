@@ -342,6 +342,17 @@ cp src/apps/hyva/config.private.json.sample src/apps/hyva/config.private.json
 
 For detailed report information, see [Test Reports Documentation](./TEST_REPORTS.md).
 
+**Browser-binary preflight:** every test run checks required browser binaries
+are installed and fails fast with an `npx playwright install <name>` hint if
+not, instead of burning a full run on hundreds of `Executable doesn't exist`
+failures. This runs inside Playwright's own `globalSetup`
+(`checkBrowsersOrExit()` in `global-setup.ts`, delegating to
+`scripts/verify-browsers.js`), so it fires for every entry point — the
+framework root's `yarn test:xxx`, a consumer app's own nested `package.json`
+scripts (e.g. `tests/apps/pps`), or a bare `npx playwright test` — not just
+the framework root's `env-check` yarn prefix. Override the checked browser
+list with `PLAYWRIGHT_BROWSERS=chromium,webkit,firefox`.
+
 ### From the Root Folder
 
 ```bash

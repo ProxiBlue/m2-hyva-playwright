@@ -4,6 +4,7 @@ import fs from "fs";
 import path from "path";
 import { initConfig } from "./config.init";
 import axios from "axios";
+const { checkBrowsersOrExit } = require("./scripts/verify-browsers");
 
 export const projects = async (config: any) => {
   const projectArg = process.argv.find((arg) => arg.includes("project")) || '';
@@ -76,7 +77,7 @@ function validateConfiguration(appName: string, testBase: string): void {
   // Warn if running site-specific tests without matching APP_NAME
   if (siteSpecificApps.includes(testBase) && appName !== testBase) {
     console.warn('\n' + '='.repeat(80));
-    console.warn('⚠️  CONFIGURATION WARNING: Potential URL mismatch detected!');
+    console.warn('⚠  CONFIGURATION WARNING: Potential URL mismatch detected!');
     console.warn('='.repeat(80));
     console.warn(`APP_NAME=${appName} but TEST_BASE=${testBase}`);
     console.warn(`This will load config from "src/apps/${appName}/" but run tests from "src/apps/${testBase}/tests/"`);
@@ -94,6 +95,14 @@ const globalSetup = async (config: FullConfig) => {
 
   // Validate configuration combination
   validateConfiguration(appName, testBase);
+
+  // Preflight: fail fast on missing browser binaries. Runs here (Playwright's
+  // own globalSetup) rather than only as a framework-root yarn prefix, so it
+  // fires no matter which package.json/cwd triggered this test run —
+  // including consumer apps (e.g. pps) that ship their own nested
+  // package.json and bypass the framework root's `env-check` wrapper
+  // entirely by running `yarn test:xxx` directly from inside it.
+  checkBrowsersOrExit({ appName });
 
   //console.log(`Initializing configuration for app: ${appName}`);
   initConfig(appName);
